@@ -56,30 +56,57 @@ function getTeacherProfile($conn, $teacher_id) {
     $stmt->close();
 }
 
+// CHANGED: Rewrote updateTeacherProfile — old version used wrong column names
+// (teacher_name, email, phone, grade_level) that don't exist in the table.
+// Fixed to use the correct columns: first_name, last_name, phone_number, specialization, bio.
+// Also added bio support and a sync back to admin_accounts so both tables stay consistent.
 function updateTeacherProfile($conn, $teacher_id) {
-    $teacher_name = isset($_POST['teacher_name']) ? trim($_POST['teacher_name']) : '';
-    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
-    $phone = isset($_POST['phone']) ? trim($_POST['phone']) : '';
-    $school_name = isset($_POST['school_name']) ? trim($_POST['school_name']) : '';
-    $grade_level = isset($_POST['grade_level']) ? trim($_POST['grade_level']) : '';
+    $first_name     = isset($_POST['first_name'])     ? trim($_POST['first_name'])     : '';
+    $last_name      = isset($_POST['last_name'])      ? trim($_POST['last_name'])      : '';
+    $phone          = isset($_POST['phone_number'])   ? trim($_POST['phone_number'])   : '';
     $specialization = isset($_POST['specialization']) ? trim($_POST['specialization']) : '';
-    
-    if (!$teacher_name || !$email) {
-        echo json_encode(['success' => false, 'message' => 'Name and email are required']);
+    $bio            = isset($_POST['bio'])            ? trim($_POST['bio'])            : '';
+
+    if (!$first_name) {
+        echo json_encode(['success' => false, 'message' => 'First name is required']);
         return;
     }
-    
-    $sql = "UPDATE teacher_accounts SET teacher_name=?, email=?, phone=?, school_name=?, grade_level=?, specialization=?
-            WHERE id=?";
+
+    // Update teacher_accounts with all profile fields including bio
+    $sql  = "UPDATE teacher_accounts SET first_name=?, last_name=?, phone_number=?, specialization=?, bio=? WHERE id=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssi", $teacher_name, $email, $phone, $school_name, $grade_level, $specialization, $teacher_id);
-    
-    if ($stmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Profile updated successfully']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to update profile']);
+    $stmt->bind_param("sssssi", $first_name, $last_name, $phone, $specialization, $bio, $teacher_id);
+
+    if (!$stmt->execute()) {
+        echo json_encode(['success' => false, 'message' => 'Failed to update: ' . $conn->error]);
+        $stmt->close();
+        return;
     }
     $stmt->close();
+
+    // CHANGED: Sync updated name to admin_accounts so both tables stay consistent.
+    // Without this, the login dashboard would still show the old name from admin_accounts.
+    $email_stmt = $conn->prepare("SELECT teacher_email FROM teacher_accounts WHERE id=?");
+    $email_stmt->bind_param("i", $teacher_id);
+    $email_stmt->execute();
+    $email_result = $email_stmt->get_result();
+    $email_stmt->close();
+
+    if ($email_row = $email_result->fetch_assoc()) {
+        require_once __DIR__ . '/../../ADMIN_FILES/ADMIN_BACKEND/db.php';
+        $admin_conn = getDatabaseConnection();
+        if ($admin_conn) {
+            $upd = $admin_conn->prepare("UPDATE admin_accounts SET first_name=?, last_name=? WHERE admin_email=? AND role='teacher'");
+            if ($upd) {
+                $upd->bind_param("sss", $first_name, $last_name, $email_row['teacher_email']);
+                $upd->execute();
+                $upd->close();
+            }
+            $admin_conn->close();
+        }
+    }
+
+    echo json_encode(['success' => true, 'message' => 'Profile updated successfully']);
 }
 
 function getTeacherSettings($conn, $teacher_id) {

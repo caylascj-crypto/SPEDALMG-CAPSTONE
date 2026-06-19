@@ -20,8 +20,8 @@ if (!$conn) {
     exit;
 }
 
-// Get teacher profile
-$sql = "SELECT id, teacher_email, first_name, last_name, school_name, phone_number, specialization, class_section, status 
+// CHANGED: Added bio field to SELECT so the teacher's bio is returned to the settings page
+$sql = "SELECT id, teacher_email, first_name, last_name, school_name, phone_number, specialization, COALESCE(bio,'') as bio, class_section, status
         FROM teacher_accounts WHERE id=?";
 $stmt = $conn->prepare($sql);
 if (!$stmt) {
@@ -36,30 +36,13 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if ($row = $result->fetch_assoc()) {
-    $teacher_email = $row['teacher_email'];
     $first_name = $row['first_name'];
-    $last_name = $row['last_name'];
-    
-    // Try to get the teacher's name from admin_accounts for consistency
-    // This ensures the name shown matches what was set when the account was created
-    if ($admin_conn) {
-        $admin_sql = "SELECT first_name, last_name FROM admin_accounts WHERE admin_email = ? AND role = 'teacher'";
-        $admin_stmt = $admin_conn->prepare($admin_sql);
-        if ($admin_stmt) {
-            $admin_stmt->bind_param("s", $teacher_email);
-            $admin_stmt->execute();
-            $admin_result = $admin_stmt->get_result();
-            if ($admin_row = $admin_result->fetch_assoc()) {
-                // Use the name from admin_accounts (the official name)
-                $first_name = $admin_row['first_name'];
-                $last_name = $admin_row['last_name'];
-            }
-            $admin_stmt->close();
-        }
-    }
-    
-    // Build display name from available fields
-    $display_name = trim($first_name . ' ' . $last_name) ?: $teacher_email;
+    $last_name  = $row['last_name'];
+
+    // CHANGED: Removed the override that was replacing first_name/last_name with
+    // admin_accounts values — this caused saved names to revert on every reload.
+    // Now the name is read directly from teacher_accounts where the teacher saves it.
+    $display_name = trim($first_name . ' ' . $last_name) ?: $row['teacher_email'];
     
     // Get first letter for avatar
     $avatar_letter = strtoupper(substr($display_name, 0, 1));
@@ -75,6 +58,7 @@ if ($row = $result->fetch_assoc()) {
             'schoolName' => $row['school_name'],
             'phone' => $row['phone_number'],
             'specialization' => $row['specialization'],
+            'bio' => $row['bio'],
             'classSection' => $row['class_section'],
             'status' => $row['status'],
             'avatarLetter' => $avatar_letter

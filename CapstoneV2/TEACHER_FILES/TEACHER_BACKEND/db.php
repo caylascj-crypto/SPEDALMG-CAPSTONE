@@ -29,6 +29,7 @@ function getTeacherDatabaseConnection() {
         school_name VARCHAR(255),
         phone_number VARCHAR(20),
         specialization VARCHAR(100),
+        bio TEXT, /* CHANGED: added bio column to store teacher's short biography */
         class_section VARCHAR(50),
         status VARCHAR(20) DEFAULT 'active',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
