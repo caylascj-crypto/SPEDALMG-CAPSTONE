@@ -89,7 +89,12 @@
 
         <div class="admin-form-group">
           <label for="admin-password">Password</label>
-          <input id="admin-password" name="admin_password" placeholder="••••••••" type="password" />
+          <div style="position:relative;">
+            <input id="admin-password" name="admin_password" placeholder="••••••••" type="password" style="width:100%;padding-right:42px;box-sizing:border-box;" />
+            <button type="button" id="toggle-password" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#888;padding:0;font-size:16px;" tabindex="-1">
+              <i class="fa fa-eye" id="toggle-password-icon"></i>
+            </button>
+          </div>
         </div>
 
         <button class="admin-btn-signin" type="submit">Sign In</button>
@@ -149,6 +154,22 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
+      /* Show/hide password toggle */
+      var toggleBtn = document.getElementById("toggle-password");
+      var passwordInput = document.getElementById("admin-password");
+      var toggleIcon = document.getElementById("toggle-password-icon");
+      if (toggleBtn) {
+        toggleBtn.addEventListener("click", function () {
+          if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleIcon.className = "fa fa-eye-slash";
+          } else {
+            passwordInput.type = "password";
+            toggleIcon.className = "fa fa-eye";
+          }
+        });
+      }
+
       /* Clear previous session data to ensure fresh login */
       sessionStorage.clear();
       
