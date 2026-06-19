@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Generate Materials – SPED ALM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="../TEACHER.CSS/Teacher_generate.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="teacher-app-wrapper">
+        <aside class="teacher-sidebar">
+            <div class="teacher-sidebar-logo">
+                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../TEACHER_ASSETS/logo.png" />
+                <div class="teacher-sidebar-logo-text">
+                    <span class="teacher-sidebar-title">SPED ALM</span>
+                    <span class="teacher-sidebar-sub">Teacher Portal</span>
+                </div>
+            </div>
+            <nav class="teacher-sidebar-nav">
+                <a class="teacher-nav-item" href="Teacher_dashboard.html">
+                    <i class="fa-solid fa-table-cells-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a class="teacher-nav-item active" href="Teacher_IEP.html">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    <span>IEP Materials</span>
+                    <i class="fa-solid fa-chevron-right teacher-nav-arrow"></i>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_learners.html">
+                    <i class="fa-solid fa-users"></i>
+                    <span>My Learners</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_report.html">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Reports</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_settings.html">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="teacher-sidebar-footer">
+                <div class="teacher-profile">
+                    <div class="teacher-avatar">MT</div>
+                    <div class="teacher-info">
+                        <span class="teacher-name">Ma. Teresa Cruz</span>
+                        <span class="teacher-role">SPED Teacher</span>
+                    </div>
+                </div>
+                <a class="teacher-signout-btn" href="../login_screen.html#">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
+        <main class="teacher-main-content">
+            <!-- TOPBAR -->
+            <header class="teacher-topbar">
+                <div>
+                    <h1 class="teacher-page-title">Generate Materials</h1>
+                    <p class="teacher-page-sub">Select a structural format and configure specific elements for a child's
+                        needs</p>
+                </div>
+            </header>
+            <hr class="teacher-divider" />
+            <!-- FILTER BAR -->
+            <div class="gen-teacher-filter-bar">
+                <div class="teacher-gf-item">
+                    <span class="teacher-gf-label">Select Learner Profile</span>
+                    <div class="teacher-select-wrap">
+                        <select id="teacher-learnerProfile" name="teacher_learnerprofile" onchange="setCondition()">
+                            <option value="">ALL</option>
+                            <option value="De Leon, Nina|ASD">De Leon, Nina (ASD)</option>
+                            <option value="Torres, Anne|ASD">Torres, Anne (ASD)</option>
+                            <option value="Lopez, John|ASD">Lopez, John (ASD)</option>
+                            <option value="Nery, Arthur|ASD">Nery, Arthur (ASD)</option>
+                            <option value="Reyes, Marco|ID">Reyes, Marco (ID)</option>
+                            <option value="Garcia, Sofia|ID">Garcia, Sofia (ID)</option>
+                            <option value="Bautista, Luis|ID">Bautista, Luis (ID)</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down teacher-sel-arrow"></i>
+                    </div>
+                </div>
+                <div class="teacher-gf-item">
+                    <span class="teacher-gf-label">Select Condition <span
+                            class="teacher-autofill-tag">Auto-filled</span></span>
+                    <div class="teacher-condition-pill" id="teacher-conditionPill">ALL</div>
+                </div>
+            </div>
+            <!-- SECTION HEADER -->
+            <div class="teacher-section-header">
+                <h2 class="teacher-section-title">Define Materials and Content</h2>
+                <p class="teacher-section-sub">Select an Activity Type Template</p>
+            </div>
+            <!-- TEMPLATE GRID -->
+            <div class="teacher-template-grid" id="teacher-templateGrid">
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 1)">
+                    <div class="teacher-tpl-icon tpl-blue"><i class="fa-solid fa-table-cells"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>Picture Matching</h3>
+                        <p>Match picture to word or object</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Cognitive / Matching</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 2)">
+                    <div class="teacher-tpl-icon tpl-yellow"><i class="fa-solid fa-font"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>Word Matching</h3>
+                        <p>Match word to word or definition</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Communication / Matching</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 3)">
+                    <div class="teacher-tpl-icon tpl-orange"><i class="fa-solid fa-user-check"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>Multiple Choice (Visual)</h3>
+                        <p>Choose correct answer with pictures or options</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Cognitive / Matching</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 4)">
+                    <div class="teacher-tpl-icon tpl-green"><i class="fa-solid fa-circle-check"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>True or False</h3>
+                        <p>Simple yes or no statement</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Cognitive / Comprehension</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 5)">
+                    <div class="teacher-tpl-icon tpl-pink"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>Identification</h3>
+                        <p>Name the object or picture shown</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Communication / Recognition</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 6)">
+                    <div class="teacher-tpl-icon tpl-purple"><i class="fa-solid fa-list-ul"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>Fill in the Blank (Guided)</h3>
+                        <p>Complete missing word with hints</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Academics / Language</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 7)">
+                    <div class="teacher-tpl-icon tpl-blue"><i class="fa-solid fa-arrows-up-down-left-right"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>Drag and Drop</h3>
+                        <p>Drag answer to correct box or category</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Cognitive / Matching</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 8)">
+                    <div class="teacher-tpl-icon tpl-yellow"><i class="fa-solid fa-layer-group"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>Sorting / Categorization</h3>
+                        <p>Group items such as animals vs fruits, big vs small</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Cognitive / Classification</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 9)">
+                    <div class="teacher-tpl-icon tpl-green"><i class="fa-solid fa-arrow-down-1-9"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>Sequencing / Arrange in Order</h3>
+                        <p>Put steps in correct order</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Daily Living / Self-Help</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 10)">
+                    <div class="teacher-tpl-icon tpl-pink"><i class="fa-solid fa-object-ungroup"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>Odd One Out</h3>
+                        <p>Identify which item does not belong</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Cognitive / Critical Thinking</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 11)">
+                    <div class="teacher-tpl-icon tpl-purple"><i class="fa-solid fa-desktop"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>Label the Picture</h3>
+                        <p>Place correct labels on parts of an image</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Academics / Communication</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 12)">
+                    <div class="teacher-tpl-icon tpl-orange"><i class="fa-solid fa-calculator"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>Count and Choose</h3>
+                        <p>Count objects then select number</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Academics / Numeracy</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 13)">
+                    <div class="teacher-tpl-icon tpl-orange"><i class="fa-solid fa-pen-nib"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>Trace / Pattern Completion</h3>
+                        <p>Follow pattern or complete sequence</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Fine Motor / Cognitive</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-tpl-card" onclick="selectTemplate(this, 14)">
+                    <div class="teacher-tpl-icon tpl-green"><i class="fa-solid fa-comments"></i></div>
+                    <div class="teacher-tpl-body">
+                        <h3>Scenario-Based Choice</h3>
+                        <p>Choose what to do in a situation for social skills</p>
+                        <div class="teacher-tpl-meta">
+                            <div class="teacher-tpl-meta-row"><span class="teacher-meta-label">Goal:</span><span
+                                    class="teacher-meta-val">Social Skills / Emotional Reg.</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /teacher-template-grid -->
+            <!-- ACTION ROW -->
+            <div class="teacher-action-row">
+                <a class="btn-back-iep" href="Teacher_IEP.html">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back to IEP Materials
+                </a>
+            </div>
+        </main>
+    </div>
+    <script>
+        function setCondition() {
+            const val = document.getElementById('teacher-learnerProfile').value;
+            const cond = val ? val.split('|')[1] : 'ALL';
+            document.getElementById('teacher-conditionPill').textContent = cond;
+        }
+
+        let selectedIndex = null;
+
+        function selectTemplate(el, idx) {
+            window.location.href = 'Teacher_content.html';
+        }
+    </script>
+</body>
+
+</html>

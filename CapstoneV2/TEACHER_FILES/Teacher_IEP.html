@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>IEP Materials – SPED ALM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="../TEACHER.CSS/Teacher_IEP.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="teacher-app-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="teacher-sidebar">
+            <div class="teacher-sidebar-logo">
+                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../TEACHER_ASSETS/logo.png" />
+                <div class="teacher-sidebar-logo-text">
+                    <span class="teacher-sidebar-title">SPED ALM</span>
+                    <span class="teacher-sidebar-sub">Teacher Portal</span>
+                </div>
+            </div>
+            <nav class="teacher-sidebar-nav">
+                <a class="teacher-nav-item" href="Teacher_dashboard.html">
+                    <i class="fa-solid fa-table-cells-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a class="teacher-nav-item active" href="Teacher_IEP.html">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    <span>IEP Materials</span>
+                    <i class="fa-solid fa-chevron-right teacher-nav-arrow"></i>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_learners.html">
+                    <i class="fa-solid fa-users"></i>
+                    <span>My Learners</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_report.html">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Reports</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_settings.html">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="teacher-sidebar-footer">
+                <div class="teacher-profile">
+                    <div class="teacher-avatar">MT</div>
+                    <div class="teacher-info">
+                        <span class="teacher-name">Ma. Teresa Cruz</span>
+                        <span class="teacher-role">SPED Teacher</span>
+                    </div>
+                </div>
+                <a class="teacher-signout-btn" href="../login_screen.html#">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
+        <!-- MAIN CONTENT -->
+        <main class="teacher-main-content">
+            <header class="teacher-topbar">
+                <div>
+                    <h1 class="teacher-page-title">Learning Activity Plan</h1>
+                    <p class="teacher-page-sub">View and manage graded learning activities per learner</p>
+                </div>
+                <div class="teacher-topbar-right">
+                    <a class="teacher-notif-btn" href="Teacher_notif.html">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="teacher-notif-badge"></span>
+                    </a>
+                </div>
+            </header>
+            <!-- FILTER BAR -->
+            <div class="teacher-filter-bar">
+                <div class="teacher-filter-item">
+                    <label>Select Learner Profile</label>
+                    <div class="teacher-select-wrap">
+                        <select id="teacher-learnerProfile" name="teacher_learnerprofile" onchange="setCondition()">
+                            <option value="">ALL</option>
+                            <option value="De Leon, Nina|ASD">De Leon, Nina (ASD)</option>
+                            <option value="Torres, Anne|ASD">Torres, Anne (ASD)</option>
+                            <option value="Lopez, John|ASD">Lopez, John (ASD)</option>
+                            <option value="Nery, Arthur|ASD">Nery, Arthur (ASD)</option>
+                            <option value="Reyes, Marco|ID">Reyes, Marco (ID)</option>
+                            <option value="Garcia, Sofia|ID">Garcia, Sofia (ID)</option>
+                            <option value="Bautista, Luis|ID">Bautista, Luis (ID)</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down teacher-select-arrow"></i>
+                    </div>
+                </div>
+                <div class="teacher-filter-item">
+                    <label>Select Condition <span class="teacher-autofill-tag">Auto-filled</span></label>
+                    <div class="teacher-select-wrap">
+                        <select disabled="" id="teacher-condition" name="teacher_condition">
+                            <option value="">ALL</option>
+                            <option value="ASD">ASD</option>
+                            <option value="ID">ID</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down teacher-select-arrow"></i>
+                    </div>
+                </div>
+                <button class="btn-refresh" onclick="resetFilters()" type="button">
+                    Refresh
+                </button>
+            </div>
+            <!-- GRADING CARDS -->
+            <div class="teacher-grading-grid">
+                <div class="teacher-grading-card">
+                    <div class="teacher-card-badge badge-blue">First Grading</div>
+                    <div class="teacher-card-illustration illus-blue">
+                        <img alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                            src=\"../TEACHER_ASSETS/first_grading.jpg\" />
+                        <div class="illus-fallback"><i class="fa-solid fa-brain"></i></div>
+                    </div>
+                    <ul class="teacher-topic-list">
+                        <li>Cognitive Development</li>
+                        <li>Communication Skills</li>
+                        <li>Fine Motor Skills</li>
+                        <li>Attention &amp; Routine</li>
+                    </ul>
+                </div>
+                <div class="teacher-grading-card">
+                    <div class="teacher-card-badge badge-pink">Second Grading</div>
+                    <div class="teacher-card-illustration illus-pink">
+                        <img alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                            src="../TEACHER_ASSETS/second_grading.jpg" />
+                        <div class="illus-fallback"><i class="fa-solid fa-people-arrows"></i></div>
+                    </div>
+                    <ul class="teacher-topic-list">
+                        <li>Social Skills</li>
+                        <li>Emotional Regulation</li>
+                        <li>Gross Motor Skills</li>
+                        <li>Behavior Support</li>
+                    </ul>
+                </div>
+                <div class="teacher-grading-card">
+                    <div class="teacher-card-badge badge-orange">Third Grading</div>
+                    <div class="teacher-card-illustration illus-orange">
+                        <img alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                            src="../TEACHER_ASSETS/third_grading.jpg" />
+                        <div class="illus-fallback"><i class="fa-solid fa-book-open-reader"></i></div>
+                    </div>
+                    <ul class="teacher-topic-list">
+                        <li>Life Skills</li>
+                        <li>Self-Help Skills</li>
+                        <li>Functional Communication</li>
+                        <li>Evaluation &amp; Progress Monitoring</li>
+                    </ul>
+                </div>
+            </div>
+            <!-- ACTION BUTTONS -->
+            <div class="teacher-action-row">
+                <button class="btn-generate" onclick="goGenerate()" type="button">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    GENERATE NEW MATERIAL
+                </button>
+                <button class="btn-view" onclick="goReview()" type="button">
+                    <i class="fa-solid fa-eye"></i>
+                    VIEW ACTIVITIES
+                </button>
+            </div>
+        </main>
+    </div>
+    <script>
+        function setCondition() {
+            const val = document.getElementById('teacher-learnerProfile').value;
+            const cond = document.getElementById('teacher-condition');
+            cond.value = val ? val.split('|')[1] : '';
+        }
+        function resetFilters() {
+            document.getElementById('teacher-learnerProfile').value = '';
+            document.getElementById('teacher-condition').value = '';
+        }
+        function goGenerate() {
+            const val = document.getElementById('teacher-learnerProfile').value;
+            const condition = document.getElementById('teacher-condition').value;
+            localStorage.setItem('selectedLearner', val ? val.split('|')[0] : 'ALL');
+            localStorage.setItem('selectedCondition', condition || 'ALL');
+            window.location.href = 'Teacher_generate.html';
+        }
+        function goReview() {
+            window.location.href = 'Teacher_activies.html';
+        }
+    </script>
+</body>
+
+</html>

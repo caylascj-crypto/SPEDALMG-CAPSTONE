@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>SPED ALM - Activity Library</title>
+  <link href="ADMIN_CSS/animations.css" rel="stylesheet" />
+  <link href="ADMIN_CSS/Admin_activity_library.css" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap"
+    rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-logo">
+      <img alt="SPED ALM Logo" class="admin-sidebar-logo-img" src="../ADMIN_ASSETS/logo.png" />
+      <div class="admin-sidebar-logo-text">
+        <span class="admin-sidebar-title">SPED ALM</span>
+        <span class="admin-sidebar-sub">Admin Portal</span>
+      </div>
+    </div>
+    <nav class="admin-sidebar-nav">
+      <a class="admin-nav-item" href="Admin_dashboard.html">
+        <i class="fa-solid fa-table-cells-large"></i>
+        <span>Dashboard</span>
+      </a>
+      <a class="admin-nav-item active" href="Admin_activity_library.html">
+        <i class="fa-solid fa-book-bookmark"></i>
+        <span>Activity Library</span>
+        <i class="fa-solid fa-chevron-right admin-nav-arrow"></i>
+      </a>
+      <a class="admin-nav-item" href="Admin_manage_user.html">
+        <i class="fa-solid fa-users-gear"></i>
+        <span>Manage Users</span>
+      </a>
+      <a class="admin-nav-item" href="Admin_setting.html">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+    <div class="admin-sidebar-footer">
+      <div class="admin-sidebar-user">
+        <div class="admin-user-avatar">PS</div>
+        <div class="admin-user-info">
+          <span class="admin-user-name">Admin</span>
+          <span class="admin-user-role">School Administrat...</span>
+        </div>
+      </div>
+      <a class="admin-signout-btn" href="../login_screen.html#">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Sign Out</span>
+      </a>
+    </div>
+  </aside>
+  <!-- MAIN -->
+  <main class="admin-main page-enter">
+    <!-- TOP BAR -->
+    <header class="admin-topbar">
+      <div class="admin-topbar-left">
+        <h1 class="admin-page-title">Activity Library</h1>
+        <p class="admin-page-sub">Manage all SPED learning materials — templates and generated activities.</p>
+      </div>
+      <div class="admin-topbar-right">
+        <div class="admin-search-bar">
+          <span class="admin-search-icon">🔍</span>
+          <input name="search" placeholder="Search..." type="text" />
+        </div>
+        <a class="admin-notif-btn" href="Admin_notif.html">
+          <i class="fa-regular fa-bell"></i>
+          <span class="admin-notif-badge"></span>
+        </a>
+      </div>
+    </header>
+    <!-- FILTER BAR -->
+    <div class="admin-filter-bar">
+      <div class="admin-filter-search">
+        <span>🔍</span>
+        <input name="search_activities" placeholder="Search activities..." type="text" />
+      </div>
+      <!-- All Categories -->
+      <div class="admin-dropdown">
+        <button class="admin-filter-btn" onclick="toggleDropdown('admin-dd-category')" type="button">All Categories
+          <span class="admin-filter-icon">⇕</span></button>
+        <div class="admin-dropdown-menu" id="admin-dd-category">
+          <div class="admin-dropdown-item active"
+            onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">All Categories</div>
+          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">
+            Social Skills</div>
+          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">
+            Cognitive</div>
+          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">
+            Emotional Reg.</div>
+          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">
+            Self-Help</div>
+          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">
+            Academics</div>
+          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">
+            Communication</div>
+          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">Fine
+            Motor</div>
+        </div>
+      </div>
+      <!-- All Types -->
+      <div class="admin-dropdown">
+        <button class="admin-filter-btn" id="admin-category-btn" onclick="toggleDropdown('admin-dd-type')"
+          type="button">All Types
+          <span class="admin-filter-icon">⇕</span></button>
+        <div class="admin-dropdown-menu" id="admin-dd-type">
+          <div class="admin-dropdown-item active" onclick="selectFilter(this, 'admin-dd-type', 'admin-type-btn')">All
+            Types</div>
+          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-type', 'admin-type-btn')">Template
+          </div>
+          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-type', 'admin-type-btn')">Generated
+          </div>
+        </div>
+      </div>
+      <!-- All Status -->
+      <div class="admin-dropdown">
+        <button class="admin-filter-btn" id="admin-type-btn" onclick="toggleDropdown('admin-dd-status')"
+          type="button">All Status
+          <span class="admin-filter-icon">⇕</span></button>
+        <div class="admin-dropdown-menu" id="admin-dd-status">
+          <div class="admin-dropdown-item active" onclick="selectFilter(this, 'admin-dd-status', 'admin-status-btn')">
+            All Status</div>
+          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-status', 'admin-status-btn')">Published
+          </div>
+          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-status', 'admin-status-btn')">Draft
+          </div>
+        </div>
+      </div>
+      <button class="admin-search-btn" id="admin-status-btn" type="button">🔍 Search</button>
+    </div>
+    <!-- TABLE -->
+    <div class="admin-table-wrap">
+      <table class="admin-activity-table">
+        <thead>
+          <tr>
+            <th>ACTIVITY TITLE</th>
+            <th>CATEGORY</th>
+            <th>TYPE</th>
+            <th>TARGET FOCUS</th>
+            <th>CREATED BY</th>
+            <th>STATUS</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- One placeholder row for UI demo -->
+          <tr class="admin-placeholder-row">
+            <td>
+              <div class="admin-activity-title-cell">
+                <span class="admin-activity-book-icon">📘</span>
+                <span class="admin-placeholder-bar admin-w-160"></span>
+              </div>
+            </td>
+            <td><span class="admin-placeholder-bar admin-w-80"></span></td>
+            <td><span class="admin-badge admin-badge--gray">—</span></td>
+            <td><span class="admin-badge admin-badge--gray">—</span></td>
+            <td>
+              <div class="admin-created-cell">
+                <span class="admin-avatar-placeholder"></span>
+                <span class="admin-placeholder-bar admin-w-80"></span>
+              </div>
+            </td>
+            <td><span class="admin-badge admin-badge--gray">—</span></td>
+            <td>
+              <button class="admin-view-btn" onclick="document.getElementById('admin-view-modal').style.display='flex'"
+                type="button">
+                👁 View
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- Empty state below the one row -->
+      <div class="admin-table-empty">
+        <div class="admin-empty-icon">📋</div>
+        <p class="admin-empty-title">No activities yet</p>
+        <p class="admin-empty-desc">Activities will appear here once they are created or generated.</p>
+      </div>
+      <!-- Pagination -->
+      <div class="admin-pagination-bar">
+        <span class="admin-pagination-info">Showing <strong>0</strong> of <strong>0</strong> entries</span>
+        <div class="admin-pagination-controls">
+          <button class="admin-page-btn" disabled="" type="button">‹</button>
+          <button class="admin-page-btn active" type="button">1</button>
+          <button class="admin-page-btn" disabled="" type="button">Next ›</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- VIEW MODAL -->
+  <div class="admin-modal-overlay" id="admin-view-modal">
+    <div class="admin-modal-box">
+      <div class="admin-modal-header">
+        <h3 class="admin-modal-title">Activity Preview</h3>
+        <button class="admin-modal-close" onclick="document.getElementById('admin-view-modal').style.display='none'"
+          type="button">✕</button>
+      </div>
+      <div class="admin-modal-body">
+        <div class="admin-modal-empty-state">
+          <div class="admin-modal-empty-icon">📋</div>
+          <p class="admin-modal-empty-title">No content yet</p>
+          <p class="admin-modal-empty-desc">Activity details will appear here once the backend is connected.</p>
+        </div>
+      </div>
+      <div class="admin-modal-footer">
+        <button class="admin-close-btn" onclick="document.getElementById('admin-view-modal').style.display='none'"
+          type="button">Close</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    var activitiesList = [];
+
+    function toggleDropdown(id) {
+      var dropdown = document.getElementById(id);
+      if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+      } else {
+        // Close other dropdowns
+        document.querySelectorAll('.admin-dropdown-menu').forEach(function(menu) {
+          menu.style.display = 'none';
+        });
+        dropdown.style.display = 'block';
+      }
+    }
+
+    function selectFilter(el, dropdownId, buttonId) {
+      var dropdown = document.getElementById(dropdownId);
+      var button = buttonId ? document.getElementById(buttonId) : dropdown.previousElementSibling;
+      
+      // Remove active class from all items
+      dropdown.querySelectorAll('.admin-dropdown-item').forEach(function(item) {
+        item.classList.remove('active');
+      });
+      
+      // Add active class to clicked item
+      el.classList.add('active');
+      
+      // Update button text
+      if (button) {
+        button.innerHTML = el.textContent + ' <span class="admin-filter-icon">⇕</span>';
+      }
+      
+      // Close dropdown
+      dropdown.style.display = 'none';
+      
+      // Trigger search/filter
+      searchActivities();
+    }
+
+    function searchActivities() {
+      var searchInput = document.querySelector('input[name="search_activities"]');
+      var searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+      
+      // Filter activities based on search and selected filters
+      var filtered = activitiesList.filter(function(activity) {
+        var matchesSearch = !searchTerm || 
+          activity.title.toLowerCase().includes(searchTerm) ||
+          activity.category.toLowerCase().includes(searchTerm) ||
+          activity.creator.toLowerCase().includes(searchTerm);
+        
+        return matchesSearch;
+      });
+      
+      // Render filtered results
+      renderActivitiesTable(filtered);
+    }
+
+    function renderActivitiesTable(activities) {
+      var tbody = document.querySelector('.admin-activity-table tbody');
+      
+      if (!activities || activities.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7"><div class="admin-table-empty" style="display: block; margin: 40px 0;"><div class="admin-empty-icon">📋</div><p class="admin-empty-title">No activities found</p></div></td></tr>';
+        return;
+      }
+      
+      tbody.innerHTML = activities.map(function(activity) {
+        var statusClass = activity.status === 'Published' ? 'admin-badge--green' : 'admin-badge--gray';
+        var typeClass = activity.type === 'Template' ? 'admin-badge--blue' : 'admin-badge--purple';
+        
+        return '<tr>'
+          + '<td><div class="admin-activity-title-cell"><span class="admin-activity-book-icon">📘</span>' + activity.title + '</div></td>'
+          + '<td>' + activity.category + '</td>'
+          + '<td><span class="admin-badge ' + typeClass + '">' + activity.type + '</span></td>'
+          + '<td><span class="admin-badge">' + activity.focus + '</span></td>'
+          + '<td><div class="admin-created-cell">' + activity.creator + '</div></td>'
+          + '<td><span class="admin-badge ' + statusClass + '">' + activity.status + '</span></td>'
+          + '<td><button class="admin-view-btn" onclick="viewActivity(' + activity.id + ')" type="button">👁 View</button></td>'
+          + '</tr>';
+      }).join('');
+    }
+
+    function viewActivity(id) {
+      var activity = activitiesList.find(function(a) { return a.id == id; });
+      if (activity) {
+        var modal = document.getElementById('admin-view-modal');
+        modal.querySelector('.admin-modal-title').textContent = activity.title;
+        modal.querySelector('.admin-modal-empty-state').innerHTML = 
+          '<p><strong>Category:</strong> ' + activity.category + '</p>' +
+          '<p><strong>Type:</strong> ' + activity.type + '</p>' +
+          '<p><strong>Status:</strong> ' + activity.status + '</p>' +
+          '<p><strong>Created by:</strong> ' + activity.creator + '</p>';
+        modal.style.display = 'flex';
+      }
+    }
+
+    function loadActivities() {
+      fetch('ADMIN_BACKEND/admin_list_activities.php')
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          activitiesList = data;
+          renderActivitiesTable(activitiesList);
+        })
+        .catch(function(error) {
+          console.log('Error loading activities:', error);
+          activitiesList = [];
+          renderActivitiesTable([]);
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      // Add event listener to search input
+      var searchInput = document.querySelector('input[name="search_activities"]');
+      if (searchInput) {
+        searchInput.addEventListener('input', searchActivities);
+      }
+
+      // Close dropdowns when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.admin-dropdown')) {
+          document.querySelectorAll('.admin-dropdown-menu').forEach(function(menu) {
+            menu.style.display = 'none';
+          });
+        }
+      });
+
+      /* Ripple effect on buttons only */
+      document.querySelectorAll(".admin-btn-signin, .admin-modal-got-it, .admin-signout-btn").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          var rect = this.getBoundingClientRect();
+          var size = Math.max(rect.width, rect.height);
+          var span = document.createElement("span");
+          span.className = "ripple-span";
+          span.style.width = span.style.height = size + "px";
+          span.style.left = (e.clientX - rect.left - size / 2) + "px";
+          span.style.top = (e.clientY - rect.top - size / 2) + "px";
+          this.style.position = "relative";
+          this.style.overflow = "hidden";
+          this.appendChild(span);
+          setTimeout(function () { span.remove(); }, 520);
+          if (this.classList.contains('admin-signout-btn')) {
+            window.location.href = this.getAttribute('href') || 'login_screen.html';
+          }
+        });
+      });
+
+      // Load activities on page load
+      loadActivities();
+    });
+  </script>
+</body>
+
+</html>

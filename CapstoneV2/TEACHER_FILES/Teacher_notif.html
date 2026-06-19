@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Notifications – SPED ALM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="../TEACHER.CSS/Teacher_notif.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="teacher-app-wrapper">
+        <!-- ══ SIDEBAR ══ -->
+        <aside class="teacher-sidebar">
+            <div class="teacher-sidebar-logo">
+                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../TEACHER_ASSETS/logo.png" />
+                <div class="teacher-sidebar-logo-text">
+                    <span class="teacher-sidebar-title">SPED ALM</span>
+                    <span class="teacher-sidebar-sub">Teacher Portal</span>
+                </div>
+            </div>
+            <nav class="teacher-sidebar-nav">
+                <a class="teacher-nav-item" href="Teacher_dashboard.html">
+                    <i class="fa-solid fa-table-cells-large"></i>
+                    <span>Dashboard</span>
+                    <i class="fa-solid fa-chevron-right teacher-nav-arrow"></i>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_IEP.html">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    <span>IEP Materials</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_learners.html">
+                    <i class="fa-solid fa-users"></i>
+                    <span>My Learners</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_report.html">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Reports</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_settings.html">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="teacher-sidebar-footer">
+                <div class="teacher-profile">
+                    <div class="teacher-avatar">MT</div>
+                    <div class="teacher-info">
+                        <span class="teacher-name">Ma. Teresa Cruz</span>
+                        <span class="teacher-role">SPED Teacher</span>
+                    </div>
+                </div>
+                <a class="teacher-signout-btn" href="../login_screen.html#">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
+        <!-- ══ MAIN CONTENT ══ -->
+        <main class="teacher-main-content">
+            <!-- TOPBAR -->
+            <header class="teacher-topbar">
+                <div>
+                    <h1 class="teacher-page-title">Notifications</h1>
+                    <p class="teacher-page-sub" id="teacher-unread-subtitle"><!-- backend: unread count --></p>
+                </div>
+                <div class="teacher-topbar-right">
+                    <div class="teacher-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input name="search" placeholder="Search..." type="text" />
+                    </div>
+                </div>
+            </header>
+            <!-- FILTER BAR -->
+            <div class="teacher-filter-bar">
+                <div class="teacher-filter-tabs">
+                    <button class="teacher-tab-btn active" onclick="filterTab(this,'all')" type="button">All
+                        Notifications</button>
+                    <button class="teacher-tab-btn" id="unread-teacher-tab-btn" onclick="filterTab(this,'unread')"
+                        type="button">Unread (<!-- backend -->)</button>
+                </div>
+                <div class="teacher-filter-actions">
+                    <button class="teacher-clear-all-btn" onclick="clearAll()" type="button">Clear All</button>
+                    <button class="teacher-mark-all-btn" onclick="markAllRead()" type="button">Mark All as Read</button>
+                </div>
+            </div>
+            <!-- NOTIFICATION LIST — backend: inject .teacher-notif-item cards here -->
+            <div class="teacher-notif-list" id="teacher-notifList">
+                <!-- ══════════════════════════════════════════
+                 EMPTY STATE — shown when no notifications
+                 backend: remove this when items are present
+            ══════════════════════════════════════════ -->
+                <div class="teacher-empty-state" id="teacher-emptyState">
+                    <div class="teacher-empty-icon">
+                        <i class="fa-regular fa-bell"></i>
+                    </div>
+                    <div class="teacher-empty-title">No notifications</div>
+                    <div class="teacher-empty-desc">Your tray is empty.</div>
+                </div>
+            </div><!-- /notifList -->
+            <!-- FOOTER COUNT — backend: update count -->
+            <div class="teacher-notif-footer" id="teacher-notif-footer">
+                <!-- backend: e.g. Showing 0 of 0 notifications --></div>
+        </main>
+    </div><!-- /teacher-app-wrapper -->
+    <script>
+        /* ── Tab filter (UI only) ── */
+        function filterTab(btn, type) {
+            document.querySelectorAll('.teacher-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const items = [...document.querySelectorAll('.teacher-notif-item')];
+            items.forEach(el => {
+                if (type === 'unread') {
+                    el.style.display = el.dataset.read === 'false' ? '' : 'none';
+                } else {
+                    el.style.display = '';
+                }
+            });
+        }
+
+        /* ── Mark single read (UI only) ── */
+        function markRead(id) {
+            const item = document.querySelector(`.teacher-notif-item[data-id="${id}"]`);
+            if (!item || item.dataset.read === 'true') return;
+            item.dataset.read = 'true';
+            item.classList.add('read');
+            const btn = item.querySelector('.teacher-mark-read-btn');
+            if (btn) { btn.textContent = 'Read'; btn.disabled = true; }
+        }
+
+        /* ── Dismiss single (UI only) ── */
+        function dismiss(id) {
+            const item = document.querySelector(`.teacher-notif-item[data-id="${id}"]`);
+            if (!item) return;
+            item.style.transition = 'opacity 0.22s';
+            item.style.opacity = '0';
+            setTimeout(() => { item.style.display = 'none'; }, 230);
+        }
+
+        /* ── Mark all read (UI only) ── */
+        function markAllRead() {
+            document.querySelectorAll('.teacher-notif-item').forEach(el => {
+                el.dataset.read = 'true';
+                el.classList.add('read');
+                const btn = el.querySelector('.teacher-mark-read-btn');
+                if (btn) { btn.textContent = 'Read'; btn.disabled = true; }
+            });
+        }
+
+        /* ── Clear all (UI only) ── */
+        function clearAll() {
+            document.querySelectorAll('.teacher-notif-item').forEach(el => { el.style.display = 'none'; });
+        }
+    </script>
+</body>
+
+</html>

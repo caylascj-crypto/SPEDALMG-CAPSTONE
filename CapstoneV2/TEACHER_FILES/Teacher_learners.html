@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>My Learners – SPED ALM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="../TEACHER.CSS/Teacher_learners.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="teacher-app-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="teacher-sidebar">
+            <div class="teacher-sidebar-logo">
+                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../TEACHER_ASSETS/logo.png" />
+                <div>
+                    <span class="teacher-sidebar-title">SPED ALM</span>
+                    <span class="teacher-sidebar-sub">Teacher Portal</span>
+                </div>
+            </div>
+            <nav class="teacher-sidebar-nav">
+                <a class="teacher-nav-item" href="Teacher_dashboard.html">
+                    <i class="fa-solid fa-table-cells-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_IEP.html">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    <span>IEP Materials</span>
+                </a>
+                <a class="teacher-nav-item active" href="Teacher_learners.html">
+                    <i class="fa-solid fa-users"></i>
+                    <span>My Learners</span>
+                    <i class="fa-solid fa-chevron-right teacher-nav-arrow"></i>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_report.html">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Reports</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_settings.html">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="teacher-sidebar-footer">
+                <div class="teacher-profile">
+                    <div class="teacher-avatar">MT</div>
+                    <div>
+                        <span class="teacher-name">Ma. Teresa Cruz</span>
+                        <span class="teacher-role">SPED Teacher</span>
+                    </div>
+                </div>
+                <a class="teacher-signout-btn" href="../login_screen.html#">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
+        <!-- MAIN CONTENT -->
+        <main class="teacher-main-content">
+            <header class="teacher-topbar">
+                <div>
+                    <h1 class="teacher-page-title">My Learners</h1>
+                    <p class="teacher-page-sub">View and manage your assigned students</p>
+                </div>
+                <a class="teacher-notif-btn" href="Teacher_notif.html">
+                    <i class="fa-regular fa-bell"></i>
+                    <span class="teacher-notif-badge"></span>
+                </a>
+            </header>
+            <hr class="teacher-divider" />
+            <!-- STAT CARDS -->
+            <div class="teacher-stats-container">
+                <div class="teacher-stat-card teacher-stat-orange">
+                    <span class="teacher-stat-num" id="total-students">0</span>
+                    <span class="teacher-stat-label">Students</span>
+                </div>
+                <div class="teacher-stat-card teacher-stat-pink">
+                    <span class="teacher-stat-num" id="active-learners">0</span>
+                    <span class="teacher-stat-label">Active Learners</span>
+                </div>
+                <div class="teacher-stat-card teacher-stat-green">
+                    <span class="teacher-stat-title">Non Graded</span>
+                    <span class="teacher-stat-name" id="teacher-name">Loading...</span>
+                </div>
+            </div>
+            <!-- TOOLBAR -->
+            <div class="teacher-toolbar">
+                <div class="teacher-status-dropdown">
+                    <select class="teacher-status-select" id="teacher-statusFilter" name="teacher_statusfilter">
+                        <option value="">Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down teacher-sel-chevron"></i>
+                </div>
+                <div class="teacher-search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="teacher-searchInput" name="teacher_searchinput" placeholder="Search student or parent..."
+                        type="text" />
+                </div>
+                <button class="btn-search" onclick="filterTable()" type="button">Search</button>
+                <button class="btn-add" onclick="openModal()" type="submit">+ Add Student</button>
+            </div>
+            <!-- TABLE -->
+            <div class="teacher-table-container">
+                <table id="teacher-learnersTable">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Parent Name</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Students will be loaded here by JavaScript -->
+                    </tbody>
+                </table>
+                <div class="teacher-pagination">
+                    <button class="teacher-pg-text" type="button">« Prev</button>
+                    <button class="teacher-current" type="button">1</button>
+                    <button type="button">2</button>
+                    <button class="teacher-pg-text" type="button">Next »</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- ADD STUDENT MODAL -->
+    <div class="teacher-modal-overlay hidden" id="teacher-addModal">
+        <div class="teacher-modal">
+            <div class="teacher-modal-header">
+                <h2 class="teacher-modal-title">Add New Student</h2>
+                <p class="teacher-modal-sub">Enroll a learner to your class</p>
+            </div>
+            <button class="teacher-modal-close" onclick="closeModal()" type="button">×</button>
+            <form id="addStudentForm">
+                <div class="teacher-form-row">
+                    <div class="teacher-form-group">
+                        <label>First Name <span>*</span></label>
+                        <input name="first_name" placeholder="e.g. Nina" type="text" required />
+                    </div>
+                    <div class="teacher-form-group">
+                        <label>Last Name <span>*</span></label>
+                        <input name="last_name" placeholder="e.g. De Leon" type="text" required />
+                    </div>
+                </div>
+                <div class="teacher-form-row">
+                    <div class="teacher-form-group">
+                        <label>Disability/Condition</label>
+                        <select name="disability_type">
+                            <option value="">None</option>
+                            <option value="ASD">ASD</option>
+                            <option value="ID">ID</option>
+                            <option value="ADHD">ADHD</option>
+                            <option value="Down Syndrome">Down Syndrome</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="teacher-form-group">
+                        <label>Age</label>
+                        <input name="age" placeholder="e.g. 10" type="number" />
+                    </div>
+                </div>
+                <hr class="teacher-modal-divider" />
+                <p class="teacher-section-label">Parent / Guardian</p>
+                <div class="teacher-form-row">
+                    <div class="teacher-form-group">
+                        <label>Parent Name</label>
+                        <input name="parent_name" placeholder="e.g. Maria De Leon" type="text" />
+                    </div>
+                    <div class="teacher-form-group">
+                        <label>Contact Number</label>
+                        <input name="parent_phone" placeholder="e.g. 09XX XXX XXXX" type="text" />
+                    </div>
+                </div>
+                <div class="teacher-form-row">
+                    <div class="teacher-form-group">
+                        <label>Email Address</label>
+                        <input name="parent_email" placeholder="e.g. maria@email.com" type="email" />
+                    </div>
+                </div>
+                <div class="teacher-modal-actions">
+                    <button class="btn-cancel" onclick="closeModal()" type="button">Cancel</button>
+                    <button class="btn-enroll" type="submit">Enroll Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        let allStudents = [];
+
+        // Load learners on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLearners();
+            loadStats();
+        });
+
+        // Load stats from database
+        function loadStats() {
+            fetch('TEACHER_BACKEND/teacher_stats.php')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('total-students').textContent = data.total_students;
+                    document.getElementById('active-learners').textContent = data.active_students;
+                    document.getElementById('teacher-name').textContent = sessionStorage.getItem('teacher_name') || 'Teacher';
+                })
+                .catch(error => console.error('Error loading stats:', error));
+        }
+
+        // Load learners from database
+        function loadLearners() {
+            fetch('TEACHER_BACKEND/teacher_list_learners.php')
+                .then(response => response.json())
+                .then(data => {
+                    allStudents = data;
+                    renderTable(data);
+                })
+                .catch(error => console.error('Error loading learners:', error));
+        }
+
+        // Render learners table
+        function renderTable(students) {
+            const tbody = document.querySelector('#teacher-learnersTable tbody');
+            tbody.innerHTML = '';
+
+            if (students.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">No students found</td></tr>';
+                return;
+            }
+
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                const disabilityText = student.disability ? ` (${student.disability})` : '';
+                const statusBadgeClass = student.status === 'active' ? 'teacher-badge-active' : 'teacher-badge-inactive';
+                const statusText = student.status === 'active' ? 'Active' : 'Inactive';
+
+                row.innerHTML = `
+                    <td>${student.name}${disabilityText}</td>
+                    <td>${student.parent_name || 'N/A'}</td>
+                    <td><span class="${statusBadgeClass}">${statusText}</span></td>
+                    <td><button class="btn-view" onclick="viewProgress(${student.id})" type="button">View Progress</button></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function openModal() {
+            document.getElementById('teacher-addModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('teacher-addModal').classList.add('hidden');
+            document.getElementById('addStudentForm').reset();
+        }
+
+        function viewProgress(studentId) {
+            sessionStorage.setItem('selected_student_id', studentId);
+            window.location.href = 'Teacher_mylearners.html?student_id=' + studentId;
+        }
+
+        function filterTable() {
+            const query = document.getElementById('teacher-searchInput').value.toLowerCase();
+            const status = document.getElementById('teacher-statusFilter').value;
+
+            let filtered = allStudents.filter(student => {
+                const matchesQuery = student.name.toLowerCase().includes(query) || 
+                                   (student.parent_name && student.parent_name.toLowerCase().includes(query));
+                const matchesStatus = !status || student.status === status;
+                return matchesQuery && matchesStatus;
+            });
+
+            renderTable(filtered);
+        }
+
+        // Add student form submission
+        document.getElementById('addStudentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const firstName = formData.get('first_name');
+            const lastName = formData.get('last_name');
+            
+            formData.append('student_name', firstName + ' ' + lastName);
+            formData.delete('first_name');
+            formData.delete('last_name');
+
+            fetch('TEACHER_BACKEND/teacher_add_learner.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Student added successfully!');
+                    closeModal();
+                    loadLearners();
+                    loadStats();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to add student');
+            });
+        });
+
+        // Event listeners
+        document.getElementById('teacher-statusFilter').addEventListener('change', filterTable);
+        document.getElementById('teacher-searchInput').addEventListener('keyup', filterTable);
+        document.getElementById('teacher-addModal').addEventListener('click', function (e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>SPED ALM - Notifications</title>
+  <link href="ADMIN_CSS/animations.css" rel="stylesheet" />
+  <link href="ADMIN_CSS/Admin_Notif.css" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap"
+    rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-logo">
+      <img alt="SPED ALM Logo" class="admin-sidebar-logo-img" src="../ADMIN_ASSETS/logo.png" />
+      <div class="admin-sidebar-logo-text">
+        <span class="admin-sidebar-title">SPED ALM</span>
+        <span class="admin-sidebar-sub">Admin Portal</span>
+      </div>
+    </div>
+    <nav class="admin-sidebar-nav">
+      <a class="admin-nav-item" href="Admin_dashboard.html">
+        <i class="fa-solid fa-table-cells-large"></i>
+        <span>Dashboard</span>
+      </a>
+      <a class="admin-nav-item" href="Admin_activity_library.html">
+        <i class="fa-solid fa-book-bookmark"></i>
+        <span>Activity Library</span>
+      </a>
+      <a class="admin-nav-item" href="Admin_manage_user.html">
+        <i class="fa-solid fa-users-gear"></i>
+        <span>Manage Users</span>
+      </a>
+      <a class="admin-nav-item" href="Admin_setting.html">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </a>
+    </nav>
+    <div class="admin-sidebar-footer">
+      <div class="admin-sidebar-user">
+        <div class="admin-user-avatar">PS</div>
+        <div class="admin-user-info">
+          <span class="admin-user-name">Admin</span>
+          <span class="admin-user-role">School Administrat...</span>
+        </div>
+      </div>
+      <a class="admin-signout-btn" href="../login_screen.html#">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Sign Out</span>
+      </a>
+    </div>
+  </aside>
+  <!-- MAIN -->
+  <main class="admin-main page-enter">
+    <!-- TOPBAR -->
+    <header class="admin-topbar">
+      <div class="admin-topbar-left">
+        <h1 class="admin-page-title">Notifications</h1>
+        <p class="admin-page-sub">0 unread notifications</p>
+      </div>
+      <div class="admin-topbar-actions">
+        <button class="admin-topbar-btn" type="button">Mark all read</button>
+        <button class="admin-topbar-btn" type="button">Clear all</button>
+      </div>
+    </header>
+    <!-- NOTIF BANNER -->
+    <div class="admin-notif-banner">
+      <div class="admin-notif-banner-left">
+        <div class="admin-notif-bell-icon">🔔</div>
+        <div>
+          <p class="admin-notif-banner-title">You have <span class="admin-notif-count">0 unread notifications</span></p>
+          <p class="admin-notif-banner-sub">No new notifications at the moment.</p>
+        </div>
+      </div>
+      <button class="admin-mark-read-btn" type="button">Mark all as read</button>
+    </div>
+    <!-- FILTER TABS -->
+    <div class="admin-notif-tabs">
+      <button class="admin-notif-tab active" type="button">All</button>
+      <button class="admin-notif-tab" type="button">Unread (0)</button>
+    </div>
+    <!-- EMPTY STATE -->
+    <div class="admin-notif-empty">
+      <div class="admin-notif-empty-icon">🔔</div>
+      <p class="admin-notif-empty-title">No notifications yet</p>
+      <p class="admin-notif-empty-desc">Notifications from activities, users, and system updates will appear here once
+        available.</p>
+    </div>
+  </main>
+  <script>
+    var notificationsList = [];
+
+    function markAllRead() {
+      fetch('ADMIN_BACKEND/admin_mark_notifications_read.php', {
+        method: 'POST'
+      })
+        .then(function(response) { return response.json(); })
+        .then(function(result) {
+          if (result.success) {
+            notificationsList = notificationsList.map(function(n) {
+              n.read = true;
+              return n;
+            });
+            updateNotificationUI();
+          }
+        })
+        .catch(function(error) {
+          console.log('Error marking notifications as read:', error);
+        });
+    }
+
+    function clearAll() {
+      if (!confirm('Are you sure you want to clear all notifications? This cannot be undone.')) {
+        return;
+      }
+
+      fetch('ADMIN_BACKEND/admin_clear_notifications.php', {
+        method: 'POST'
+      })
+        .then(function(response) { return response.json(); })
+        .then(function(result) {
+          if (result.success) {
+            notificationsList = [];
+            updateNotificationUI();
+          }
+        })
+        .catch(function(error) {
+          console.log('Error clearing notifications:', error);
+        });
+    }
+
+    function loadNotifications() {
+      fetch('ADMIN_BACKEND/admin_list_notifications.php')
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          notificationsList = data;
+          updateNotificationUI();
+        })
+        .catch(function(error) {
+          console.log('Error loading notifications:', error);
+          notificationsList = [];
+          updateNotificationUI();
+        });
+    }
+
+    function renderNotificationsList(notificationsToRender) {
+      var container = document.querySelector('.admin-notif-empty');
+      if (!container) {
+        console.log('No notification container found');
+        return;
+      }
+
+      if (!notificationsToRender || notificationsToRender.length === 0) {
+        container.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'none';
+      
+      // Create or update notifications table
+      var notifList = document.getElementById('admin-notif-list');
+      if (!notifList) {
+        notifList = document.createElement('div');
+        notifList.id = 'admin-notif-list';
+        notifList.style.cssText = 'display: flex; flex-direction: column; gap: 0;';
+        container.parentNode.insertBefore(notifList, container);
+      }
+
+      notifList.innerHTML = notificationsToRender.map(function(notif) {
+        var readClass = notif.read ? 'admin-notif-item--read' : 'admin-notif-item--unread';
+        var typeIcon = getNotificationIcon(notif.type);
+        var timeAgo = getTimeAgo(notif.timestamp);
+        
+        return '<div class="admin-notif-item ' + readClass + '" style="padding: 12px 16px; border-bottom: 1px solid #e5e7eb; cursor: pointer; background: ' + (notif.read ? '#ffffff' : '#f9fafb') + ';">'
+          + '<div style="display: flex; gap: 12px; align-items: flex-start;">'
+          + '<div style="font-size: 20px; flex-shrink: 0;">' + typeIcon + '</div>'
+          + '<div style="flex: 1; min-width: 0;">'
+          + '<div style="display: flex; justify-content: space-between; align-items: start; gap: 8px;">'
+          + '<h3 style="margin: 0; font-size: 14px; font-weight: 600; color: #1f2937;">' + escapeHtml(notif.title) + '</h3>'
+          + '<span style="font-size: 12px; color: #9ca3af; flex-shrink: 0;">' + timeAgo + '</span>'
+          + '</div>'
+          + (notif.message ? '<p style="margin: 4px 0 0 0; font-size: 13px; color: #6b7280; line-height: 1.4;">' + escapeHtml(notif.message) + '</p>' : '')
+          + '</div>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+    }
+
+    function getNotificationIcon(type) {
+      var icons = {
+        'account': '👤',
+        'activity': '📖',
+        'system': '⚙️',
+        'warning': '⚠️',
+        'success': '✅'
+      };
+      return icons[type] || '🔔';
+    }
+
+    function getTimeAgo(timestamp) {
+      if (!timestamp) return '';
+      var date = new Date(timestamp);
+      var now = new Date();
+      var seconds = Math.floor((now - date) / 1000);
+      
+      if (seconds < 60) return 'now';
+      var minutes = Math.floor(seconds / 60);
+      if (minutes < 60) return minutes + 'm ago';
+      var hours = Math.floor(minutes / 60);
+      if (hours < 24) return hours + 'h ago';
+      var days = Math.floor(hours / 24);
+      return days + 'd ago';
+    }
+
+    function escapeHtml(text) {
+      var map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+    }
+
+    function updateNotificationUI() {
+      var unreadCount = notificationsList.filter(function(n) { return !n.read; }).length;
+      var totalCount = notificationsList.length;
+      
+      // Update banner text
+      var pageSubEl = document.querySelector('.admin-page-sub');
+      if (pageSubEl) {
+        pageSubEl.textContent = unreadCount + ' unread notification' + (unreadCount !== 1 ? 's' : '');
+      }
+      
+      var notifCountEl = document.querySelector('.admin-notif-count');
+      if (notifCountEl) {
+        notifCountEl.textContent = unreadCount + ' unread notification' + (unreadCount !== 1 ? 's' : '');
+      }
+      
+      // Update banner sub text
+      var bannerSubEl = document.querySelector('.admin-notif-banner-sub');
+      if (bannerSubEl) {
+        if (unreadCount === 0) {
+          bannerSubEl.textContent = 'All caught up! No new notifications.';
+        } else {
+          bannerSubEl.textContent = 'You have ' + unreadCount + ' new notification' + (unreadCount !== 1 ? 's' : '');
+        }
+      }
+      
+      // Update unread tab count
+      var tabs = document.querySelectorAll('.admin-notif-tab');
+      if (tabs && tabs[1]) {
+        tabs[1].textContent = 'Unread (' + unreadCount + ')';
+      }
+      
+      // Render notifications based on current tab
+      var activeTab = document.querySelector('.admin-notif-tab.active');
+      if (activeTab && activeTab.textContent.includes('Unread')) {
+        var unreadNotifs = notificationsList.filter(function(n) { return !n.read; });
+        renderNotificationsList(unreadNotifs);
+      } else {
+        renderNotificationsList(notificationsList);
+      }
+    }
+
+    var currentFilterType = 'all';
+
+    function filterNotifications(type) {
+      currentFilterType = type;
+      var tabs = document.querySelectorAll('.admin-notif-tab');
+      tabs.forEach(function(tab) { tab.classList.remove('active'); });
+      
+      if (type === 'all') {
+        tabs[0].classList.add('active');
+        renderNotificationsList(notificationsList);
+      } else if (type === 'unread') {
+        tabs[1].classList.add('active');
+        var unreadOnly = notificationsList.filter(function(n) { return !n.read; });
+        renderNotificationsList(unreadOnly);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      // Add click handlers for action buttons in topbar
+      var topbarButtons = document.querySelectorAll('.admin-topbar-btn');
+      topbarButtons.forEach(function(btn, index) {
+        if (index === 0 || btn.textContent.includes('Mark')) {
+          btn.addEventListener('click', markAllRead);
+        } else if (index === 1 || btn.textContent.includes('Clear')) {
+          btn.addEventListener('click', clearAll);
+        }
+      });
+
+      // Add click handler for banner button
+      var bannerBtn = document.querySelector('.admin-mark-read-btn');
+      if (bannerBtn) {
+        bannerBtn.addEventListener('click', markAllRead);
+      }
+
+      // Add click handlers for tabs
+      var tabs = document.querySelectorAll('.admin-notif-tab');
+      tabs.forEach(function(tab, index) {
+        tab.addEventListener('click', function() {
+          tabs.forEach(function(t) { t.classList.remove('active'); });
+          tab.classList.add('active');
+          filterNotifications(index === 0 ? 'all' : 'unread');
+        });
+      });
+
+      /* Ripple effect on buttons */
+      document.querySelectorAll(".admin-btn-signin, .admin-modal-got-it, .admin-signout-btn, .admin-topbar-btn, .admin-mark-read-btn").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          var rect = this.getBoundingClientRect();
+          var size = Math.max(rect.width, rect.height);
+          var span = document.createElement("span");
+          span.className = "ripple-span";
+          span.style.width = span.style.height = size + "px";
+          span.style.left = (e.clientX - rect.left - size / 2) + "px";
+          span.style.top = (e.clientY - rect.top - size / 2) + "px";
+          this.style.position = "relative";
+          this.style.overflow = "hidden";
+          this.appendChild(span);
+          setTimeout(function () { span.remove(); }, 520);
+          if (this.classList.contains('admin-signout-btn')) {
+            window.location.href = this.getAttribute('href') || 'login_screen.html';
+          }
+        });
+      });
+
+      // Load notifications on page load
+      loadNotifications();
+    });
+  </script>
+</body>
+
+</html>

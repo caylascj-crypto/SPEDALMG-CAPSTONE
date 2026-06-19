@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Learner Progress – SPED ALM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="../TEACHER.CSS/Teacher_mylearners.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="teacher-app-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="teacher-sidebar">
+            <div class="teacher-sidebar-logo">
+                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../TEACHER_ASSETS/logo.png" />
+                <div>
+                    <span class="teacher-sidebar-title">SPED ALM</span>
+                    <span class="teacher-sidebar-sub">Teacher Portal</span>
+                </div>
+            </div>
+            <nav class="teacher-sidebar-nav">
+                <a class="teacher-nav-item" href="Teacher_dashboard.html">
+                    <i class="fa-solid fa-table-cells-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_IEP.html">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    <span>IEP Materials</span>
+                </a>
+                <a class="teacher-nav-item active" href="Teacher_learners.html">
+                    <i class="fa-solid fa-users"></i>
+                    <span>My Learners</span>
+                    <i class="fa-solid fa-chevron-right teacher-nav-arrow"></i>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_report.html">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Reports</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_settings.html">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="teacher-sidebar-footer">
+                <div class="teacher-profile">
+                    <div class="teacher-avatar">MT</div>
+                    <div>
+                        <span class="teacher-name">Ma. Teresa Cruz</span>
+                        <span class="teacher-role">SPED Teacher</span>
+                    </div>
+                </div>
+                <a class="teacher-signout-btn" href="../login_screen.html#">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
+        <!-- MAIN CONTENT -->
+        <div class="teacher-main-content">
+            <!-- STICKY TOPBAR -->
+            <header class="teacher-progress-topbar">
+                <div class="teacher-topbar-left">
+                    <a class="btn-back-circle" href="Teacher_learners.html" title="Back to My Learners">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </a>
+                    <div class="teacher-topbar-title-group">
+                        <span class="teacher-topbar-back-label">Back to My Learners</span>
+                        <span class="teacher-topbar-title">Learner Progress</span>
+                    </div>
+                </div>
+                <div class="teacher-topbar-right">
+                    <button class="btn-pdf" type="button">
+                        <i class="fa-solid fa-download"></i>
+                        Generate PDF
+                    </button>
+                    <button class="teacher-notif-btn" type="button">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="teacher-notif-badge">3</span>
+                    </button>
+                </div>
+            </header>
+            <!-- SCROLLABLE BODY -->
+            <div class="teacher-progress-body">
+                <!-- RING STAT CARDS — backend: inject values -->
+                <div class="teacher-ring-stats">
+                    <div class="teacher-ring-card">
+                        <div class="teacher-ring-wrap">
+                            <svg height="90" viewbox="0 0 90 90" width="90">
+                                <circle class="teacher-ring-track" cx="45" cy="45" r="38"></circle>
+                                <circle class="teacher-ring-fill-blue" cx="45" cy="45" r="38" stroke-dasharray="238.76"
+                                    stroke-dashoffset="238.76"></circle>
+                            </svg>
+                            <div class="teacher-ring-label">—</div>
+                        </div>
+                        <div class="teacher-ring-info">
+                            <div class="teacher-ring-title">Overall Progress</div>
+                            <div class="teacher-ring-sub">vs last period</div>
+                        </div>
+                    </div>
+                    <div class="teacher-ring-card">
+                        <div class="teacher-ring-wrap">
+                            <svg height="90" viewbox="0 0 90 90" width="90">
+                                <circle class="teacher-ring-track" cx="45" cy="45" r="38"></circle>
+                                <circle class="teacher-ring-fill-pink" cx="45" cy="45" r="38" stroke-dasharray="238.76"
+                                    stroke-dashoffset="238.76"></circle>
+                            </svg>
+                            <div class="teacher-ring-label">—</div>
+                        </div>
+                        <div class="teacher-ring-info">
+                            <div class="teacher-ring-title">Average Score</div>
+                            <div class="teacher-ring-sub">across activities</div>
+                        </div>
+                    </div>
+                    <div class="teacher-ring-card">
+                        <div class="teacher-ring-wrap">
+                            <svg height="90" viewbox="0 0 90 90" width="90">
+                                <circle class="teacher-ring-track" cx="45" cy="45" r="38"></circle>
+                                <circle class="teacher-ring-fill-green" cx="45" cy="45" r="38" stroke-dasharray="238.76"
+                                    stroke-dashoffset="238.76"></circle>
+                            </svg>
+                            <div class="teacher-ring-label">—</div>
+                        </div>
+                        <div class="teacher-ring-info">
+                            <div class="teacher-ring-title">Activities Completed</div>
+                            <div class="teacher-ring-sub">this grading</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- TWO-COLUMN GRID -->
+                <div class="teacher-progress-grid">
+                    <!-- LEFT -->
+                    <div class="teacher-left-col">
+                        <!-- BAR CHART — backend: inject bar heights -->
+                        <div class="teacher-chart-card">
+                            <div class="teacher-chart-header">
+                                <span class="teacher-chart-title">Activity Scores Over Time</span>
+                                <span class="teacher-chart-period">Last 6 weeks</span>
+                            </div>
+                            <div style="display:flex; gap:10px;">
+                                <div
+                                    style="display:flex; flex-direction:column; justify-content:space-between; padding-bottom:28px; padding-right:6px;">
+                                    <span class="teacher-y-label">100</span>
+                                    <span class="teacher-y-label">75</span>
+                                    <span class="teacher-y-label">50</span>
+                                    <span class="teacher-y-label">25</span>
+                                    <span class="teacher-y-label">0</span>
+                                </div>
+                                <div style="flex:1;">
+                                    <div class="teacher-bar-chart">
+                                        <div class="teacher-bar-col">
+                                            <div class="teacher-bar" style="height:0%;"></div><span
+                                                class="teacher-bar-label">Wk 1</span>
+                                        </div>
+                                        <div class="teacher-bar-col">
+                                            <div class="teacher-bar" style="height:0%;"></div><span
+                                                class="teacher-bar-label">Wk 2</span>
+                                        </div>
+                                        <div class="teacher-bar-col">
+                                            <div class="teacher-bar" style="height:0%;"></div><span
+                                                class="teacher-bar-label">Wk 3</span>
+                                        </div>
+                                        <div class="teacher-bar-col">
+                                            <div class="teacher-bar" style="height:0%;"></div><span
+                                                class="teacher-bar-label">Wk 4</span>
+                                        </div>
+                                        <div class="teacher-bar-col">
+                                            <div class="teacher-bar" style="height:0%;"></div><span
+                                                class="teacher-bar-label">Wk 5</span>
+                                        </div>
+                                        <div class="teacher-bar-col">
+                                            <div class="teacher-bar" style="height:0%;"></div><span
+                                                class="teacher-bar-label">Wk 6</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ACTIVITY HISTORY — backend: inject rows -->
+                        <div class="teacher-history-card">
+                            <div class="teacher-history-title">Activity History</div>
+                            <div class="teacher-history-row">
+                                <span class="teacher-history-date">— —, ——</span>
+                                <span class="teacher-history-activity">—</span>
+                                <span class="teacher-history-score" style="color:#CBD5E1;">—</span>
+                                <span class="teacher-history-badge badge-notstarted">—</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- RIGHT -->
+                    <div class="teacher-right-col">
+                        <!-- SKILLS BREAKDOWN — backend: inject values -->
+                        <div class="teacher-skills-card">
+                            <div class="teacher-skills-title">Skills Breakdown</div>
+                            <div class="teacher-skill-row">
+                                <div class="teacher-skill-meta"><span class="teacher-skill-name">Cognitive</span><span
+                                        class="teacher-skill-pct c-blue">—</span></div>
+                                <div class="teacher-skill-bar-bg">
+                                    <div class="teacher-skill-bar-fill f-blue" style="width:0%;"></div>
+                                </div>
+                            </div>
+                            <div class="teacher-skill-row">
+                                <div class="teacher-skill-meta"><span
+                                        class="teacher-skill-name">Communication</span><span
+                                        class="teacher-skill-pct c-pink">—</span></div>
+                                <div class="teacher-skill-bar-bg">
+                                    <div class="teacher-skill-bar-fill f-pink" style="width:0%;"></div>
+                                </div>
+                            </div>
+                            <div class="teacher-skill-row">
+                                <div class="teacher-skill-meta"><span class="teacher-skill-name">Fine Motor</span><span
+                                        class="teacher-skill-pct c-green">—</span></div>
+                                <div class="teacher-skill-bar-bg">
+                                    <div class="teacher-skill-bar-fill f-green" style="width:0%;"></div>
+                                </div>
+                            </div>
+                            <div class="teacher-skill-row">
+                                <div class="teacher-skill-meta"><span class="teacher-skill-name">Social
+                                        Skills</span><span class="teacher-skill-pct c-orange">—</span></div>
+                                <div class="teacher-skill-bar-bg">
+                                    <div class="teacher-skill-bar-fill f-orange" style="width:0%;"></div>
+                                </div>
+                            </div>
+                            <div class="teacher-skill-row">
+                                <div class="teacher-skill-meta"><span class="teacher-skill-name">Self Help</span><span
+                                        class="teacher-skill-pct c-purple">—</span></div>
+                                <div class="teacher-skill-bar-bg">
+                                    <div class="teacher-skill-bar-fill f-purple" style="width:0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- TEACHER NOTES — backend: inject notes -->
+                        <div class="teacher-notes-card">
+                            <div class="teacher-notes-title">Teacher's Notes /<br />Recommendations</div>
+                            <div class="teacher-notes-empty">No notes yet. Click + Add Note to add a recommendation for
+                                this student.</div>
+                            <button class="btn-add-note" type="button">+ Add Note</button>
+                        </div>
+                    </div>
+                </div><!-- /teacher-progress-grid -->
+            </div><!-- /teacher-progress-body -->
+        </div><!-- /teacher-main-content -->
+    </div>
+    <script>
+        let currentStudentId = null;
+
+        // Load learner progress on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const params = new URLSearchParams(window.location.search);
+            currentStudentId = params.get('student_id') || sessionStorage.getItem('selected_student_id');
+            
+            if (currentStudentId) {
+                loadLearnerProgress(currentStudentId);
+            }
+        });
+
+        // Load learner progress from backend
+        function loadLearnerProgress(studentId) {
+            fetch('TEACHER_BACKEND/teacher_progress_stats.php?student_id=' + studentId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateProgressCards(data);
+                        updateActivityChart(data.activity_scores);
+                        renderActivityHistory(data.activities);
+                        updateSkillsBreakdown(data.skills);
+                        renderTeacherNotes(data.notes);
+                    }
+                })
+                .catch(error => console.error('Error loading progress stats:', error));
+        }
+
+        // Update progress ring cards
+        function updateProgressCards(data) {
+            const ringCards = document.querySelectorAll('.teacher-ring-label');
+            ringCards[0].textContent = data.overall_progress + '%';
+            ringCards[1].textContent = data.average_score + '%';
+            ringCards[2].textContent = data.activities_completed;
+        }
+
+        // Update activity chart bars
+        function updateActivityChart(scores) {
+            const bars = document.querySelectorAll('.teacher-bar');
+            const weeks = 6;
+            
+            for (let i = 0; i < weeks; i++) {
+                const score = scores && scores[i] ? scores[i] : 0;
+                bars[i].style.height = score + '%';
+            }
+        }
+
+        // Render activity history
+        function renderActivityHistory(activities) {
+            const container = document.querySelector('.teacher-history-card');
+            
+            if (!activities || activities.length === 0) {
+                return;
+            }
+
+            let historyHTML = '<div class="teacher-history-title">Activity History</div>';
+            activities.forEach(activity => {
+                const date = new Date(activity.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const statusClass = activity.status === 'completed' ? 'badge-completed' : 
+                                  activity.status === 'in-progress' ? 'badge-inprogress' : 'badge-notstarted';
+                
+                historyHTML += `
+                    <div class="teacher-history-row">
+                        <span class="teacher-history-date">${date}</span>
+                        <span class="teacher-history-activity">${activity.name}</span>
+                        <span class="teacher-history-score" style="color: ${activity.score_color || '#CBD5E1'};">${activity.score || '—'}%</span>
+                        <span class="teacher-history-badge ${statusClass}">${activity.status}</span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = historyHTML;
+        }
+
+        // Update skills breakdown
+        function updateSkillsBreakdown(skills) {
+            const skillRows = document.querySelectorAll('.teacher-skill-row');
+            const skillNames = ['Cognitive', 'Communication', 'Fine Motor', 'Social Skills', 'Self Help'];
+            const colorClasses = ['c-blue', 'c-pink', 'c-green', 'c-orange', 'c-purple'];
+            const fillClasses = ['f-blue', 'f-pink', 'f-green', 'f-orange', 'f-purple'];
+            
+            skillRows.forEach((row, index) => {
+                const skillValue = skills && skills[skillNames[index]] ? skills[skillNames[index]] : 0;
+                const percentSpan = row.querySelector('.teacher-skill-pct');
+                const fillBar = row.querySelector('.teacher-skill-bar-fill');
+                
+                percentSpan.textContent = skillValue + '%';
+                fillBar.style.width = skillValue + '%';
+            });
+        }
+
+        // Render teacher notes
+        function renderTeacherNotes(notes) {
+            const notesCard = document.querySelector('.teacher-notes-card');
+            
+            if (!notes || notes.length === 0) {
+                return;
+            }
+            
+            let notesHTML = '<div class="teacher-notes-title">Teacher\'s Notes / Recommendations</div>';
+            notes.forEach(note => {
+                notesHTML += `<p class="teacher-note-item">${note}</p>`;
+            });
+            notesHTML += '<button class="btn-add-note" type="button">+ Add Note</button>';
+            
+            notesCard.innerHTML = notesHTML;
+        }
+
+        // Add note button handler
+        document.querySelector('.btn-add-note')?.addEventListener('click', function() {
+            const note = prompt('Enter teacher note:');
+            if (note) {
+                // This would send to backend to save the note
+                fetch('TEACHER_BACKEND/teacher_save_note.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'student_id=' + currentStudentId + '&note=' + encodeURIComponent(note)
+                })
+                .then(() => loadLearnerProgress(currentStudentId))
+                .catch(error => console.error('Error saving note:', error));
+            }
+        });
+
+        // Generate PDF button
+        document.querySelector('.btn-pdf')?.addEventListener('click', function() {
+            window.print();
+        });
+    </script>
+</body>
+
+</html>

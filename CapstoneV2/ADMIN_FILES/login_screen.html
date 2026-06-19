@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>SPED ALM - Login</title>
+  <link href="../ADMIN_LOGIN_CSS/login_screen.css" rel="stylesheet" />
+  <link href="../ADMIN_LOGIN_CSS/animations.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- LEFT PANEL -->
+  <div class="admin-left-panel">
+    <div class="admin-logo anim-fade-down anim-d1">
+      <div class="admin-logo-icon">
+        <img alt="SPED ALM Logo" class="admin-logo-img" src="../ADMIN_ASSETS/logo.png" />
+      </div>
+      <div class="admin-logo-text">
+        <span class="admin-logo-title">SPED ALM</span>
+        <span class="admin-logo-sub">ALTERNATIVE LEARNING MATERIAL GENERATOR</span>
+      </div>
+    </div>
+
+    <div class="admin-hero-text anim-fade-up anim-d2">
+      <h1>Learning materials<br /><span class="admin-highlight">crafted for every</span><br />learner.</h1>
+      <p class="admin-hero-desc">Generate, manage, and deliver personalized Alternative Learning Materials for students with special educational needs.</p>
+    </div>
+
+    <div class="admin-features anim-fade-up anim-d3">
+      <div class="admin-feature-card anim-fade-up anim-d1">
+        <span class="admin-feature-icon">📖</span>
+        <div>
+          <div class="admin-feature-title">Smart Materials</div>
+          <div class="admin-feature-sub">Custom learning materials</div>
+        </div>
+      </div>
+      <div class="admin-feature-card anim-fade-up anim-d2">
+        <span class="admin-feature-icon">👥</span>
+        <div>
+          <div class="admin-feature-title">Inclusive Design</div>
+          <div class="admin-feature-sub">Every learner counts</div>
+        </div>
+      </div>
+      <div class="admin-feature-card anim-fade-up anim-d3">
+        <span class="admin-feature-icon">⚙️</span>
+        <div>
+          <div class="admin-feature-title">Adaptive Content</div>
+          <div class="admin-feature-sub">Tailored to each need</div>
+        </div>
+      </div>
+      <div class="admin-feature-card anim-fade-up anim-d4">
+        <span class="admin-feature-icon">✦</span>
+        <div>
+          <div class="admin-feature-title">SPED Aligned</div>
+          <div class="admin-feature-sub">DepEd compliant</div>
+        </div>
+      </div>
+    </div>
+
+    <img alt="Children" class="admin-children-img" src="../ADMIN_ASSETS/children.png" />
+
+    <div class="admin-left-bottom">
+      <div class="admin-left-footer">Mamatid Elementary School · SPED Program · Cabuyao, Laguna</div>
+    </div>
+
+    <!-- Decorative circles -->
+    <div class="admin-deco-circle admin-deco-circle-1"></div>
+    <div class="admin-deco-circle admin-deco-circle-2"></div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="admin-right-panel">
+    <form action="ADMIN_BACKEND/login_screen_submit.php" id="login_screen_form_1" method="post" style="display: contents;">
+      <div class="admin-login-box anim-scale-in">
+        <div class="admin-school-header">
+          <img alt="Mamatid Elementary School" class="admin-school-logo" src="../ADMIN_ASSETS/School_logo.png" />
+          <div class="admin-school-info">
+            <span class="admin-school-name">Mamatid Elementary School</span>
+            <span class="admin-school-sub">Sign in to your SPED ALM account</span>
+          </div>
+        </div>
+
+        <div class="admin-form-group">
+          <label for="admin-email">School Email</label>
+          <input id="admin-email" name="admin_email" placeholder="teacher@spedalm.edu.ph" type="email" />
+        </div>
+
+        <div class="admin-form-group">
+          <label for="admin-password">Password</label>
+          <input id="admin-password" name="admin_password" placeholder="••••••••" type="password" />
+        </div>
+
+        <button class="admin-btn-signin" type="submit">Sign In</button>
+
+        <p class="admin-contact-note">
+          Need access? Contact your<br />
+          <a class="admin-coordinator-link" href="#admin-coordinator-modal">School SPED Coordinator</a>
+        </p>
+
+        <!-- Modal -->
+        <div class="admin-modal-overlay" id="admin-coordinator-modal">
+          <div class="admin-modal-box">
+            <a class="admin-modal-close" href="#">×</a>
+            <div class="admin-modal-icon-wrap">
+              <span class="admin-modal-icon">📞</span>
+            </div>
+            <h3 class="admin-modal-title">Contact Your SPED Coordinator</h3>
+            <hr class="admin-modal-divider" />
+            <div class="admin-modal-school-card">
+              <img alt="School Logo" class="admin-modal-school-logo" src="../ADMIN_ASSETS/School_logo.png" />
+              <div>
+                <div class="admin-modal-school-name">Mamatid Elementary School</div>
+                <div class="admin-modal-school-loc">Cabuyao, Laguna</div>
+              </div>
+            </div>
+            <div class="admin-modal-info-list">
+              <div class="admin-modal-info-item">
+                <span class="admin-modal-info-icon">👤</span>
+                <span><strong>Admin:</strong> Juan Dela Cruz</span>
+              </div>
+              <div class="admin-modal-info-item">
+                <span class="admin-modal-info-icon">📧</span>
+                <span><strong>Email:</strong> admin@mamatid.edu.ph</span>
+              </div>
+              <div class="admin-modal-info-item">
+                <span class="admin-modal-info-icon">📞</span>
+                <span><strong>Phone:</strong> +63 912 345 6789</span>
+              </div>
+              <div class="admin-modal-info-item">
+                <span class="admin-modal-info-icon">🕐</span>
+                <span><strong>Office Hours:</strong> Monday–Friday, 7:00 AM – 5:00 PM</span>
+              </div>
+            </div>
+            <div class="admin-modal-note">
+              <span>💡</span>
+              <p>To change your password, please visit or contact your school administrator.</p>
+            </div>
+            <a class="admin-modal-got-it" href="#">Got it</a>
+          </div>
+        </div>
+
+        <hr class="admin-divider" />
+        <p class="admin-footer-note">Republic of the Philippines · Department of Education</p>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      /* Clear previous session data to ensure fresh login */
+      sessionStorage.clear();
+      
+      /* Ripple effect on buttons only */
+      document.querySelectorAll(".admin-btn-signin, .admin-modal-got-it, .admin-signout-btn").forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          var rect = this.getBoundingClientRect();
+          var size = Math.max(rect.width, rect.height);
+          var span = document.createElement("span");
+          span.className = "ripple-span";
+          span.style.width = span.style.height = size + "px";
+          span.style.left = (e.clientX - rect.left - size / 2) + "px";
+          span.style.top = (e.clientY - rect.top - size / 2) + "px";
+          this.style.position = "relative";
+          this.style.overflow = "hidden";
+          this.appendChild(span);
+          setTimeout(function () { span.remove(); }, 520);
+        });
+      });
+
+      /* Handle login form submission */
+      var loginForm = document.getElementById("login_screen_form_1");
+      if (loginForm) {
+        loginForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          
+          var email = document.getElementById("admin-email").value;
+          var password = document.getElementById("admin-password").value;
+          
+          /* Send login request to backend */
+          fetch("ADMIN_BACKEND/login_screen_submit.php", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "admin_email=" + encodeURIComponent(email) + "&admin_password=" + encodeURIComponent(password)
+          })
+          .then(function(response) {
+            return response.text().then(function(text) {
+              return {
+                ok: response.ok,
+                status: response.status,
+                text: text
+              };
+            });
+          })
+          .then(function(result) {
+            console.log("Login response:", result);
+            var data = result.text.trim();
+            console.log("Raw data:", data);
+            console.log("Data length:", data.length);
+
+            try {
+              var jsonData = JSON.parse(data);
+              
+              if (jsonData.status === "success") {
+                /* Clear all old session data */
+                sessionStorage.removeItem('admin_id');
+                sessionStorage.removeItem('teacher_id');
+                sessionStorage.removeItem('teacher_name');
+                
+                /* Store user data in sessionStorage for portal access */
+                sessionStorage.setItem('admin_id', jsonData.admin_id);
+                sessionStorage.setItem('teacher_name', jsonData.admin_name);
+                
+                /* Store teacher_id for teacher accounts (must be set for all teachers) */
+                sessionStorage.setItem('teacher_id', jsonData.teacher_id || '1');
+                
+                /* Redirect based on user role */
+                if (jsonData.role === "teacher") {
+                  window.location.href = "../TEACHER_FILES/Teacher_dashboard.html";
+                } else {
+                  window.location.href = "Admin_dashboard.html";
+                }
+              } else {
+                alert("Login failed: " + (jsonData.message || "Unknown error"));
+              }
+            } catch (e) {
+              alert("Login failed. Invalid server response.\nResponse: " + data.substring(0, 100));
+              console.error("Parse error:", e);
+              console.error("Full response:", data);
+            }
+          })
+          .catch(function(error) {
+            console.error("Error:", error);
+            alert("An error occurred during login. Please try again.");
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

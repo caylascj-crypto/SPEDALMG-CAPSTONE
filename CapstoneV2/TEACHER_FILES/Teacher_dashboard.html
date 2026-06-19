@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Teacher Dashboard – SPED ALM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="../TEACHER.CSS/Teacher_dashboard.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="teacher-app-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="teacher-sidebar">
+            <div class="teacher-sidebar-logo">
+                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../TEACHER_ASSETS/logo.png" />
+                <div class="teacher-sidebar-logo-text">
+                    <span class="teacher-sidebar-title">SPED ALM</span>
+                    <span class="teacher-sidebar-sub">Teacher Portal</span>
+                </div>
+            </div>
+            <nav class="teacher-sidebar-nav">
+                <a class="teacher-nav-item active" href="Teacher_dashboard.html">
+                    <i class="fa-solid fa-table-cells-large"></i>
+                    <span>Dashboard</span>
+                    <i class="fa-solid fa-chevron-right teacher-nav-arrow"></i>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_IEP.html">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    <span>IEP Materials</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_learners.html">
+                    <i class="fa-solid fa-users"></i>
+                    <span>My Learners</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_report.html">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Reports</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_settings.html">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="teacher-sidebar-footer">
+                <div class="teacher-profile">
+                    <div class="teacher-avatar" id="teacher-avatar-letter">T</div>
+                    <div class="teacher-info">
+                        <span class="teacher-name" id="teacher-name-sidebar">Teacher</span>
+                        <span class="teacher-role">SPED Teacher</span>
+                    </div>
+                </div>
+                <a class="teacher-signout-btn" href="../login_screen.html#">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
+        <!-- MAIN CONTENT -->
+        <main class="teacher-main-content">
+            <!-- TOP BAR -->
+            <header class="teacher-topbar">
+                <div>
+                    <h1 class="teacher-greeting" id="teacher-greeting">Good morning, Teacher 👋</h1>
+                    <p class="teacher-greeting-sub" id="teacher-greeting-sub">Loading...</p>
+                </div>
+                <div class="teacher-topbar-right">
+                    <div class="teacher-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input name="search" placeholder="Search..." type="text" />
+                    </div>
+                    <a class="teacher-notif-btn" href="Teacher_notif.html">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="teacher-notif-badge"></span>
+                    </a>
+                </div>
+            </header>
+            <!-- WELCOME BANNER -->
+            <section class="teacher-welcome-banner">
+                <div class="teacher-welcome-left">
+                    <div class="teacher-welcome-avatar">
+                        <img alt="Teacher Avatar" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" />
+                        <span class="teacher-online-dot"></span>
+                    </div>
+                    <div class="teacher-welcome-text">
+                        <h2>Welcome, <span id="dashboard-teacher-name">Teacher</span>!</h2>
+                        <p id="dashboard-current-date">Loading...</p>
+                    </div>
+                </div>
+                <div class="teacher-welcome-stat">
+                    <i class="fa-solid fa-users teacher-stat-icon"></i>
+                    <div>
+                        <span class="teacher-stat-number" id="dashboard-assigned-learners">0</span>
+                        <span class="teacher-stat-label">Assigned Learners</span>
+                    </div>
+                </div>
+            </section>
+            <!-- DASHBOARD GRID -->
+            <div class="teacher-dashboard-grid">
+                <!-- LEFT COLUMN: Learning Activity Plan + Tasks + Recent Activity -->
+                <div class="teacher-left-col">
+                    <!-- LEARNING ACTIVITY PLAN -->
+                    <section class="teacher-plan-section">
+                        <h3 class="teacher-section-title">Learning Activity Plan</h3>
+                        <div class="teacher-plan-grid">
+                            <div class="teacher-plan-card">
+                                <span class="teacher-grading-badge badge-blue">First Grading</span>
+                                <ul class="teacher-plan-items">
+                                    <li>Cognitive Development</li>
+                                    <li>Communication Skills</li>
+                                    <li>Fine Motor Skills</li>
+                                    <li>Attention &amp; Routine</li>
+                                </ul>
+                            </div>
+                            <div class="teacher-plan-card">
+                                <span class="teacher-grading-badge badge-pink">Second Grading</span>
+                                <ul class="teacher-plan-items">
+                                    <li>Social Skills</li>
+                                    <li>Emotional Regulation</li>
+                                    <li>Gross Motor Skills</li>
+                                    <li>Behavior Support</li>
+                                </ul>
+                            </div>
+                            <div class="teacher-plan-card">
+                                <span class="teacher-grading-badge badge-orange">Third Grading</span>
+                                <ul class="teacher-plan-items">
+                                    <li>Life Skills</li>
+                                    <li>Self-Help Skills</li>
+                                    <li>Functional Communication</li>
+                                    <li>Evaluation &amp; Progress Monitoring</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                    <!-- BOTTOM: Tasks + Recent Activity side by side -->
+                    <div class="teacher-bottom-row">
+                        <!-- TODAY'S TASKS -->
+                        <section class="teacher-panel teacher-tasks-panel">
+                            <div class="teacher-panel-header teacher-tasks-header">
+                                <h3>
+                                    <span class="teacher-panel-icon">📋</span>
+                                    Today's Tasks
+                                </h3>
+                                <span class="teacher-task-count-badge" id="teacher-task-count">
+                                    <!-- backend: task count -->
+                                </span>
+                            </div>
+                            <div class="teacher-panel-body" id="teacher-tasks-container">
+                                <!-- backend: tasks list -->
+                            </div>
+                        </section>
+                        <!-- RECENT ACTIVITY -->
+                        <section class="teacher-panel teacher-activity-panel">
+                            <div class="teacher-panel-header teacher-activity-header">
+                                <h3>
+                                    <span class="teacher-panel-icon">⚡</span>
+                                    Recent Activity
+                                </h3>
+                                <a class="teacher-view-all-link" href="#">View All</a>
+                            </div>
+                            <div class="teacher-panel-body" id="teacher-activity-container">
+                                <!-- backend: recent activity list -->
+                            </div>
+                        </section>
+                    </div><!-- /teacher-bottom-row -->
+                </div><!-- /teacher-left-col -->
+                <!-- RIGHT COLUMN: Student Progress -->
+                <aside class="teacher-progress-panel teacher-panel">
+                    <div class="teacher-panel-header teacher-progress-header">
+                        <h3>
+                            <span class="teacher-icon-circle blue">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </span>
+                            Student Progress
+                        </h3>
+                        <a class="teacher-view-all-link" href="#">View All</a>
+                    </div>
+                    <div class="teacher-panel-body" id="teacher-student-progress-container">
+                        <!-- backend: student progress cards -->
+                    </div>
+                    <div class="teacher-progress-footer" id="teacher-progress-footer">
+                        <!-- backend: progress summary -->
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+    <script>
+        // Get current teacher ID
+        function getCurrentTeacherId() {
+            return parseInt(sessionStorage.getItem('teacher_id') || '1');
+        }
+
+        // Load dashboard data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTeacherProfile();
+            loadDashboardStats();
+            updateCurrentDate();
+        });
+
+        // Load teacher profile from database
+        function loadTeacherProfile() {
+            const teacherId = getCurrentTeacherId();
+            console.log("loadTeacherProfile called with teacherId:", teacherId);
+            console.log("sessionStorage values:", {
+                teacher_id: sessionStorage.getItem('teacher_id'),
+                teacher_name: sessionStorage.getItem('teacher_name'),
+                admin_id: sessionStorage.getItem('admin_id')
+            });
+            
+            const formData = new FormData();
+            formData.append('teacher_id', teacherId);
+            
+            fetch('TEACHER_BACKEND/teacher_get_profile.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.teacher) {
+                    const teacher = data.teacher;
+                    
+                    // Store in session storage for use across pages
+                    sessionStorage.setItem('teacher_id', teacher.id);
+                    sessionStorage.setItem('teacher_name', teacher.name);
+                    sessionStorage.setItem('teacher_email', teacher.email);
+                    sessionStorage.setItem('teacher_school', teacher.schoolName);
+                    
+                    // Update sidebar profile
+                    document.getElementById('teacher-avatar-letter').textContent = teacher.avatarLetter;
+                    document.getElementById('teacher-name-sidebar').textContent = teacher.name;
+                    
+                    // Update greeting
+                    const firstName = teacher.firstName || teacher.name.split(' ')[0];
+                    const greeting = `Good morning, ${firstName} 👋`;
+                    document.getElementById('teacher-greeting').textContent = greeting;
+                    
+                    // Update greeting sub
+                    const now = new Date();
+                    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    const dateStr = now.toLocaleDateString('en-US', options);
+                    const subtext = teacher.schoolName ? 
+                        `${dateStr} · ${teacher.schoolName}` : 
+                        dateStr;
+                    document.getElementById('teacher-greeting-sub').textContent = subtext;
+                    
+                    // Update welcome banner with new teacher name
+                    document.getElementById('dashboard-teacher-name').textContent = teacher.name || 'Teacher';
+                }
+            })
+            .catch(error => console.error('Error loading teacher profile:', error));
+        }
+
+        // Update current date
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateStr = now.toLocaleDateString('en-US', options);
+            document.getElementById('dashboard-current-date').textContent = dateStr;
+        }
+
+        // Load dashboard statistics from database
+        function loadDashboardStats() {
+            fetch('TEACHER_BACKEND/teacher_dashboard_stats.php')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('dashboard-assigned-learners').textContent = data.assigned_learners;
+                    
+                    // Display recent activities
+                    renderRecentActivities(data.recent_activities);
+                    
+                    // Display today's tasks (if any)
+                    renderTodaysTasks(data.today_tasks);
+                    
+                    // Display student progress
+                    renderStudentProgress(data.assigned_learners, data.active_learners);
+                })
+                .catch(error => console.error('Error loading dashboard stats:', error));
+        }
+
+        // Render recent activities
+        function renderRecentActivities(activities) {
+            const container = document.getElementById('teacher-activity-container');
+            if (activities.length === 0) {
+                container.innerHTML = '<p style="color: #999;">No recent activities</p>';
+                return;
+            }
+            
+            let html = '';
+            activities.forEach((activity, index) => {
+                const date = new Date(activity.date);
+                const timeAgo = getTimeAgo(date);
+                html += `
+                    <div class="teacher-activity-item">
+                        <span class="teacher-activity-dot"></span>
+                        <div class="teacher-activity-text">
+                            <p class="teacher-activity-title">${activity.title}</p>
+                            <p class="teacher-activity-time">${timeAgo}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Render today's tasks
+        function renderTodaysTasks(tasks) {
+            const container = document.getElementById('teacher-tasks-container');
+            const badge = document.getElementById('teacher-task-count');
+            
+            if (tasks.length === 0) {
+                badge.textContent = '0';
+                container.innerHTML = '<p style="color: #999; padding: 10px;">No tasks for today</p>';
+                return;
+            }
+
+            badge.textContent = tasks.length;
+            let html = '';
+            tasks.forEach(task => {
+                html += `
+                    <div class="teacher-task-item">
+                        <input type="checkbox" class="teacher-task-checkbox" />
+                        <span class="teacher-task-text">${task.title}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Render student progress summary
+        function renderStudentProgress(total, active) {
+            const container = document.getElementById('teacher-student-progress-container');
+            const progressPercent = total > 0 ? Math.round((active / total) * 100) : 0;
+            
+            let html = `
+                <div class="teacher-progress-item">
+                    <div class="teacher-progress-bar">
+                        <div class="teacher-progress-fill" style="width: ${progressPercent}%"></div>
+                    </div>
+                    <div class="teacher-progress-info">
+                        <span class="teacher-progress-label">Active Learners</span>
+                        <span class="teacher-progress-value">${active}/${total}</span>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        // Utility function to format time
+        function getTimeAgo(date) {
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            
+            if (seconds < 60) return 'just now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
+            return Math.floor(seconds / 86400) + 'd ago';
+        }
+    </script>
+</body>
+
+</html>

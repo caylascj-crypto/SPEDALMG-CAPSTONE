@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Review Activities – SPED ALM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="../TEACHER.CSS/Teacher_activies.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="teacher-app-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="teacher-sidebar">
+            <div class="teacher-sidebar-logo">
+                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../TEACHER_ASSETS/logo.png" />
+                <div>
+                    <span class="teacher-sidebar-title">SPED ALM</span>
+                    <span class="teacher-sidebar-sub">Teacher Portal</span>
+                </div>
+            </div>
+            <nav class="teacher-sidebar-nav">
+                <a class="teacher-nav-item" href="Teacher_dashboard.html">
+                    <i class="fa-solid fa-table-cells-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a class="teacher-nav-item active" href="Teacher_IEP.html">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    <span>IEP Materials</span>
+                    <i class="fa-solid fa-chevron-right teacher-nav-arrow"></i>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_learners.html">
+                    <i class="fa-solid fa-users"></i>
+                    <span>My Learners</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_report.html">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Reports</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_settings.html">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="teacher-sidebar-footer">
+                <div class="teacher-profile">
+                    <div class="teacher-avatar">MT</div>
+                    <div>
+                        <span class="teacher-name">Ma. Teresa Cruz</span>
+                        <span class="teacher-role">SPED Teacher</span>
+                    </div>
+                </div>
+                <a class="teacher-signout-btn" href="../login_screen.html#">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
+        <!-- MAIN CONTENT -->
+        <main class="teacher-main-content">
+            <!-- TOPBAR -->
+            <header class="teacher-topbar">
+                <div>
+                    <h1 class="teacher-page-title">Review Activities</h1>
+                    <p class="teacher-page-sub">View and edit personalized IEP learning materials</p>
+                </div>
+            </header>
+            <hr class="teacher-divider" />
+            <!-- SEARCH BAR -->
+            <div class="teacher-search-bar">
+                <div class="teacher-search-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input id="teacher-searchInput" name="teacher_searchinput" oninput="filterTable()"
+                        placeholder="Search activity, learner, or category..." type="text" />
+                </div>
+                <button class="btn-search" onclick="filterTable()" type="button">Search</button>
+            </div>
+            <!-- TABLE CARD -->
+            <div class="teacher-table-card">
+                <div class="teacher-table-info">All activities: Showing <span id="activity-count">0</span> of <strong id="activity-total">0</strong></div>
+                <table id="teacher-activitiesTable">
+                    <thead>
+                        <tr>
+                            <th>Activity Title <span class="teacher-sort-arrow">↑</span></th>
+                            <th>Category <span class="teacher-sort-arrow">↑</span></th>
+                            <th>Grade Level <span class="teacher-sort-arrow">↑</span></th>
+                            <th>Difficulty</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activitiesTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 20px;">Loading activities...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- TABLE FOOTER / PAGINATION -->
+                <div class="teacher-table-footer">
+                    <span class="teacher-table-footer-info">Showing <span id="pagination-info">0</span> activities</span>
+                    <div class="teacher-pagination">
+                        <button class="teacher-pg-arrow" type="button">‹</button>
+                        <button class="teacher-current" type="button">1</button>
+                        <button type="button">2</button>
+                        <button class="teacher-pg-arrow" type="button">Next ›</button>
+                    </div>
+                </div>
+            </div>
+            <!-- BACK BUTTON -->
+            <button class="btn-back-iep" onclick="window.location.href='Teacher_IEP.html'" type="button">
+                <i class="fa-solid fa-arrow-left"></i>
+                Back to IEP Materials
+            </button>
+        </main>
+    </div>
+    <script>
+        let allActivities = [];
+
+        function loadActivities() {
+            fetch('TEACHER_BACKEND/teacher_list_activities.php')
+                .then(response => response.json())
+                .then(data => {
+                    allActivities = data;
+                    renderActivities(allActivities);
+                })
+                .catch(error => {
+                    console.error('Error loading activities:', error);
+                    document.getElementById('activitiesTableBody').innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Error loading activities</td></tr>';
+                });
+        }
+
+        function renderActivities(activities) {
+            const tbody = document.getElementById('activitiesTableBody');
+            
+            if (!activities || activities.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No activities yet</td></tr>';
+                document.getElementById('activity-count').textContent = '0';
+                document.getElementById('activity-total').textContent = '0';
+                document.getElementById('pagination-info').textContent = '0';
+                return;
+            }
+
+            tbody.innerHTML = activities.map(activity => `
+                <tr>
+                    <td class="teacher-activity-title">${activity.title}</td>
+                    <td>${activity.subject || 'General'}</td>
+                    <td>${activity.grade_level || 'N/A'}</td>
+                    <td>${activity.difficulty || 'N/A'}</td>
+                    <td><span class="teacher-tag">${activity.status}</span></td>
+                    <td class="teacher-actions-cell">
+                        <button class="btn-view" onclick="window.location.href='Teacher_reviewact.html?id=${activity.id}'" type="button">
+                            <i class="fa-regular fa-eye"></i> View
+                        </button>
+                        <button class="btn-edit" onclick="window.location.href='Teacher_reviewact.html?id=${activity.id}'" type="button">
+                            <i class="fa-solid fa-pen"></i> Edit
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            document.getElementById('activity-count').textContent = activities.length;
+            document.getElementById('activity-total').textContent = activities.length;
+            document.getElementById('pagination-info').textContent = activities.length;
+        }
+
+        function filterTable() {
+            const q = document.getElementById('teacher-searchInput').value.toLowerCase();
+            const filtered = allActivities.filter(activity => 
+                activity.title.toLowerCase().includes(q) ||
+                (activity.subject && activity.subject.toLowerCase().includes(q))
+            );
+            renderActivities(filtered);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadActivities();
+            
+            document.getElementById('teacher-searchInput').addEventListener('input', filterTable);
+        });
+    </script>
+</body>
+
+</html>

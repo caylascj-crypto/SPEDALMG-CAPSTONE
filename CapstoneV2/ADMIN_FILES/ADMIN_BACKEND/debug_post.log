@@ -1,0 +1,20 @@
+2026-06-15 17:21:06 - POST Data: {"user_id":"98","full_name":"Jay Caylas","email_address":"jay@spedalm.edu.ph","phone_number":"09206230321","admin_edit_role_input":"teacher","admin_edit_cond_select":"","admin_status_input":"active"}
+2026-06-15 17:21:06 - UPDATE SUCCESS for user 98. Rows affected: 0
+2026-06-15 17:22:44 - POST Data: {"user_id":"98","full_name":"Jay Caylas","email_address":"jay@spedalm.edu.ph","phone_number":"09206230321","admin_edit_role_input":"teacher","admin_edit_cond_select":"","admin_status_input":"active"}
+2026-06-15 17:22:44 - UPDATE SUCCESS for user 98. Rows affected: 0
+2026-06-15 17:24:18 - POST Data: {"user_id":"98","full_name":"Jay Caylas","email_address":"jay@spedalm.edu.ph","phone_number":"09206230321","admin_edit_role_input":"teacher","admin_edit_cond_select":"","admin_status_input":"active"}
+2026-06-15 17:24:18 - UPDATE SUCCESS for user 98. Rows affected: 0
+2026-06-15 17:27:54 - POST Data: {"user_id":"4","full_name":"Caylas Santos","email_address":"caylas@spedalm.edu.ph","phone_number":"09206230321","admin_edit_role_input":"teacher","admin_edit_cond_select":"","admin_status_input":"active"}
+2026-06-15 17:27:54 - UPDATE SUCCESS for user 4. Rows affected: 1
+2026-06-16 15:15:38 - POST Data: {"user_id":"469","full_name":"hydee","email_address":"hydee@spedalm.edu.ph","phone_number":"","admin_edit_role_input":"teacher","admin_edit_cond_select":"","admin_status_input":"active"}
+2026-06-16 15:15:38 - UPDATE SUCCESS for user 469. Rows affected: 1
+2026-06-16 17:10:56 - POST Data: {"user_id":"660","full_name":"Ma. Teresa Cruz","email_address":"teacher@spedalm.edu.ph","phone_number":"09206230321","admin_edit_role_input":"teacher","admin_edit_cond_select":"","admin_status_input":"active"}
+2026-06-16 17:10:56 - UPDATE SUCCESS for user 660. Rows affected: 1
+2026-06-16 17:31:05 - POST Data: {"user_id":"660","full_name":"Ma. Teresa Cruz","email_address":"teacher@spedalm.edu.ph","phone_number":"09206230321","admin_edit_role_input":"teacher","admin_edit_cond_select":"","admin_status_input":"active"}
+2026-06-16 17:31:05 - UPDATE SUCCESS for user 660. Rows affected: 0
+2026-06-16 17:33:03 - POST Data: {"user_id":"559","full_name":"asd","email_address":"asd@spedalm.edu.ph","phone_number":"","admin_edit_role_input":"student","admin_edit_cond_select":"ADHD","admin_status_input":"active"}
+2026-06-16 17:33:03 - UPDATE SUCCESS for user 559. Rows affected: 1
+2026-06-16 19:31:19 - POST Data: {"user_id":"1142","full_name":"Aj Caylas","email_address":"aj@spedalm.edu.ph","phone_number":"","admin_edit_role_input":"teacher","admin_edit_cond_select":"","admin_status_input":"active"}
+2026-06-16 19:31:19 - UPDATE SUCCESS for user 1142. Rows affected: 1
+2026-06-16 19:31:27 - POST Data: {"user_id":"1142","full_name":"Aj Caylas","email_address":"aj@spedalm.edu.ph","phone_number":"","admin_edit_role_input":"teacher","admin_edit_cond_select":"","admin_status_input":"active"}
+2026-06-16 19:31:27 - UPDATE SUCCESS for user 1142. Rows affected: 0

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Reports – SPED ALM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+    <link href="../TEACHER.CSS/Teacher_report.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="teacher-app-wrapper">
+        <!-- SIDEBAR -->
+        <aside class="teacher-sidebar">
+            <div class="teacher-sidebar-logo">
+                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../TEACHER_ASSETS/logo.png" />
+                <div>
+                    <span class="teacher-sidebar-title">SPED ALM</span>
+                    <span class="teacher-sidebar-sub">Teacher Portal</span>
+                </div>
+            </div>
+            <nav class="teacher-sidebar-nav">
+                <a class="teacher-nav-item" href="Teacher_dashboard.html">
+                    <i class="fa-solid fa-table-cells-large"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_IEP.html">
+                    <i class="fa-solid fa-file-circle-plus"></i>
+                    <span>IEP Materials</span>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_learners.html">
+                    <i class="fa-solid fa-users"></i>
+                    <span>My Learners</span>
+                </a>
+                <a class="teacher-nav-item active" href="Teacher_report.html">
+                    <i class="fa-solid fa-chart-column"></i>
+                    <span>Reports</span>
+                    <i class="fa-solid fa-chevron-right teacher-nav-arrow"></i>
+                </a>
+                <a class="teacher-nav-item" href="Teacher_settings.html">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="teacher-sidebar-footer">
+                <div class="teacher-profile">
+                    <div class="teacher-avatar">MT</div>
+                    <div>
+                        <span class="teacher-name">Ma. Teresa Cruz</span>
+                        <span class="teacher-role">SPED Teacher</span>
+                    </div>
+                </div>
+                <a class="teacher-signout-btn" href="../login_screen.html#">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Sign Out</span>
+                </a>
+            </div>
+        </aside>
+        <!-- MAIN CONTENT -->
+        <main class="teacher-main-content">
+            <!-- TOPBAR -->
+            <header class="teacher-topbar">
+                <div>
+                    <h1 class="teacher-page-title">Class Reports</h1>
+                    <p class="teacher-page-sub">Track learner progress and generate grading reports</p>
+                </div>
+                <div class="teacher-topbar-actions">
+                    <button class="btn-action outline" type="button"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                    <button class="btn-action outline" type="button"><i class="fa-solid fa-print"></i> Print</button>
+                    <button class="btn-action outline" type="button"><i class="fa-solid fa-file-excel"></i>
+                        Export</button>
+                    <a class="teacher-notif-btn" href="Teacher_notif.html">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="teacher-notif-badge"></span>
+                    </a>
+                </div>
+            </header>
+            <hr class="teacher-divider" />
+            <!-- STAT CARDS — backend: inject values -->
+            <div class="teacher-stat-cards">
+                <div class="teacher-stat-card">
+                    <div class="teacher-stat-icon si-blue"><i class="fa-solid fa-users"></i></div>
+                    <div class="teacher-stat-info">
+                        <div class="teacher-stat-num">—</div>
+                        <div class="teacher-stat-label">Assigned Learners</div>
+                    </div>
+                </div>
+                <div class="teacher-stat-card">
+                    <div class="teacher-stat-icon si-green"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="teacher-stat-info">
+                        <div class="teacher-stat-num">—</div>
+                        <div class="teacher-stat-label">Average Progress</div>
+                    </div>
+                </div>
+                <div class="teacher-stat-card">
+                    <div class="teacher-stat-icon si-orange"><i class="fa-solid fa-layer-group"></i></div>
+                    <div class="teacher-stat-info">
+                        <div class="teacher-stat-num">—</div>
+                        <div class="teacher-stat-label">Available Activities</div>
+                    </div>
+                </div>
+            </div>
+            <!-- TWO-COL: Skills Overview only (Teacher Notes removed) -->
+            <div class="teacher-report-grid">
+                <!-- SKILLS OVERVIEW — backend: inject values -->
+                <div class="teacher-panel">
+                    <div class="teacher-panel-title">Skills Overview</div>
+                    <div class="teacher-skill-row">
+                        <div class="teacher-skill-meta"><span class="teacher-skill-name">Cognitive</span><span
+                                class="teacher-skill-pct c-blue">—</span></div>
+                        <div class="teacher-skill-bar-bg">
+                            <div class="teacher-skill-bar-fill f-blue" style="width:0%;"></div>
+                        </div>
+                    </div>
+                    <div class="teacher-skill-row">
+                        <div class="teacher-skill-meta"><span class="teacher-skill-name">Communication</span><span
+                                class="teacher-skill-pct c-green">—</span></div>
+                        <div class="teacher-skill-bar-bg">
+                            <div class="teacher-skill-bar-fill f-green" style="width:0%;"></div>
+                        </div>
+                    </div>
+                    <div class="teacher-skill-row">
+                        <div class="teacher-skill-meta"><span class="teacher-skill-name">Fine Motor</span><span
+                                class="teacher-skill-pct c-orange">—</span></div>
+                        <div class="teacher-skill-bar-bg">
+                            <div class="teacher-skill-bar-fill f-orange" style="width:0%;"></div>
+                        </div>
+                    </div>
+                    <div class="teacher-skill-row">
+                        <div class="teacher-skill-meta"><span class="teacher-skill-name">Life Skills</span><span
+                                class="teacher-skill-pct c-pink">—</span></div>
+                        <div class="teacher-skill-bar-bg">
+                            <div class="teacher-skill-bar-fill f-pink" style="width:0%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- placeholder right teacher-panel (empty — backend can use later) -->
+                <div class="teacher-panel" style="display:flex; align-items:center; justify-content:center;">
+                    <span style="font-size:13px; color:#CBD5E1; font-style:italic;">Chart area — backend</span>
+                </div>
+            </div>
+            <!-- LEARNER PERFORMANCE TABLE — backend: inject rows -->
+            <div class="teacher-table-card">
+                <div class="teacher-table-card-title">Learner Performance</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Learner</th>
+                            <th>Condition</th>
+                            <th>Average</th>
+                            <th>Status</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- backend: inject rows -->
+                        <tr>
+                            <td>—</td>
+                            <td>—</td>
+                            <td>—</td>
+                            <td><span class="teacher-status-badge sb-green">—</span></td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
