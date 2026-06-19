@@ -209,24 +209,24 @@
         <p class="teacher-modal-sub">Enter your current password and choose a new one.</p>
         <div class="teacher-modal-form-group">
             <label>Current Password</label>
-            <div style="position:relative;">
-                <input id="pwd-current" placeholder="Enter current password" type="password" style="width:100%;padding-right:42px;box-sizing:border-box;" />
-                <button type="button" onclick="togglePwd('pwd-current',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#555;padding:4px;font-size:18px;z-index:10;line-height:1;user-select:none;" tabindex="-1">👁</button>
+            <div style="display:flex;align-items:center;border:1.5px solid #e3e8f0;border-radius:14px;overflow:hidden;">
+                <input id="pwd-current" placeholder="Enter current password" type="password" style="flex:1;background:transparent;border:none;outline:none;padding:11px 14px;font-size:13.5px;font-family:'Poppins',sans-serif;color:#1e2a3a;min-width:0;" />
+                <button type="button" onclick="togglePwd('pwd-current',this)" style="background:none;border:none;cursor:pointer;color:#666;padding:0 12px;font-size:18px;line-height:1;flex-shrink:0;user-select:none;" tabindex="-1">👁</button>
             </div>
         </div>
         <div class="teacher-modal-form-group">
             <label>New Password</label>
-            <div style="position:relative;">
-                <input id="pwd-new" placeholder="At least 8 characters" type="password" style="width:100%;padding-right:42px;box-sizing:border-box;" />
-                <button type="button" onclick="togglePwd('pwd-new',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#555;padding:4px;font-size:18px;z-index:10;line-height:1;user-select:none;" tabindex="-1">👁</button>
+            <div style="display:flex;align-items:center;border:1.5px solid #e3e8f0;border-radius:14px;overflow:hidden;">
+                <input id="pwd-new" placeholder="At least 8 characters" type="password" style="flex:1;background:transparent;border:none;outline:none;padding:11px 14px;font-size:13.5px;font-family:'Poppins',sans-serif;color:#1e2a3a;min-width:0;" />
+                <button type="button" onclick="togglePwd('pwd-new',this)" style="background:none;border:none;cursor:pointer;color:#666;padding:0 12px;font-size:18px;line-height:1;flex-shrink:0;user-select:none;" tabindex="-1">👁</button>
             </div>
             <span class="teacher-pwd-hint">Min. 8 characters with a number and symbol</span>
         </div>
         <div class="teacher-modal-form-group">
             <label>Confirm New Password</label>
-            <div style="position:relative;">
-                <input id="pwd-confirm" placeholder="Re-enter new password" type="password" style="width:100%;padding-right:42px;box-sizing:border-box;" />
-                <button type="button" onclick="togglePwd('pwd-confirm',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#555;padding:4px;font-size:18px;z-index:10;line-height:1;user-select:none;" tabindex="-1">👁</button>
+            <div style="display:flex;align-items:center;border:1.5px solid #e3e8f0;border-radius:14px;overflow:hidden;">
+                <input id="pwd-confirm" placeholder="Re-enter new password" type="password" style="flex:1;background:transparent;border:none;outline:none;padding:11px 14px;font-size:13.5px;font-family:'Poppins',sans-serif;color:#1e2a3a;min-width:0;" />
+                <button type="button" onclick="togglePwd('pwd-confirm',this)" style="background:none;border:none;cursor:pointer;color:#666;padding:0 12px;font-size:18px;line-height:1;flex-shrink:0;user-select:none;" tabindex="-1">👁</button>
             </div>
         </div>
         <div id="pwd-message" style="display:none;margin-bottom:8px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
