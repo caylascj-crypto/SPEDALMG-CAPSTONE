@@ -25,7 +25,7 @@ function syncTeacherAccount($admin_id, $email, $first_name, $last_name) {
     if ($check_result->num_rows == 0) {
         // Create new teacher_accounts entry with the correct name from admin_accounts
         $insert_stmt = $teacher_conn->prepare("INSERT INTO teacher_accounts (teacher_email, teacher_password, first_name, last_name, school_name, status) VALUES (?, ?, ?, ?, 'Mamatid Elementary School', 'active')");
-        $password = 'Temp@1234'; // Default password
+        $password = 'Teacher@123'; // Default password for teachers
         $insert_stmt->bind_param("ssss", $email, $password, $first_name, $last_name);
         $insert_stmt->execute();
         $insert_stmt->close();

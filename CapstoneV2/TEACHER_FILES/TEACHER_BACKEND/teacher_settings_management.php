@@ -170,57 +170,75 @@ function updateTeacherSettings($conn, $teacher_id) {
     $stmt->close();
 }
 
+// CHANGED: Rewrote changePassword — old version verified/stored password using md5()
+// against teacher_accounts.password, but login checks admin_accounts.admin_password (plain text).
+// So changing password in settings had zero effect on login. Fixed to:
+// 1. Verify current password against admin_accounts (plain text, same as login)
+// 2. Update admin_accounts.admin_password with the new plain text password
+// 3. Also update teacher_accounts.teacher_password for consistency
 function changePassword($conn, $teacher_id) {
     $current_password = isset($_POST['current_password']) ? $_POST['current_password'] : '';
-    $new_password = isset($_POST['new_password']) ? $_POST['new_password'] : '';
+    $new_password     = isset($_POST['new_password'])     ? $_POST['new_password']     : '';
     $confirm_password = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
-    
+
     if (!$current_password || !$new_password || !$confirm_password) {
         echo json_encode(['success' => false, 'message' => 'All password fields are required']);
         return;
     }
-    
     if ($new_password !== $confirm_password) {
         echo json_encode(['success' => false, 'message' => 'New passwords do not match']);
         return;
     }
-    
     if (strlen($new_password) < 6) {
         echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters']);
         return;
     }
-    
-    // Verify current password
-    $sql = "SELECT password FROM teacher_accounts WHERE id=?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $teacher_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($row = $result->fetch_assoc()) {
-        if (md5($current_password) !== $row['password']) {
-            echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
-            $stmt->close();
-            return;
-        }
-    } else {
+
+    // Get teacher email to look up admin_accounts
+    $email_stmt = $conn->prepare("SELECT teacher_email FROM teacher_accounts WHERE id=?");
+    $email_stmt->bind_param("i", $teacher_id);
+    $email_stmt->execute();
+    $email_row = $email_stmt->get_result()->fetch_assoc();
+    $email_stmt->close();
+
+    if (!$email_row) {
         echo json_encode(['success' => false, 'message' => 'Teacher not found']);
-        $stmt->close();
         return;
     }
-    $stmt->close();
-    
-    // Update password
-    $new_password_hash = md5($new_password);
-    $updateSQL = "UPDATE teacher_accounts SET password=? WHERE id=?";
-    $updateStmt = $conn->prepare($updateSQL);
-    $updateStmt->bind_param("si", $new_password_hash, $teacher_id);
-    
-    if ($updateStmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Password changed successfully']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to change password']);
+
+    // Verify current password against admin_accounts (login uses this table)
+    require_once __DIR__ . '/../../ADMIN_FILES/ADMIN_BACKEND/db.php';
+    $admin_conn = getDatabaseConnection();
+    if (!$admin_conn) {
+        echo json_encode(['success' => false, 'message' => 'Database connection failed']);
+        return;
     }
-    $updateStmt->close();
+
+    $check = $admin_conn->prepare("SELECT admin_password FROM admin_accounts WHERE admin_email=? AND role='teacher'");
+    $check->bind_param("s", $email_row['teacher_email']);
+    $check->execute();
+    $check_row = $check->get_result()->fetch_assoc();
+    $check->close();
+
+    if (!$check_row || $check_row['admin_password'] !== $current_password) {
+        echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
+        $admin_conn->close();
+        return;
+    }
+
+    // Update admin_accounts (this is what login checks)
+    $upd_admin = $admin_conn->prepare("UPDATE admin_accounts SET admin_password=? WHERE admin_email=? AND role='teacher'");
+    $upd_admin->bind_param("ss", $new_password, $email_row['teacher_email']);
+    $upd_admin->execute();
+    $upd_admin->close();
+    $admin_conn->close();
+
+    // Also update teacher_accounts.teacher_password for consistency
+    $upd_teacher = $conn->prepare("UPDATE teacher_accounts SET teacher_password=? WHERE id=?");
+    $upd_teacher->bind_param("si", $new_password, $teacher_id);
+    $upd_teacher->execute();
+    $upd_teacher->close();
+
+    echo json_encode(['success' => true, 'message' => 'Password changed successfully']);
 }
 ?>

@@ -52,7 +52,7 @@ function getDatabaseConnection() {
     $insertAdminSql = "INSERT IGNORE INTO admin_accounts (admin_email, admin_password, first_name, last_name, school_name, role, status) VALUES ('admin@spedalm.edu.ph', 'Admin@123', 'Admin', 'User', 'Mamatid Elementary School', 'admin', 'active')";
     $conn->query($insertAdminSql);
 
-    $insertTeacherSql = "INSERT IGNORE INTO admin_accounts (admin_email, admin_password, first_name, last_name, school_name, role, status) VALUES ('caylas@spedalm.edu.ph', 'caylas@123', 'Caylas', 'Santos', 'Mamatid Elementary School', 'teacher', 'active')";
+    $insertTeacherSql = "INSERT IGNORE INTO admin_accounts (admin_email, admin_password, first_name, last_name, school_name, role, status) VALUES ('caylas@spedalm.edu.ph', 'Teacher@123', 'Caylas', 'Santos', 'Mamatid Elementary School', 'teacher', 'active')";
     $conn->query($insertTeacherSql);
 
     return $conn;

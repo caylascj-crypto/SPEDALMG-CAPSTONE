@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } elseif (isset($_POST['enter_condition'])) {
         $condition = trim($_POST['enter_condition']);
     }
-    $password = isset($_POST['enter_password']) ? trim($_POST['enter_password']) : 'Temp@1234';
+    $password = isset($_POST['enter_password']) ? trim($_POST['enter_password']) : 'Teacher@123'; // Default password for new teacher
 
     if ($fullName === '' || $email === '') {
         echo json_encode(['success' => false, 'message' => 'Full name and email are required']);
@@ -85,7 +85,7 @@ function syncTeacherAccount($email, $firstName, $lastName) {
     if ($check_result->num_rows == 0) {
         // Create new teacher account
         $insert_stmt = $teacher_conn->prepare("INSERT INTO teacher_accounts (teacher_email, teacher_password, first_name, last_name, school_name, status) VALUES (?, ?, ?, ?, 'Mamatid Elementary School', 'active')");
-        $password = 'Temp@1234';
+        $password = 'Teacher@123'; // Default password for new teacher accounts
         $insert_stmt->bind_param("ssss", $email, $password, $firstName, $lastName);
         $insert_stmt->execute();
         $insert_stmt->close();
