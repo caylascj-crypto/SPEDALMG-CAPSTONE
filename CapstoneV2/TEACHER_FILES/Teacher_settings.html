@@ -211,14 +211,14 @@
             <label>Current Password</label>
             <div style="display:flex;align-items:center;border:1.5px solid #e3e8f0;border-radius:14px;overflow:hidden;">
                 <input id="pwd-current" placeholder="Enter current password" type="password" style="flex:1;background:transparent;border:none;outline:none;padding:11px 14px;font-size:13.5px;font-family:'Poppins',sans-serif;color:#1e2a3a;min-width:0;" />
-                <button type="button" onclick="togglePwd('pwd-current',this)" style="background:none;border:none;cursor:pointer;color:#666;padding:0 12px;font-size:18px;line-height:1;flex-shrink:0;user-select:none;" tabindex="-1">👁</button>
+                <button type="button" onclick="togglePwd('pwd-current',this)" style="background:none;border:none;cursor:pointer;color:#666;padding:0 12px;font-size:18px;line-height:1;flex-shrink:0;user-select:none;" tabindex="-1"><i class="fa-solid fa-eye"></i></button>
             </div>
         </div>
         <div class="teacher-modal-form-group">
             <label>New Password</label>
             <div style="display:flex;align-items:center;border:1.5px solid #e3e8f0;border-radius:14px;overflow:hidden;">
                 <input id="pwd-new" placeholder="At least 8 characters" type="password" style="flex:1;background:transparent;border:none;outline:none;padding:11px 14px;font-size:13.5px;font-family:'Poppins',sans-serif;color:#1e2a3a;min-width:0;" />
-                <button type="button" onclick="togglePwd('pwd-new',this)" style="background:none;border:none;cursor:pointer;color:#666;padding:0 12px;font-size:18px;line-height:1;flex-shrink:0;user-select:none;" tabindex="-1">👁</button>
+                <button type="button" onclick="togglePwd('pwd-new',this)" style="background:none;border:none;cursor:pointer;color:#666;padding:0 12px;font-size:18px;line-height:1;flex-shrink:0;user-select:none;" tabindex="-1"><i class="fa-solid fa-eye"></i></button>
             </div>
             <span class="teacher-pwd-hint">Min. 8 characters with a number and symbol</span>
         </div>
@@ -226,7 +226,7 @@
             <label>Confirm New Password</label>
             <div style="display:flex;align-items:center;border:1.5px solid #e3e8f0;border-radius:14px;overflow:hidden;">
                 <input id="pwd-confirm" placeholder="Re-enter new password" type="password" style="flex:1;background:transparent;border:none;outline:none;padding:11px 14px;font-size:13.5px;font-family:'Poppins',sans-serif;color:#1e2a3a;min-width:0;" />
-                <button type="button" onclick="togglePwd('pwd-confirm',this)" style="background:none;border:none;cursor:pointer;color:#666;padding:0 12px;font-size:18px;line-height:1;flex-shrink:0;user-select:none;" tabindex="-1">👁</button>
+                <button type="button" onclick="togglePwd('pwd-confirm',this)" style="background:none;border:none;cursor:pointer;color:#666;padding:0 12px;font-size:18px;line-height:1;flex-shrink:0;user-select:none;" tabindex="-1"><i class="fa-solid fa-eye"></i></button>
             </div>
         </div>
         <div id="pwd-message" style="display:none;margin-bottom:8px;padding:10px 14px;border-radius:8px;font-size:14px;font-weight:500;"></div>
@@ -240,12 +240,13 @@
 <script>
 function togglePwd(inputId, btn) {
     var input = document.getElementById(inputId);
+    var icon = btn.querySelector('i');
     if (input.type === 'password') {
         input.type = 'text';
-        btn.textContent = '🙈';
+        icon.className = 'fa-solid fa-eye-slash';
     } else {
         input.type = 'password';
-        btn.textContent = '👁';
+        icon.className = 'fa-solid fa-eye';
     }
 }
 

@@ -49,9 +49,9 @@
             </nav>
             <div class="teacher-sidebar-footer">
                 <div class="teacher-profile">
-                    <div class="teacher-avatar">MT</div>
+                    <div class="teacher-avatar" id="teacher-avatar-letter">T</div>
                     <div>
-                        <span class="teacher-name">Ma. Teresa Cruz</span>
+                        <span class="teacher-name" id="teacher-name-sidebar">Teacher</span>
                         <span class="teacher-role">SPED Teacher</span>
                     </div>
                 </div>
@@ -177,9 +177,29 @@
             renderActivities(filtered);
         }
 
+        function loadSidebar() {
+            var TEACHER_ID = parseInt(sessionStorage.getItem('teacher_id') || '1');
+            var name = sessionStorage.getItem('teacher_name');
+            if (name) {
+                document.getElementById('teacher-avatar-letter').textContent = name.trim().charAt(0).toUpperCase();
+                document.getElementById('teacher-name-sidebar').textContent = name;
+            } else {
+                var fd = new FormData(); fd.append('teacher_id', TEACHER_ID);
+                fetch('TEACHER_BACKEND/teacher_get_profile.php', { method: 'POST', body: fd })
+                    .then(function(r) { return r.json(); })
+                    .then(function(d) {
+                        if (d.success && d.teacher) {
+                            document.getElementById('teacher-avatar-letter').textContent = d.teacher.avatarLetter;
+                            document.getElementById('teacher-name-sidebar').textContent = d.teacher.name;
+                            sessionStorage.setItem('teacher_name', d.teacher.name);
+                        }
+                    }).catch(function(){});
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar();
             loadActivities();
-            
             document.getElementById('teacher-searchInput').addEventListener('input', filterTable);
         });
     </script>

@@ -162,8 +162,16 @@ if ($result) {
     }
 }
 
-// For now, notes are empty (would come from a notes table in a full implementation)
+// Load notes from student_notes table
+$notes_stmt = $conn->prepare("SELECT id, note, created_at FROM student_notes WHERE teacher_id=? AND student_id=? ORDER BY created_at DESC LIMIT 20");
+$notes_stmt->bind_param("ii", $teacher_id, $student_id);
+$notes_stmt->execute();
+$notes_res = $notes_stmt->get_result();
 $progress['notes'] = [];
+while ($n = $notes_res->fetch_assoc()) {
+    $progress['notes'][] = $n;
+}
+$notes_stmt->close();
 
 echo json_encode($progress);
 $conn->close();

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>SPED ALM - My Materials</title>
+  <link rel="icon" type="image/png" href="../ADMIN_ASSETS/logo.png" />
+  <link href="../STUDENT_CSS/Student_mymaterials.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- SIDEBAR -->
+  <aside class="student-sidebar">
+    <div class="student-sidebar-logo">
+      <img alt="SPED ALM Logo" class="student-sidebar-logo-img" src="../STUDENT_ASSETS/logo.png" onerror="this.src='../ADMIN_ASSETS/logo.png'" />
+      <div class="student-sidebar-logo-text">
+        <span class="student-sidebar-title">SPED ALM</span>
+        <span class="student-sidebar-sub">Student Portal</span>
+      </div>
+    </div>
+    <nav class="student-sidebar-nav">
+      <a class="student-nav-item" href="Student_dashboard.html">
+        <i>🏠</i>
+        <span>Dashboard</span>
+      </a>
+      <a class="student-nav-item student-active" href="Student_mymaterials.html">
+        <i>📚</i>
+        <span>My Materials</span>
+        <i class="student-nav-arrow">›</i>
+      </a>
+      <a class="student-nav-item" href="Student_progress.html">
+        <i>⭐</i>
+        <span>My Progress</span>
+      </a>
+      <a class="student-nav-item" href="Student_settings.html">
+        <i>⚙️</i>
+        <span>Settings</span>
+      </a>
+    </nav>
+    <div class="student-sidebar-footer">
+      <div class="student-sidebar-user">
+        <div class="student-user-avatar" id="sidebar-avatar">?</div>
+        <div class="student-user-info">
+          <span class="student-user-name" id="sidebar-name">Loading...</span>
+          <span class="student-user-role" id="sidebar-role">—</span>
+        </div>
+      </div>
+      <a class="student-signout-btn" href="#" id="signout-btn">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Sign Out</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <student-main class="student-main">
+    <!-- PAGE HEADER -->
+    <header class="student-page-header">
+      <div class="student-page-headline">
+        <span class="student-page-mascot">🐼</span>
+        <div>
+          <h1 class="student-page-title">My Materials</h1>
+          <p class="student-page-sub">Learning activities prepared by your teacher <span class="student-sub-star">⭐</span></p>
+        </div>
+      </div>
+      <div class="student-header-actions">
+        <button class="student-fullview-btn" id="fullviewBtn" type="button">⛶ Full view</button>
+        <a class="student-notif-btn" href="Student_notif.html">
+          <i class="fa-regular fa-bell"></i>
+          <span class="student-notif-badge" id="notif-badge" style="display:none"></span>
+        </a>
+      </div>
+    </header>
+
+    <!-- FILTER ROW -->
+    <div class="student-filter-row">
+      <div class="student-search-box">
+        <span>🔍</span>
+        <input id="search-input" name="search_activities" placeholder="Search activities..." type="text" />
+      </div>
+      <div class="student-filter-tabs">
+        <button class="student-ftab student-active" onclick="filterMaterials('all', this)" type="button">All</button>
+        <button class="student-ftab" onclick="filterMaterials('completed', this)" type="button">Completed</button>
+        <button class="student-ftab" onclick="filterMaterials('in_progress', this)" type="button">In Progress</button>
+        <button class="student-ftab" onclick="filterMaterials('new', this)" type="button">New</button>
+      </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="student-stat-cards">
+      <div class="student-stat-card student-stat-card--blue">
+        <span class="student-stat-icon">📘</span>
+        <div>
+          <div class="student-stat-number student-stat-number--blue" id="stat-total">—</div>
+          <div class="student-stat-label">Total Materials</div>
+        </div>
+      </div>
+      <div class="student-stat-card student-stat-card--green">
+        <span class="student-stat-icon">✅</span>
+        <div>
+          <div class="student-stat-number student-stat-number--green" id="stat-completed">—</div>
+          <div class="student-stat-label">Completed</div>
+        </div>
+      </div>
+      <div class="student-stat-card student-stat-card--orange">
+        <span class="student-stat-icon">🚀</span>
+        <div>
+          <div class="student-stat-number student-stat-number--orange" id="stat-new">—</div>
+          <div class="student-stat-label">New / Pending</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MATERIALS LIST -->
+    <div class="student-grading-section">
+      <div class="student-grading-header">
+        <span class="student-grading-icon">📖</span>
+        <span class="student-grading-title">All Materials</span>
+        <div class="student-grading-divider"></div>
+        <span class="student-grading-count" id="grading-count">— items</span>
+      </div>
+      <div class="student-material-list" id="material-list">
+        <div class="student-mat-empty">📭 Loading materials...</div>
+      </div>
+    </div>
+  </student-main>
+
+  <script>
+    const BACKEND = 'STUDENT_BACKEND/';
+    let allMaterials = [];
+
+    function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function getInitials(name) { return (name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().substring(0,2); }
+
+    document.getElementById('signout-btn').addEventListener('click', function(e) {
+      e.preventDefault();
+      sessionStorage.clear();
+      window.location.href = '../ADMIN_FILES/login_screen.html';
+    });
+
+    const COLORS = ['student-mat--orange','student-mat--blue','student-mat--purple','student-mat--green','student-mat--amber','student-mat--pink'];
+
+    function renderMaterials(items) {
+      const list = document.getElementById('material-list');
+      if (!items.length) {
+        list.innerHTML = '<div class="student-mat-empty">📭 No materials found.</div>';
+        return;
+      }
+      list.innerHTML = items.map((m, i) => {
+        const badge = m.progress_status === 'completed'
+          ? '<span class="student-mat-badge student-mat-badge--done">DONE</span>'
+          : m.progress_status === 'in_progress'
+          ? '<span class="student-mat-badge student-mat-badge--progress">IN PROGRESS</span>'
+          : '<span class="student-mat-badge student-mat-badge--new">NEW</span>';
+        const pct = m.score ? Math.min(100, m.score) : 0;
+        return `<div class="student-material-card ${COLORS[i % COLORS.length]}" data-status="${m.progress_status}">
+          ${badge}
+          <span class="student-mat-star">&#9734;</span>
+          <div class="student-mat-card-thumb">📖</div>
+          <div class="student-mat-card-title">${esc(m.activity_title)}</div>
+          <div class="student-mat-card-tag">${esc(m.subject || m.grade_level || '')}</div>
+          <div class="student-mat-progress">
+            <div class="student-mat-progress-bar"><div class="student-mat-progress-fill" style="width:${pct}%"></div></div>
+            <span class="student-mat-progress-pct">${pct}%</span>
+          </div>
+          <button class="student-mat-card-btn" type="button">▶ Start</button>
+        </div>`;
+      }).join('') + `<div class="student-cheer">
+        <span class="student-cheer-panda">🐼</span>
+        <div class="student-cheer-bubble"><strong>Great job!</strong><span>Keep learning and have fun! 💗</span></div>
+        <p class="student-cheer-text">Small steps every day lead to big progress!</p>
+        <span class="student-cheer-rainbow">🌈</span>
+      </div>`;
+    }
+
+    function filterMaterials(status, btn) {
+      document.querySelectorAll('.student-ftab').forEach(b => b.classList.remove('student-active'));
+      if (btn) btn.classList.add('student-active');
+      const search = document.getElementById('search-input').value.toLowerCase();
+      let filtered = allMaterials;
+      if (status !== 'all') filtered = filtered.filter(m => m.progress_status === status);
+      if (search) filtered = filtered.filter(m => (m.activity_title||'').toLowerCase().includes(search));
+      renderMaterials(filtered);
+    }
+
+    document.getElementById('search-input').addEventListener('input', function() {
+      const activeTab = document.querySelector('.student-ftab.student-active');
+      const status = activeTab ? activeTab.textContent.toLowerCase().replace(' ','_').replace('all','all') : 'all';
+      filterMaterials(status === 'all' ? 'all' : status, null);
+    });
+
+    const fvBtn = document.getElementById('fullviewBtn');
+    fvBtn.addEventListener('click', () => {
+      document.body.classList.toggle('student-fullview');
+      const on = document.body.classList.contains('student-fullview');
+      fvBtn.textContent = on ? '✕ Exit full view' : '⛶ Full view';
+    });
+
+    async function loadPage() {
+      const studentName = sessionStorage.getItem('student_name') || '';
+      const studentRecordId = sessionStorage.getItem('student_record_id');
+      const teacherId = sessionStorage.getItem('teacher_id');
+      const adminId = sessionStorage.getItem('student_id');
+
+      if (!adminId) { window.location.href = '../ADMIN_FILES/login_screen.html'; return; }
+
+      document.getElementById('sidebar-avatar').textContent = getInitials(studentName);
+      document.getElementById('sidebar-name').textContent = studentName || 'Student';
+      const condition = sessionStorage.getItem('student_condition') || '';
+      const grade = sessionStorage.getItem('student_grade') || '';
+      document.getElementById('sidebar-role').textContent = [grade, condition].filter(Boolean).join(' — ');
+
+      if (!studentRecordId || !teacherId) {
+        document.getElementById('material-list').innerHTML = '<div class="student-mat-empty">📭 No student record linked yet.</div>';
+        return;
+      }
+
+      try {
+        const res = await fetch(BACKEND + 'student_get_materials.php?student_record_id=' + studentRecordId + '&teacher_id=' + teacherId);
+        const data = await res.json();
+        if (data.success) {
+          allMaterials = data.materials || [];
+          document.getElementById('stat-total').textContent = data.total;
+          document.getElementById('stat-completed').textContent = data.completed;
+          document.getElementById('stat-new').textContent = data.new + data.in_progress;
+          document.getElementById('grading-count').textContent = data.total + ' items';
+          renderMaterials(allMaterials);
+        } else {
+          document.getElementById('material-list').innerHTML = '<div class="student-mat-empty">📭 Failed to load materials.</div>';
+        }
+      } catch (e) {
+        document.getElementById('material-list').innerHTML = '<div class="student-mat-empty">📭 Error loading materials.</div>';
+      }
+
+      // Notification badge
+      try {
+        const notifRes = await fetch(BACKEND + 'student_get_notifications.php?student_record_id=' + studentRecordId + '&teacher_id=' + teacherId);
+        const notif = await notifRes.json();
+        if (notif.success && notif.unread > 0) {
+          const badge = document.getElementById('notif-badge');
+          badge.textContent = notif.unread;
+          badge.style.display = '';
+        }
+      } catch (e) {}
+    }
+
+    loadPage();
+  </script>
+</body>
+</html>

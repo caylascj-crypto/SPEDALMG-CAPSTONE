@@ -20,8 +20,21 @@ if ($checkCreated && $checkCreated->num_rows == 0) {
     $conn->query("ALTER TABLE admin_accounts ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER updated_at");
 }
 
-// Query with phone_number and created_at
-$result = $conn->query("SELECT id, admin_email, first_name, last_name, COALESCE(phone_number, '') as phone_number, role, condition_info, status, COALESCE(created_at, NOW()) as created_at FROM admin_accounts ORDER BY id DESC");
+// Query with dynamic status:
+// - teachers: active only if they have logged in (last_login IS NOT NULL)
+// - admin/others: use stored status
+$result = $conn->query("SELECT id, admin_email, first_name, last_name,
+    COALESCE(phone_number, '') as phone_number,
+    role, condition_info,
+    CASE
+        WHEN role = 'teacher' AND last_login IS NOT NULL THEN 'active'
+        WHEN role = 'teacher' AND last_login IS NULL THEN 'inactive'
+        WHEN role = 'student' THEN 'inactive'
+        ELSE status
+    END AS status,
+    last_login,
+    COALESCE(created_at, NOW()) as created_at
+FROM admin_accounts ORDER BY id DESC");
 
 if (!$result) {
     echo json_encode([]);

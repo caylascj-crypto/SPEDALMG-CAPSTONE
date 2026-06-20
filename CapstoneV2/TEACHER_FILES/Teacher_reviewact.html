@@ -48,9 +48,9 @@
             </nav>
             <div class="teacher-sidebar-footer">
                 <div class="teacher-profile">
-                    <div class="teacher-avatar">MT</div>
+                    <div class="teacher-avatar" id="teacher-avatar-letter">T</div>
                     <div class="teacher-info">
-                        <span class="teacher-name">Ma. Teresa Cruz</span>
+                        <span class="teacher-name" id="teacher-name-sidebar">Teacher</span>
                         <span class="teacher-role">SPED Teacher</span>
                     </div>
                 </div>
@@ -69,26 +69,125 @@
                     </a>
                 </div>
                 <div class="teacher-topbar-right">
-                    <button class="teacher-notif-btn" type="button">
+                    <a class="teacher-notif-btn" href="Teacher_notif.html">
                         <i class="fa-regular fa-bell"></i>
-                        <span class="teacher-notif-badge">3</span>
-                    </button>
+                        <span class="teacher-notif-badge"></span>
+                    </a>
                 </div>
             </header>
             <div class="teacher-page-header">
-                <h1 class="teacher-page-title">Review Activities</h1>
-                <p class="teacher-page-sub">View and manage all generated learning activities</p>
+                <h1 class="teacher-page-title" id="activity-title">Loading...</h1>
+                <p class="teacher-page-sub" id="activity-meta">View and manage learning activity details</p>
             </div>
-            <!-- PLACEHOLDER CONTENT -->
-            <div class="teacher-placeholder-section">
-                <div class="teacher-placeholder-icon">
-                    <i class="fa-solid fa-list-check"></i>
+            <!-- ACTIVITY DETAIL CARD -->
+            <div id="activity-detail-wrap" style="display:none;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px;">
+                    <div style="background:#f0f7ff;border-radius:10px;padding:14px 18px;">
+                        <div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Category</div>
+                        <div style="font-weight:600;color:#1e293b;margin-top:4px;" id="detail-subject">—</div>
+                    </div>
+                    <div style="background:#f0fdf4;border-radius:10px;padding:14px 18px;">
+                        <div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Grade Level</div>
+                        <div style="font-weight:600;color:#1e293b;margin-top:4px;" id="detail-grade">—</div>
+                    </div>
+                    <div style="background:#fff7ed;border-radius:10px;padding:14px 18px;">
+                        <div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Difficulty</div>
+                        <div style="font-weight:600;color:#1e293b;margin-top:4px;" id="detail-difficulty">—</div>
+                    </div>
+                    <div style="background:#fdf4ff;border-radius:10px;padding:14px 18px;">
+                        <div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Status</div>
+                        <div style="font-weight:600;color:#1e293b;margin-top:4px;" id="detail-status">—</div>
+                    </div>
                 </div>
-                <h2>Activities List</h2>
-                <p>This section is under development. Connect to backend to display generated activities.</p>
+                <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:16px;">
+                    <div style="font-size:13px;font-weight:700;color:#334155;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;">Description</div>
+                    <div id="detail-description" style="font-size:14px;color:#475569;line-height:1.6;">—</div>
+                </div>
+                <div id="detail-materials-wrap" style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:16px;display:none;">
+                    <div style="font-size:13px;font-weight:700;color:#334155;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;">Learning Materials</div>
+                    <div id="detail-materials" style="font-size:14px;color:#475569;line-height:1.6;white-space:pre-wrap;">—</div>
+                </div>
+                <div id="detail-instructions-wrap" style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:16px;display:none;">
+                    <div style="font-size:13px;font-weight:700;color:#334155;margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em;">Instructions</div>
+                    <div id="detail-instructions" style="font-size:14px;color:#475569;line-height:1.6;white-space:pre-wrap;">—</div>
+                </div>
+            </div>
+            <div id="activity-error" style="display:none;text-align:center;padding:40px;color:#94a3b8;">
+                <i class="fa-solid fa-circle-exclamation" style="font-size:36px;margin-bottom:12px;"></i>
+                <div>Activity not found or failed to load.</div>
+                <a href="Teacher_activies.html" style="color:#3b82f6;font-size:13px;margin-top:8px;display:inline-block;">Back to list</a>
             </div>
         </main>
     </div>
+    <script>
+        var TEACHER_ID = parseInt(sessionStorage.getItem('teacher_id') || '1');
+
+        function loadSidebar() {
+            var name = sessionStorage.getItem('teacher_name');
+            if (name) {
+                document.getElementById('teacher-avatar-letter').textContent = name.trim().charAt(0).toUpperCase();
+                document.getElementById('teacher-name-sidebar').textContent = name;
+            } else {
+                var fd = new FormData(); fd.append('teacher_id', TEACHER_ID);
+                fetch('TEACHER_BACKEND/teacher_get_profile.php', { method: 'POST', body: fd })
+                    .then(function(r) { return r.json(); })
+                    .then(function(d) {
+                        if (d.success && d.teacher) {
+                            document.getElementById('teacher-avatar-letter').textContent = d.teacher.avatarLetter;
+                            document.getElementById('teacher-name-sidebar').textContent = d.teacher.name;
+                            sessionStorage.setItem('teacher_name', d.teacher.name);
+                        }
+                    }).catch(function(){});
+            }
+        }
+
+        function loadActivity() {
+            var params = new URLSearchParams(window.location.search);
+            var id = parseInt(params.get('id') || '0');
+            if (!id) {
+                document.getElementById('activity-title').textContent = 'No Activity Selected';
+                document.getElementById('activity-error').style.display = '';
+                return;
+            }
+            fetch('TEACHER_BACKEND/teacher_list_activities.php?id=' + id)
+                .then(function(r) { return r.json(); })
+                .then(function(a) {
+                    if (!a) { showError(); return; }
+                    document.getElementById('activity-title').textContent = a.title || 'Untitled Activity';
+                    document.getElementById('activity-meta').textContent =
+                        (a.subject || 'General') + ' · ' + (a.grade_level || 'N/A') + ' · Created ' + fmtDate(a.created_at);
+                    document.getElementById('detail-subject').textContent = a.subject || '—';
+                    document.getElementById('detail-grade').textContent = a.grade_level || '—';
+                    document.getElementById('detail-difficulty').textContent = a.difficulty || '—';
+                    document.getElementById('detail-status').textContent = a.status || '—';
+                    document.getElementById('detail-description').textContent = a.description || 'No description provided.';
+                    if (a.learning_materials) {
+                        document.getElementById('detail-materials').textContent = a.learning_materials;
+                        document.getElementById('detail-materials-wrap').style.display = '';
+                    }
+                    if (a.instructions) {
+                        document.getElementById('detail-instructions').textContent = a.instructions;
+                        document.getElementById('detail-instructions-wrap').style.display = '';
+                    }
+                    document.getElementById('activity-detail-wrap').style.display = '';
+                }).catch(function() { showError(); });
+        }
+
+        function showError() {
+            document.getElementById('activity-title').textContent = 'Activity Not Found';
+            document.getElementById('activity-error').style.display = '';
+        }
+
+        function fmtDate(ts) {
+            if (!ts) return '—';
+            return new Date(ts.replace(' ','T')).toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'});
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar();
+            loadActivity();
+        });
+    </script>
 </body>
 
 </html>

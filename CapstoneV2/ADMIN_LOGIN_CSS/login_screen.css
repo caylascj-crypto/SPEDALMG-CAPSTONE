@@ -271,6 +271,39 @@ body {
   box-shadow: 0 0 0 3px rgba(26, 58, 143, 0.15);
 }
 
+/* Password show/hide wrapper */
+.pwd-wrapper {
+  position: relative;
+  display: block;
+}
+
+.pwd-wrapper input {
+  width: 100%;
+  padding-right: 48px !important;
+  box-sizing: border-box;
+}
+
+.pwd-toggle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 46px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  z-index: 5;
+}
+
+.pwd-toggle:hover {
+  color: #1a3a8f;
+}
+
 .admin-forgot {
   font-size: 13px;
   color: #1a3a8f;

@@ -33,6 +33,12 @@ switch($action) {
     case 'get_unread_count':
         getUnreadCount($conn, $teacher_id);
         break;
+    case 'mark_all_read':
+        markAllNotificationsRead($conn, $teacher_id);
+        break;
+    case 'clear_all':
+        clearAllNotifications($conn, $teacher_id);
+        break;
     default:
         echo json_encode(['success' => false, 'message' => 'Unknown action']);
 }
@@ -143,8 +149,23 @@ function getUnreadCount($conn, $teacher_id) {
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
-    
     echo json_encode(['success' => true, 'unread_count' => $row['unread_count']]);
+    $stmt->close();
+}
+
+function markAllNotificationsRead($conn, $teacher_id) {
+    $stmt = $conn->prepare("UPDATE notifications SET is_read=1 WHERE teacher_id=?");
+    $stmt->bind_param("i", $teacher_id);
+    $stmt->execute();
+    echo json_encode(['success' => true]);
+    $stmt->close();
+}
+
+function clearAllNotifications($conn, $teacher_id) {
+    $stmt = $conn->prepare("DELETE FROM notifications WHERE teacher_id=?");
+    $stmt->bind_param("i", $teacher_id);
+    $stmt->execute();
+    echo json_encode(['success' => true]);
     $stmt->close();
 }
 ?>

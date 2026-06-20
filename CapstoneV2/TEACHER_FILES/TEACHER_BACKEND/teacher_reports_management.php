@@ -9,13 +9,13 @@ if (!$conn) {
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+if (!in_array($_SERVER['REQUEST_METHOD'], ['POST', 'GET'])) {
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
     exit;
 }
 
-$action = isset($_POST['action']) ? trim($_POST['action']) : '';
-$teacher_id = isset($_POST['teacher_id']) ? intval($_POST['teacher_id']) : 1;
+$action = isset($_REQUEST['action']) ? trim($_REQUEST['action']) : '';
+$teacher_id = isset($_REQUEST['teacher_id']) ? intval($_REQUEST['teacher_id']) : 1;
 
 switch($action) {
     case 'generate_report':
@@ -32,6 +32,9 @@ switch($action) {
         break;
     case 'list_reports':
         listReports($conn, $teacher_id);
+        break;
+    case 'get_overview':
+        getOverview($conn, $teacher_id);
         break;
     default:
         echo json_encode(['success' => false, 'message' => 'Unknown action']);
@@ -53,7 +56,7 @@ function generateReport($conn, $teacher_id) {
             MIN(ar.score) as lowest_score,
             COUNT(DISTINCT ar.activity_id) as activities_count
             FROM students s
-            LEFT JOIN assessment_records ar ON s.id = ar.student_id AND ar.assessment_date BETWEEN ? AND ?
+            LEFT JOIN learner_progress ar ON s.id = ar.student_id AND ar.assessment_date BETWEEN ? AND ?
             WHERE s.teacher_id=? AND s.status='active'
             GROUP BY s.id
             ORDER BY s.student_name";
@@ -104,7 +107,7 @@ function getStudentReport($conn, $teacher_id) {
     $studentStmt->close();
     
     // Get assessments
-    $assessmentSQL = "SELECT ar.*, ta.activity_title FROM assessment_records ar
+    $assessmentSQL = "SELECT ar.*, ta.activity_title FROM learner_progress ar
                       LEFT JOIN teacher_activities ta ON ar.activity_id = ta.id
                       WHERE ar.student_id=? AND ar.teacher_id=?
                       ORDER BY ar.assessment_date DESC";
@@ -152,7 +155,7 @@ function getProgressReport($conn, $teacher_id) {
             ROUND(AVG(ar.score), 2) as avg_score,
             MAX(ar.score) as highest,
             MIN(ar.score) as lowest
-            FROM assessment_records ar
+            FROM learner_progress ar
             WHERE ar.student_id=? AND ar.teacher_id=? AND ar.assessment_date >= DATE_SUB(CURDATE(), INTERVAL ? MONTH)
             GROUP BY DATE_FORMAT(ar.assessment_date, '%Y-%m')
             ORDER BY month DESC";
@@ -231,5 +234,73 @@ function listReports($conn, $teacher_id) {
     
     echo json_encode(['success' => true, 'reports' => $reports, 'count' => count($reports)]);
     $stmt->close();
+}
+
+function getOverview($conn, $teacher_id) {
+    // Learner count
+    $r = $conn->query("SELECT COUNT(*) as c FROM students WHERE teacher_id=$teacher_id AND status='active'");
+    $total_learners = $r ? $r->fetch_assoc()['c'] : 0;
+
+    // Activity count
+    $r = $conn->query("SELECT COUNT(*) as c FROM teacher_activities WHERE teacher_id=$teacher_id");
+    $total_activities = $r ? $r->fetch_assoc()['c'] : 0;
+
+    // Overall average score
+    $r = $conn->query("SELECT ROUND(AVG(score),0) as avg FROM learner_progress WHERE teacher_id=$teacher_id");
+    $avg_progress = $r ? ($r->fetch_assoc()['avg'] ?? 0) : 0;
+
+    // Skills overview: average score per subject category
+    $skills = ['Cognitive' => 0, 'Communication' => 0, 'Fine Motor' => 0, 'Life Skills' => 0];
+    $r = $conn->query("SELECT COALESCE(ta.subject,'Other') as subj, ROUND(AVG(lp.score),0) as avg
+                       FROM learner_progress lp
+                       LEFT JOIN teacher_activities ta ON lp.activity_id = ta.id
+                       WHERE lp.teacher_id=$teacher_id
+                       GROUP BY ta.subject");
+    $skillMap = ['cognitive'=>'Cognitive','communication'=>'Communication','motor'=>'Fine Motor','life'=>'Life Skills','self'=>'Life Skills'];
+    if ($r) {
+        while ($row = $r->fetch_assoc()) {
+            $subj = strtolower($row['subj']);
+            foreach ($skillMap as $key => $label) {
+                if (strpos($subj, $key) !== false) {
+                    $skills[$label] = intval($row['avg']);
+                    break;
+                }
+            }
+        }
+    }
+
+    // Per-learner performance
+    $learners = [];
+    $stmt = $conn->prepare("SELECT s.student_name, s.disability_type,
+            COUNT(lp.id) as sessions, ROUND(AVG(lp.score),0) as avg_score
+            FROM students s
+            LEFT JOIN learner_progress lp ON s.id = lp.student_id AND lp.teacher_id=?
+            WHERE s.teacher_id=? AND s.status='active'
+            GROUP BY s.id ORDER BY s.student_name");
+    $stmt->bind_param("ii", $teacher_id, $teacher_id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    while ($row = $res->fetch_assoc()) {
+        $avg = intval($row['avg_score']);
+        $status = $avg >= 75 ? 'Passing' : ($avg > 0 ? 'Needs Support' : 'No Data');
+        $remark = $avg >= 90 ? 'Excellent' : ($avg >= 75 ? 'Good' : ($avg > 0 ? 'Needs Improvement' : '—'));
+        $learners[] = [
+            'name'       => $row['student_name'],
+            'condition'  => $row['disability_type'] ?: '—',
+            'avg_score'  => $avg ?: '—',
+            'status'     => $status,
+            'remark'     => $remark
+        ];
+    }
+    $stmt->close();
+
+    echo json_encode([
+        'success'          => true,
+        'total_learners'   => intval($total_learners),
+        'total_activities' => intval($total_activities),
+        'avg_progress'     => intval($avg_progress),
+        'skills'           => $skills,
+        'learners'         => $learners
+    ]);
 }
 ?>

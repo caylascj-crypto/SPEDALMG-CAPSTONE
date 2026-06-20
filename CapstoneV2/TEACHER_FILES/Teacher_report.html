@@ -49,9 +49,9 @@
             </nav>
             <div class="teacher-sidebar-footer">
                 <div class="teacher-profile">
-                    <div class="teacher-avatar">MT</div>
+                    <div class="teacher-avatar" id="teacher-avatar-letter">T</div>
                     <div>
-                        <span class="teacher-name">Ma. Teresa Cruz</span>
+                        <span class="teacher-name" id="teacher-name-sidebar">Teacher</span>
                         <span class="teacher-role">SPED Teacher</span>
                     </div>
                 </div>
@@ -81,62 +81,50 @@
                 </div>
             </header>
             <hr class="teacher-divider" />
-            <!-- STAT CARDS — backend: inject values -->
+            <!-- STAT CARDS -->
             <div class="teacher-stat-cards">
                 <div class="teacher-stat-card">
                     <div class="teacher-stat-icon si-blue"><i class="fa-solid fa-users"></i></div>
                     <div class="teacher-stat-info">
-                        <div class="teacher-stat-num">—</div>
+                        <div class="teacher-stat-num" id="report-stat-learners">—</div>
                         <div class="teacher-stat-label">Assigned Learners</div>
                     </div>
                 </div>
                 <div class="teacher-stat-card">
                     <div class="teacher-stat-icon si-green"><i class="fa-solid fa-chart-line"></i></div>
                     <div class="teacher-stat-info">
-                        <div class="teacher-stat-num">—</div>
+                        <div class="teacher-stat-num" id="report-stat-avg">—</div>
                         <div class="teacher-stat-label">Average Progress</div>
                     </div>
                 </div>
                 <div class="teacher-stat-card">
                     <div class="teacher-stat-icon si-orange"><i class="fa-solid fa-layer-group"></i></div>
                     <div class="teacher-stat-info">
-                        <div class="teacher-stat-num">—</div>
+                        <div class="teacher-stat-num" id="report-stat-activities">—</div>
                         <div class="teacher-stat-label">Available Activities</div>
                     </div>
                 </div>
             </div>
             <!-- TWO-COL: Skills Overview only (Teacher Notes removed) -->
             <div class="teacher-report-grid">
-                <!-- SKILLS OVERVIEW — backend: inject values -->
+                <!-- SKILLS OVERVIEW -->
                 <div class="teacher-panel">
                     <div class="teacher-panel-title">Skills Overview</div>
                     <div class="teacher-skill-row">
-                        <div class="teacher-skill-meta"><span class="teacher-skill-name">Cognitive</span><span
-                                class="teacher-skill-pct c-blue">—</span></div>
-                        <div class="teacher-skill-bar-bg">
-                            <div class="teacher-skill-bar-fill f-blue" style="width:0%;"></div>
-                        </div>
+                        <div class="teacher-skill-meta"><span class="teacher-skill-name">Cognitive</span><span class="teacher-skill-pct c-blue" id="skill-pct-cognitive">—</span></div>
+                        <div class="teacher-skill-bar-bg"><div class="teacher-skill-bar-fill f-blue" id="skill-bar-cognitive" style="width:0%;"></div></div>
                     </div>
                     <div class="teacher-skill-row">
-                        <div class="teacher-skill-meta"><span class="teacher-skill-name">Communication</span><span
-                                class="teacher-skill-pct c-green">—</span></div>
-                        <div class="teacher-skill-bar-bg">
-                            <div class="teacher-skill-bar-fill f-green" style="width:0%;"></div>
-                        </div>
+                        <div class="teacher-skill-meta"><span class="teacher-skill-name">Communication</span><span class="teacher-skill-pct c-green" id="skill-pct-communication">—</span></div>
+                        <div class="teacher-skill-bar-bg"><div class="teacher-skill-bar-fill f-green" id="skill-bar-communication" style="width:0%;"></div></div>
                     </div>
                     <div class="teacher-skill-row">
-                        <div class="teacher-skill-meta"><span class="teacher-skill-name">Fine Motor</span><span
-                                class="teacher-skill-pct c-orange">—</span></div>
-                        <div class="teacher-skill-bar-bg">
-                            <div class="teacher-skill-bar-fill f-orange" style="width:0%;"></div>
-                        </div>
+                        <div class="teacher-skill-meta"><span class="teacher-skill-name">Fine Motor</span><span class="teacher-skill-pct c-orange" id="skill-pct-finemotor">—</span></div>
+                        <div class="teacher-skill-bar-bg"><div class="teacher-skill-bar-fill f-orange" id="skill-bar-finemotor" style="width:0%;"></div></div>
                     </div>
                     <div class="teacher-skill-row">
-                        <div class="teacher-skill-meta"><span class="teacher-skill-name">Life Skills</span><span
-                                class="teacher-skill-pct c-pink">—</span></div>
-                        <div class="teacher-skill-bar-bg">
-                            <div class="teacher-skill-bar-fill f-pink" style="width:0%;"></div>
-                        </div>
+                        <div class="teacher-skill-meta"><span class="teacher-skill-name">Life Skills</span><span class="teacher-skill-pct c-pink" id="skill-pct-lifeskills">—</span></div>
+                        <div class="teacher-skill-bar-bg"><div class="teacher-skill-bar-fill f-pink" id="skill-bar-lifeskills" style="width:0%;"></div></div>
                     </div>
                 </div>
                 <!-- placeholder right teacher-panel (empty — backend can use later) -->
@@ -144,7 +132,7 @@
                     <span style="font-size:13px; color:#CBD5E1; font-style:italic;">Chart area — backend</span>
                 </div>
             </div>
-            <!-- LEARNER PERFORMANCE TABLE — backend: inject rows -->
+            <!-- LEARNER PERFORMANCE TABLE -->
             <div class="teacher-table-card">
                 <div class="teacher-table-card-title">Learner Performance</div>
                 <table>
@@ -157,20 +145,91 @@
                             <th>Remarks</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <!-- backend: inject rows -->
-                        <tr>
-                            <td>—</td>
-                            <td>—</td>
-                            <td>—</td>
-                            <td><span class="teacher-status-badge sb-green">—</span></td>
-                            <td>—</td>
-                        </tr>
+                    <tbody id="report-learner-tbody">
+                        <tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">Loading...</td></tr>
                     </tbody>
                 </table>
             </div>
         </main>
     </div>
+    <script>
+        var TEACHER_ID = parseInt(sessionStorage.getItem('teacher_id') || '1');
+
+        function loadSidebar() {
+            var name = sessionStorage.getItem('teacher_name');
+            if (name) {
+                document.getElementById('teacher-avatar-letter').textContent = name.trim().charAt(0).toUpperCase();
+                document.getElementById('teacher-name-sidebar').textContent = name;
+            } else {
+                var fd = new FormData(); fd.append('teacher_id', TEACHER_ID);
+                fetch('TEACHER_BACKEND/teacher_get_profile.php', { method: 'POST', body: fd })
+                    .then(function(r) { return r.json(); })
+                    .then(function(d) {
+                        if (d.success && d.teacher) {
+                            document.getElementById('teacher-avatar-letter').textContent = d.teacher.avatarLetter;
+                            document.getElementById('teacher-name-sidebar').textContent = d.teacher.name;
+                            sessionStorage.setItem('teacher_name', d.teacher.name);
+                        }
+                    }).catch(function(){});
+            }
+        }
+
+        function loadReports() {
+            var fd = new URLSearchParams();
+            fd.append('action', 'get_overview');
+            fd.append('teacher_id', TEACHER_ID);
+            fetch('TEACHER_BACKEND/teacher_reports_management.php', { method: 'POST', body: fd })
+                .then(function(r) { return r.json(); })
+                .then(function(d) {
+                    if (!d.success) return;
+                    document.getElementById('report-stat-learners').textContent = d.total_learners;
+                    document.getElementById('report-stat-avg').textContent = d.avg_progress ? d.avg_progress + '%' : '—';
+                    document.getElementById('report-stat-activities').textContent = d.total_activities;
+
+                    var skillKeys = {
+                        'Cognitive': 'cognitive',
+                        'Communication': 'communication',
+                        'Fine Motor': 'finemotor',
+                        'Life Skills': 'lifeskills'
+                    };
+                    Object.keys(skillKeys).forEach(function(label) {
+                        var key = skillKeys[label];
+                        var val = d.skills[label] || 0;
+                        document.getElementById('skill-pct-' + key).textContent = val ? val + '%' : '—';
+                        document.getElementById('skill-bar-' + key).style.width = val + '%';
+                    });
+
+                    var tbody = document.getElementById('report-learner-tbody');
+                    if (!d.learners || !d.learners.length) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:#94a3b8;">No learner data yet</td></tr>';
+                        return;
+                    }
+                    var statusColors = { 'Passing': 'sb-green', 'Needs Support': 'sb-orange', 'No Data': 'sb-gray' };
+                    tbody.innerHTML = d.learners.map(function(l) {
+                        var cls = statusColors[l.status] || 'sb-gray';
+                        return '<tr>'
+                            + '<td>' + escHtml(l.name) + '</td>'
+                            + '<td>' + escHtml(l.condition) + '</td>'
+                            + '<td>' + (l.avg_score !== '—' ? l.avg_score + '%' : '—') + '</td>'
+                            + '<td><span class="teacher-status-badge ' + cls + '">' + l.status + '</span></td>'
+                            + '<td>' + escHtml(l.remark) + '</td>'
+                            + '</tr>';
+                    }).join('');
+                }).catch(function() {
+                    document.getElementById('report-learner-tbody').innerHTML =
+                        '<tr><td colspan="5" style="text-align:center;padding:20px;color:#ef4444;">Failed to load data</td></tr>';
+                });
+        }
+
+        function escHtml(str) {
+            return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar();
+            loadReports();
+        });
+    </script>
 </body>
 
 </html>

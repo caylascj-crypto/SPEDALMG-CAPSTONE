@@ -89,9 +89,9 @@
 
         <div class="admin-form-group">
           <label for="admin-password">Password</label>
-          <div style="display:flex;align-items:stretch;background:#e8e3d9;border-radius:10px;">
-            <input id="admin-password" name="admin_password" placeholder="••••••••" type="password" style="flex:1;background:transparent;border:none;outline:none;padding:13px 16px;font-size:14px;color:#333;font-family:inherit;min-width:0;border-radius:10px 0 0 10px;" />
-            <button type="button" id="toggle-password" style="flex-shrink:0;width:46px;background:#d4cfc6;border:none;border-radius:0 10px 10px 0;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;" tabindex="-1">👁</button>
+          <div class="pwd-wrapper">
+            <input id="admin-password" name="admin_password" placeholder="••••••••" type="password" />
+            <button type="button" id="toggle-password" class="pwd-toggle" tabindex="-1"><i class="fa-solid fa-eye"></i></button>
           </div>
         </div>
 
@@ -157,12 +157,13 @@
       var passwordInput = document.getElementById("admin-password");
       if (toggleBtn) {
         toggleBtn.addEventListener("click", function () {
+          var icon = toggleBtn.querySelector("i");
           if (passwordInput.type === "password") {
             passwordInput.type = "text";
-            toggleBtn.textContent = "🙈";
+            icon.className = "fa-solid fa-eye-slash";
           } else {
             passwordInput.type = "password";
-            toggleBtn.textContent = "👁";
+            icon.className = "fa-solid fa-eye";
           }
         });
       }
@@ -224,22 +225,28 @@
               
               if (jsonData.status === "success") {
                 /* Clear all old session data */
-                sessionStorage.removeItem('admin_id');
-                sessionStorage.removeItem('teacher_id');
-                sessionStorage.removeItem('teacher_name');
-                
-                /* Store user data in sessionStorage for portal access */
-                sessionStorage.setItem('admin_id', jsonData.admin_id);
-                sessionStorage.setItem('teacher_name', jsonData.admin_name);
-                
-                /* Store teacher_id for teacher accounts (must be set for all teachers) */
-                sessionStorage.setItem('teacher_id', jsonData.teacher_id || '1');
-                
-                /* Redirect based on user role */
-                if (jsonData.role === "teacher") {
-                  window.location.href = "../TEACHER_FILES/Teacher_dashboard.html";
+                sessionStorage.clear();
+
+                if (jsonData.role === "student") {
+                  /* Student login — store student-specific keys */
+                  sessionStorage.setItem('student_id', jsonData.admin_id);
+                  sessionStorage.setItem('student_name', jsonData.admin_name);
+                  sessionStorage.setItem('student_record_id', jsonData.student_record_id || '');
+                  sessionStorage.setItem('teacher_id', jsonData.teacher_id || '');
+                  sessionStorage.setItem('student_condition', jsonData.student_condition || '');
+                  sessionStorage.setItem('student_grade', jsonData.student_grade || '');
+                  window.location.href = "../STUDENT_PORTAL/Student_dashboard.html";
                 } else {
-                  window.location.href = "Admin_dashboard.html";
+                  /* Teacher / Admin login */
+                  sessionStorage.setItem('admin_id', jsonData.admin_id);
+                  sessionStorage.setItem('teacher_name', jsonData.admin_name);
+                  sessionStorage.setItem('teacher_id', jsonData.teacher_id || '1');
+
+                  if (jsonData.role === "teacher") {
+                    window.location.href = "../TEACHER_FILES/Teacher_dashboard.html";
+                  } else {
+                    window.location.href = "Admin_dashboard.html";
+                  }
                 }
               } else {
                 alert("Login failed: " + (jsonData.message || "Unknown error"));

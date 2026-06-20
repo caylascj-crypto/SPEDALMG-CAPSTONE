@@ -866,7 +866,7 @@
         .then(function(stats) {
           var totalUsers = stats.total_users || 0;
           var teachers = stats.teachers || 0;
-          var students = stats.students || 0;
+          var students = stats.student_accounts || 0;
           var activeAccounts = stats.active_accounts || 0;
 
           var totalUsersEl = document.getElementById('manage-total-users');

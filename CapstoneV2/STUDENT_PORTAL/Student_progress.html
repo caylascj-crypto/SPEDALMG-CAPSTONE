@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>SPED ALM - My Progress</title>
+  <link rel="icon" type="image/png" href="../ADMIN_ASSETS/logo.png" />
+  <link href="../STUDENT_CSS/Student_progress.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- SIDEBAR -->
+  <aside class="student-sidebar">
+    <div class="student-sidebar-logo">
+      <img alt="SPED ALM Logo" class="student-sidebar-logo-img" src="../STUDENT_ASSETS/logo.png" onerror="this.src='../ADMIN_ASSETS/logo.png'" />
+      <div class="student-sidebar-logo-text">
+        <span class="student-sidebar-title">SPED ALM</span>
+        <span class="student-sidebar-sub">Student Portal</span>
+      </div>
+    </div>
+    <nav class="student-sidebar-nav">
+      <a class="student-nav-item" href="Student_dashboard.html">
+        <i>🏠</i>
+        <span>Dashboard</span>
+      </a>
+      <a class="student-nav-item" href="Student_mymaterials.html">
+        <i>📚</i>
+        <span>My Materials</span>
+      </a>
+      <a class="student-nav-item student-active" href="Student_progress.html">
+        <i>⭐</i>
+        <span>My Progress</span>
+        <i class="student-nav-arrow">›</i>
+      </a>
+      <a class="student-nav-item" href="Student_settings.html">
+        <i>⚙️</i>
+        <span>Settings</span>
+      </a>
+    </nav>
+    <div class="student-sidebar-footer">
+      <div class="student-sidebar-user">
+        <div class="student-user-avatar" id="sidebar-avatar">?</div>
+        <div class="student-user-info">
+          <span class="student-user-name" id="sidebar-name">Loading...</span>
+          <span class="student-user-role" id="sidebar-role">—</span>
+        </div>
+      </div>
+      <a class="student-signout-btn" href="#" id="signout-btn">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Sign Out</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <student-main class="student-main">
+    <!-- PAGE HEADER -->
+    <header class="student-page-header">
+      <div class="student-page-header-left">
+        <h1 class="student-page-title">Student Progress Report</h1>
+        <p class="student-page-sub" id="report-date">Generated: —  ·  School Year: 2025–2026</p>
+      </div>
+      <div class="student-page-header-right">
+        <button class="student-export-btn" type="button" onclick="window.print()">⬇ Export PDF</button>
+        <a class="student-notif-btn" href="Student_notif.html">
+          <i class="fa-regular fa-bell"></i>
+          <span class="student-notif-badge" id="notif-badge" style="display:none"></span>
+        </a>
+      </div>
+    </header>
+
+    <!-- STUDENT OVERVIEW CARD -->
+    <div class="student-overview-card">
+      <div class="student-ov-avatar" id="ov-avatar">?</div>
+      <div class="student-ov-info">
+        <div class="student-ov-name" id="ov-name">—</div>
+        <div class="student-ov-chips">
+          <span class="student-chip student-chip--blue" id="ov-grade">—</span>
+          <span class="student-chip student-chip--gray" id="ov-condition">—</span>
+        </div>
+      </div>
+      <div class="student-ov-divider"></div>
+      <!-- Overall Progress circle -->
+      <div class="student-ov-stat">
+        <div class="student-circle-wrap">
+          <svg height="80" viewBox="0 0 80 80" width="80">
+            <circle class="student-circle-track" cx="40" cy="40" r="32"></circle>
+            <circle class="student-circle-fill student-circle-fill--blue" cx="40" cy="40" r="32"
+              id="circle-score" stroke-dasharray="201" stroke-dashoffset="201"></circle>
+          </svg>
+          <div class="student-circle-text">
+            <span class="student-circle-num" id="avg-score">—</span>
+            <span class="student-circle-denom">/100</span>
+          </div>
+        </div>
+        <div class="student-ov-stat-label">Overall Progress</div>
+        <div class="student-ov-stat-sub">avg score</div>
+      </div>
+      <div class="student-ov-divider"></div>
+      <!-- Activities Completed circle -->
+      <div class="student-ov-stat">
+        <div class="student-circle-wrap">
+          <svg height="80" viewBox="0 0 80 80" width="80">
+            <circle class="student-circle-track" cx="40" cy="40" r="32"></circle>
+            <circle class="student-circle-fill student-circle-fill--green" cx="40" cy="40" r="32"
+              id="circle-acts" stroke-dasharray="201" stroke-dashoffset="201"></circle>
+          </svg>
+          <div class="student-circle-text">
+            <span class="student-circle-num" id="acts-completed">—</span>
+            <span class="student-circle-denom" id="acts-total">/—</span>
+          </div>
+        </div>
+        <div class="student-ov-stat-label">Activities Completed</div>
+      </div>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="student-content-grid">
+      <!-- Performance by Activity -->
+      <div class="student-perf-card">
+        <div class="student-perf-header">
+          <span class="student-perf-title">Performance by Activity</span>
+          <span class="student-perf-tag" id="perf-count">— Activities</span>
+        </div>
+        <div id="perf-body">
+          <div class="student-perf-empty">
+            <div class="student-perf-empty-icon">📊</div>
+            <p class="student-perf-empty-title">No performance data yet</p>
+            <p class="student-perf-empty-desc">Activity scores will appear here once your teacher assigns and grades activities.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Teacher's Notes -->
+      <div class="student-notes-card">
+        <div class="student-notes-title">Teacher's Notes / Recommendations</div>
+        <div id="notes-body">
+          <div class="student-notes-empty">
+            <div class="student-notes-empty-icon">📝</div>
+            <p class="student-notes-empty-title">No notes yet</p>
+            <p class="student-notes-empty-desc">Your teacher's feedback and recommendations will appear here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY HISTORY -->
+    <div class="student-history-card">
+      <div class="student-history-header">
+        <span class="student-history-title">Activity History</span>
+        <span class="student-history-count" id="history-count">— records</span>
+      </div>
+      <table class="student-history-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Activity</th>
+            <th>Category</th>
+            <th>Score</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="history-tbody">
+          <tr><td class="student-history-empty" colspan="5">No activity history yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </student-main>
+
+  <script>
+    const BACKEND = 'STUDENT_BACKEND/';
+
+    function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function getInitials(name) { return (name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().substring(0,2); }
+    function fmtDate(d) { return d ? new Date(d).toLocaleDateString('en-PH', {year:'numeric',month:'short',day:'numeric'}) : '—'; }
+
+    document.getElementById('signout-btn').addEventListener('click', function(e) {
+      e.preventDefault(); sessionStorage.clear(); window.location.href = '../ADMIN_FILES/login_screen.html';
+    });
+
+    function setCircle(id, pct) {
+      const circ = 201;
+      document.getElementById(id).setAttribute('stroke-dashoffset', circ - (circ * Math.min(100, pct) / 100));
+    }
+
+    async function loadPage() {
+      const studentName = sessionStorage.getItem('student_name') || '';
+      const studentRecordId = sessionStorage.getItem('student_record_id');
+      const teacherId = sessionStorage.getItem('teacher_id');
+      const adminId = sessionStorage.getItem('student_id');
+      const condition = sessionStorage.getItem('student_condition') || '';
+      const grade = sessionStorage.getItem('student_grade') || '';
+
+      if (!adminId) { window.location.href = '../ADMIN_FILES/login_screen.html'; return; }
+
+      // Sidebar
+      document.getElementById('sidebar-avatar').textContent = getInitials(studentName);
+      document.getElementById('sidebar-name').textContent = studentName || 'Student';
+      document.getElementById('sidebar-role').textContent = [grade, condition].filter(Boolean).join(' — ');
+
+      // Overview card
+      document.getElementById('ov-avatar').textContent = getInitials(studentName);
+      document.getElementById('ov-name').textContent = studentName || '—';
+      document.getElementById('ov-grade').textContent = grade || '—';
+      document.getElementById('ov-condition').textContent = condition || '—';
+
+      // Report date
+      document.getElementById('report-date').textContent = 'Generated: ' + new Date().toLocaleDateString('en-PH', {year:'numeric',month:'long',day:'numeric'}) + '  ·  School Year: 2025–2026';
+
+      if (!studentRecordId || !teacherId) return;
+
+      try {
+        const res = await fetch(BACKEND + 'student_get_progress.php?student_record_id=' + studentRecordId + '&teacher_id=' + teacherId);
+        const data = await res.json();
+        if (!data.success) return;
+
+        // Circles
+        document.getElementById('avg-score').textContent = data.avg_score || '0';
+        setCircle('circle-score', data.avg_score || 0);
+        document.getElementById('acts-completed').textContent = data.completed || '0';
+        document.getElementById('acts-total').textContent = '/' + (data.total_activities || '0');
+        const actPct = data.total_activities > 0 ? (data.completed / data.total_activities * 100) : 0;
+        setCircle('circle-acts', actPct);
+
+        // Performance cards
+        if (data.activities && data.activities.length) {
+          document.getElementById('perf-count').textContent = data.activities.length + ' Activities';
+          document.getElementById('perf-body').innerHTML = data.activities.map(a => {
+            const pct = a.score ? Math.min(100, a.score) : 0;
+            const color = pct >= 80 ? '#22c55e' : pct >= 50 ? '#f59e0b' : '#ef4444';
+            return `<div style="margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span style="font-weight:600;font-size:0.9rem;">${esc(a.activity_title)}</span>
+                <span style="font-weight:700;color:${color}">${pct}/100</span>
+              </div>
+              <div style="background:#f1f5f9;border-radius:8px;height:8px;">
+                <div style="width:${pct}%;background:${color};border-radius:8px;height:100%;transition:width 0.6s;"></div>
+              </div>
+              <span style="font-size:0.75rem;color:#94a3b8;">${esc(a.subject||'')} · ${fmtDate(a.assessment_date)}</span>
+            </div>`;
+          }).join('');
+        }
+
+        // Notes
+        if (data.notes && data.notes.length) {
+          document.getElementById('notes-body').innerHTML = data.notes.map(n =>
+            `<div style="border-left:3px solid #818cf8;padding:8px 12px;margin-bottom:8px;background:#f8f7ff;border-radius:4px;">
+              <p style="margin:0 0 4px;font-size:0.9rem;">${esc(n.note)}</p>
+              <span style="font-size:0.75rem;color:#94a3b8;">${fmtDate(n.created_at)}</span>
+            </div>`
+          ).join('');
+        }
+
+        // History table
+        if (data.activities && data.activities.length) {
+          document.getElementById('history-count').textContent = data.activities.length + ' records';
+          document.getElementById('history-tbody').innerHTML = data.activities.map(a => {
+            const pct = a.score ? Math.min(100, a.score) : 0;
+            const statusBadge = a.status_label === 'Completed'
+              ? `<span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:20px;font-size:0.75rem;font-weight:600;">✓ Completed</span>`
+              : `<span style="background:#fef9c3;color:#854d0e;padding:2px 8px;border-radius:20px;font-size:0.75rem;font-weight:600;">In Progress</span>`;
+            return `<tr>
+              <td>${fmtDate(a.assessment_date)}</td>
+              <td>${esc(a.activity_title)}</td>
+              <td>${esc(a.subject||'—')}</td>
+              <td><strong>${pct}</strong>/100</td>
+              <td>${statusBadge}</td>
+            </tr>`;
+          }).join('');
+        }
+      } catch (e) {}
+
+      // Notification badge
+      try {
+        const notifRes = await fetch(BACKEND + 'student_get_notifications.php?student_record_id=' + studentRecordId + '&teacher_id=' + teacherId);
+        const notif = await notifRes.json();
+        if (notif.success && notif.unread > 0) {
+          const badge = document.getElementById('notif-badge');
+          badge.textContent = notif.unread; badge.style.display = '';
+        }
+      } catch (e) {}
+    }
+
+    loadPage();
+  </script>
+</body>
+</html>

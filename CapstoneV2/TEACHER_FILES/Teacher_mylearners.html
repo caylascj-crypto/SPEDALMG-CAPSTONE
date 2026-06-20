@@ -49,9 +49,9 @@
             </nav>
             <div class="teacher-sidebar-footer">
                 <div class="teacher-profile">
-                    <div class="teacher-avatar">MT</div>
+                    <div class="teacher-avatar" id="teacher-avatar-letter">T</div>
                     <div>
-                        <span class="teacher-name">Ma. Teresa Cruz</span>
+                        <span class="teacher-name" id="teacher-name-sidebar">Teacher</span>
                         <span class="teacher-role">SPED Teacher</span>
                     </div>
                 </div>
@@ -249,11 +249,32 @@
     <script>
         let currentStudentId = null;
 
+        function loadSidebar() {
+            var TEACHER_ID = parseInt(sessionStorage.getItem('teacher_id') || '1');
+            var name = sessionStorage.getItem('teacher_name');
+            if (name) {
+                document.getElementById('teacher-avatar-letter').textContent = name.trim().charAt(0).toUpperCase();
+                document.getElementById('teacher-name-sidebar').textContent = name;
+            } else {
+                var fd = new FormData(); fd.append('teacher_id', TEACHER_ID);
+                fetch('TEACHER_BACKEND/teacher_get_profile.php', { method: 'POST', body: fd })
+                    .then(function(r) { return r.json(); })
+                    .then(function(d) {
+                        if (d.success && d.teacher) {
+                            document.getElementById('teacher-avatar-letter').textContent = d.teacher.avatarLetter;
+                            document.getElementById('teacher-name-sidebar').textContent = d.teacher.name;
+                            sessionStorage.setItem('teacher_name', d.teacher.name);
+                        }
+                    }).catch(function(){});
+            }
+        }
+
         // Load learner progress on page load
         document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar();
             const params = new URLSearchParams(window.location.search);
             currentStudentId = params.get('student_id') || sessionStorage.getItem('selected_student_id');
-            
+
             if (currentStudentId) {
                 loadLearnerProgress(currentStudentId);
             }

@@ -49,9 +49,9 @@
             </nav>
             <div class="teacher-sidebar-footer">
                 <div class="teacher-profile">
-                    <div class="teacher-avatar">MT</div>
+                    <div class="teacher-avatar" id="teacher-avatar-letter">T</div>
                     <div class="teacher-info">
-                        <span class="teacher-name">Ma. Teresa Cruz</span>
+                        <span class="teacher-name" id="teacher-name-sidebar">Teacher</span>
                         <span class="teacher-role">SPED Teacher</span>
                     </div>
                 </div>
@@ -82,13 +82,6 @@
                     <div class="teacher-select-wrap">
                         <select id="teacher-learnerProfile" name="teacher_learnerprofile" onchange="setCondition()">
                             <option value="">ALL</option>
-                            <option value="De Leon, Nina|ASD">De Leon, Nina (ASD)</option>
-                            <option value="Torres, Anne|ASD">Torres, Anne (ASD)</option>
-                            <option value="Lopez, John|ASD">Lopez, John (ASD)</option>
-                            <option value="Nery, Arthur|ASD">Nery, Arthur (ASD)</option>
-                            <option value="Reyes, Marco|ID">Reyes, Marco (ID)</option>
-                            <option value="Garcia, Sofia|ID">Garcia, Sofia (ID)</option>
-                            <option value="Bautista, Luis|ID">Bautista, Luis (ID)</option>
                         </select>
                         <i class="fa-solid fa-chevron-down teacher-select-arrow"></i>
                     </div>
@@ -167,9 +160,47 @@
         </main>
     </div>
     <script>
+        var TEACHER_ID = parseInt(sessionStorage.getItem('teacher_id') || '1');
+
+        function loadSidebar() {
+            var name = sessionStorage.getItem('teacher_name');
+            if (name) {
+                document.getElementById('teacher-avatar-letter').textContent = name.trim().charAt(0).toUpperCase();
+                document.getElementById('teacher-name-sidebar').textContent = name;
+            } else {
+                var fd = new FormData(); fd.append('teacher_id', TEACHER_ID);
+                fetch('TEACHER_BACKEND/teacher_get_profile.php', { method: 'POST', body: fd })
+                    .then(function(r) { return r.json(); })
+                    .then(function(d) {
+                        if (d.success && d.teacher) {
+                            document.getElementById('teacher-avatar-letter').textContent = d.teacher.avatarLetter;
+                            document.getElementById('teacher-name-sidebar').textContent = d.teacher.name;
+                            sessionStorage.setItem('teacher_name', d.teacher.name);
+                        }
+                    }).catch(function(){});
+            }
+        }
+
+        function loadLearners() {
+            fetch('TEACHER_BACKEND/teacher_list_learners.php')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var sel = document.getElementById('teacher-learnerProfile');
+                    sel.innerHTML = '<option value="">ALL</option>';
+                    (data || []).forEach(function(s) {
+                        var disability = s.disability || 'General';
+                        var val = s.name + '|' + disability;
+                        var opt = document.createElement('option');
+                        opt.value = val;
+                        opt.textContent = s.name + ' (' + disability + ')';
+                        sel.appendChild(opt);
+                    });
+                }).catch(function(){});
+        }
+
         function setCondition() {
-            const val = document.getElementById('teacher-learnerProfile').value;
-            const cond = document.getElementById('teacher-condition');
+            var val = document.getElementById('teacher-learnerProfile').value;
+            var cond = document.getElementById('teacher-condition');
             cond.value = val ? val.split('|')[1] : '';
         }
         function resetFilters() {
@@ -177,8 +208,8 @@
             document.getElementById('teacher-condition').value = '';
         }
         function goGenerate() {
-            const val = document.getElementById('teacher-learnerProfile').value;
-            const condition = document.getElementById('teacher-condition').value;
+            var val = document.getElementById('teacher-learnerProfile').value;
+            var condition = document.getElementById('teacher-condition').value;
             localStorage.setItem('selectedLearner', val ? val.split('|')[0] : 'ALL');
             localStorage.setItem('selectedCondition', condition || 'ALL');
             window.location.href = 'Teacher_generate.html';
@@ -186,6 +217,11 @@
         function goReview() {
             window.location.href = 'Teacher_activies.html';
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar();
+            loadLearners();
+        });
     </script>
 </body>
 

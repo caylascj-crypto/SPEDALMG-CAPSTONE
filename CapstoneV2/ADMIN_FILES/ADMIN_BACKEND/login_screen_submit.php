@@ -42,6 +42,21 @@ function syncTeacherAccount($admin_id, $email, $first_name, $last_name) {
     return true;
 }
 
+// Function to get student record from teacher DB
+function getStudentRecord($admin_account_id) {
+    require_once __DIR__ . '/../../TEACHER_FILES/TEACHER_BACKEND/db.php';
+    $conn = getTeacherDatabaseConnection();
+    if (!$conn) return null;
+
+    $stmt = $conn->prepare("SELECT s.id AS student_record_id, s.teacher_id, s.disability_type, s.grade_level, s.student_name FROM students s WHERE s.admin_account_id = ? AND s.status = 'active' LIMIT 1");
+    $stmt->bind_param("i", $admin_account_id);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    $conn->close();
+    return $row;
+}
+
 // Function to get teacher_id from teacher_accounts
 function getTeacherIdByEmail($email) {
     require_once __DIR__ . '/../../TEACHER_FILES/TEACHER_BACKEND/db.php';
@@ -103,15 +118,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION['admin_name'] = trim($row['first_name'] . ' ' . $row['last_name']);
             $_SESSION['admin_role'] = $row['role'];
             $_SESSION['login_time'] = date('Y-m-d H:i:s');
+
+            // Update last_login — marks teacher/admin as active
+            $upd = $conn->prepare("UPDATE admin_accounts SET last_login = NOW() WHERE id = ?");
+            if ($upd) { $upd->bind_param("i", $row['id']); $upd->execute(); $upd->close(); }
             
-            // If the user is a teacher, sync their account to teacher_accounts and get teacher_id
             $teacher_id = null;
+            $student_record = null;
+
             if ($row['role'] === 'teacher') {
                 syncTeacherAccount($row['id'], $email, $row['first_name'], $row['last_name']);
                 $teacher_id = getTeacherIdByEmail($email);
                 $_SESSION['teacher_id'] = $teacher_id;
+            } elseif ($row['role'] === 'student') {
+                $student_record = getStudentRecord($row['id']);
             }
-            
+
             $response = [
                 'status' => 'success',
                 'message' => 'Login successful',
@@ -119,10 +141,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 'admin_name' => $_SESSION['admin_name'],
                 'admin_id' => $row['id']
             ];
-            
-            // Add teacher_id for teacher roles
+
             if ($teacher_id) {
                 $response['teacher_id'] = $teacher_id;
+            }
+
+            if ($student_record) {
+                $response['student_record_id'] = $student_record['student_record_id'];
+                $response['teacher_id'] = $student_record['teacher_id'];
+                $response['student_condition'] = $student_record['disability_type'];
+                $response['student_grade'] = $student_record['grade_level'];
             }
             
             echo json_encode($response);

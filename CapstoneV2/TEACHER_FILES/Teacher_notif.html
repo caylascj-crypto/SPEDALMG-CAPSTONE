@@ -49,9 +49,9 @@
             </nav>
             <div class="teacher-sidebar-footer">
                 <div class="teacher-profile">
-                    <div class="teacher-avatar">MT</div>
+                    <div class="teacher-avatar" id="teacher-avatar-letter">T</div>
                     <div class="teacher-info">
-                        <span class="teacher-name">Ma. Teresa Cruz</span>
+                        <span class="teacher-name" id="teacher-name-sidebar">Teacher</span>
                         <span class="teacher-role">SPED Teacher</span>
                     </div>
                 </div>
@@ -109,53 +109,169 @@
         </main>
     </div><!-- /teacher-app-wrapper -->
     <script>
-        /* ── Tab filter (UI only) ── */
+        var TEACHER_ID = parseInt(sessionStorage.getItem('teacher_id') || '1');
+        var allNotifications = [];
+        var currentTab = 'all';
+
+        /* ── Sidebar profile ── */
+        function loadSidebar() {
+            var name = sessionStorage.getItem('teacher_name');
+            if (name) {
+                document.getElementById('teacher-avatar-letter').textContent = name.trim().charAt(0).toUpperCase();
+                document.getElementById('teacher-name-sidebar').textContent = name;
+            } else {
+                var fd = new FormData(); fd.append('teacher_id', TEACHER_ID);
+                fetch('TEACHER_BACKEND/teacher_get_profile.php', { method: 'POST', body: fd })
+                    .then(function(r) { return r.json(); })
+                    .then(function(d) {
+                        if (d.success && d.teacher) {
+                            document.getElementById('teacher-avatar-letter').textContent = d.teacher.avatarLetter;
+                            document.getElementById('teacher-name-sidebar').textContent = d.teacher.name;
+                            sessionStorage.setItem('teacher_name', d.teacher.name);
+                        }
+                    }).catch(function(){});
+            }
+        }
+
+        /* ── Load notifications from backend ── */
+        function loadNotifications() {
+            fetch('TEACHER_BACKEND/teacher_manage_notifications.php?action=list&teacher_id=' + TEACHER_ID + '&limit=50')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    allNotifications = data.notifications || [];
+                    renderAll();
+                    updateUnreadBadge();
+                }).catch(function() { renderAll(); });
+        }
+
+        function updateUnreadBadge() {
+            var unread = allNotifications.filter(function(n) { return !n.is_read; }).length;
+            document.getElementById('teacher-unread-subtitle').textContent =
+                unread > 0 ? unread + ' unread notification' + (unread !== 1 ? 's' : '') : 'All caught up';
+            var unreadBtn = document.getElementById('unread-teacher-tab-btn');
+            if (unreadBtn) unreadBtn.textContent = 'Unread (' + unread + ')';
+        }
+
+        function typeIcon(type) {
+            var icons = { info: 'fa-circle-info', success: 'fa-circle-check', warning: 'fa-triangle-exclamation', error: 'fa-circle-xmark' };
+            return icons[type] || 'fa-bell';
+        }
+        function typeColor(type) {
+            var colors = { info: '#3b82f6', success: '#10b981', warning: '#f59e0b', error: '#ef4444' };
+            return colors[type] || '#6b7280';
+        }
+        function timeAgo(ts) {
+            var d = new Date(ts.replace(' ', 'T'));
+            var diff = Math.floor((Date.now() - d.getTime()) / 1000);
+            if (diff < 60) return 'Just now';
+            if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+            if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+            return Math.floor(diff/86400) + 'd ago';
+        }
+
+        function renderAll() {
+            var list = currentTab === 'unread'
+                ? allNotifications.filter(function(n) { return !n.is_read; })
+                : allNotifications;
+            var container = document.getElementById('teacher-notifList');
+            var empty = document.getElementById('teacher-emptyState');
+            var footer = document.getElementById('teacher-notif-footer');
+
+            if (!list.length) {
+                if (empty) empty.style.display = '';
+                footer.textContent = 'Showing 0 of 0 notifications';
+                return;
+            }
+            if (empty) empty.style.display = 'none';
+
+            var html = '';
+            list.forEach(function(n) {
+                var readClass = n.is_read ? ' read' : '';
+                html += '<div class="teacher-notif-item' + readClass + '" data-id="' + n.id + '" data-read="' + (n.is_read ? 'true' : 'false') + '" style="display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid #f1f5f9;background:' + (n.is_read ? '#fff' : '#f0f7ff') + '">'
+                    + '<div style="font-size:20px;color:' + typeColor(n.notification_type) + ';margin-top:2px;"><i class="fa-solid ' + typeIcon(n.notification_type) + '"></i></div>'
+                    + '<div style="flex:1;min-width:0;">'
+                    + '<div style="font-weight:' + (n.is_read ? '500' : '700') + ';font-size:14px;color:#1e293b;">' + escHtml(n.title) + '</div>'
+                    + (n.message ? '<div style="font-size:13px;color:#64748b;margin-top:2px;">' + escHtml(n.message) + '</div>' : '')
+                    + '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">' + timeAgo(n.created_at) + '</div>'
+                    + '</div>'
+                    + '<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">'
+                    + (!n.is_read ? '<button class="teacher-mark-read-btn" onclick="markRead(' + n.id + ')" style="font-size:11px;padding:3px 8px;border:1px solid #93c5fd;border-radius:4px;background:#eff6ff;color:#2563eb;cursor:pointer;">Mark Read</button>' : '<span style="font-size:11px;color:#94a3b8;">Read</span>')
+                    + '<button onclick="dismiss(' + n.id + ')" style="font-size:11px;padding:3px 8px;border:1px solid #fca5a5;border-radius:4px;background:#fff5f5;color:#ef4444;cursor:pointer;">Dismiss</button>'
+                    + '</div>'
+                    + '</div>';
+            });
+            container.innerHTML = html;
+            footer.textContent = 'Showing ' + list.length + ' of ' + allNotifications.length + ' notifications';
+        }
+
+        function escHtml(str) {
+            return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        /* ── Tab filter ── */
         function filterTab(btn, type) {
-            document.querySelectorAll('.teacher-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.teacher-tab-btn').forEach(function(b) { b.classList.remove('active'); });
             btn.classList.add('active');
-            const items = [...document.querySelectorAll('.teacher-notif-item')];
-            items.forEach(el => {
-                if (type === 'unread') {
-                    el.style.display = el.dataset.read === 'false' ? '' : 'none';
-                } else {
-                    el.style.display = '';
-                }
-            });
+            currentTab = type;
+            renderAll();
         }
 
-        /* ── Mark single read (UI only) ── */
+        /* ── Mark single read ── */
         function markRead(id) {
-            const item = document.querySelector(`.teacher-notif-item[data-id="${id}"]`);
-            if (!item || item.dataset.read === 'true') return;
-            item.dataset.read = 'true';
-            item.classList.add('read');
-            const btn = item.querySelector('.teacher-mark-read-btn');
-            if (btn) { btn.textContent = 'Read'; btn.disabled = true; }
+            var fd = new URLSearchParams();
+            fd.append('action', 'mark_read');
+            fd.append('teacher_id', TEACHER_ID);
+            fd.append('notification_id', id);
+            fetch('TEACHER_BACKEND/teacher_manage_notifications.php', { method: 'POST', body: fd })
+                .then(function() {
+                    var n = allNotifications.find(function(x) { return x.id == id; });
+                    if (n) n.is_read = true;
+                    renderAll(); updateUnreadBadge();
+                }).catch(function(){});
         }
 
-        /* ── Dismiss single (UI only) ── */
+        /* ── Dismiss single ── */
         function dismiss(id) {
-            const item = document.querySelector(`.teacher-notif-item[data-id="${id}"]`);
-            if (!item) return;
-            item.style.transition = 'opacity 0.22s';
-            item.style.opacity = '0';
-            setTimeout(() => { item.style.display = 'none'; }, 230);
+            var fd = new URLSearchParams();
+            fd.append('action', 'delete');
+            fd.append('teacher_id', TEACHER_ID);
+            fd.append('notification_id', id);
+            fetch('TEACHER_BACKEND/teacher_manage_notifications.php', { method: 'POST', body: fd })
+                .then(function() {
+                    allNotifications = allNotifications.filter(function(x) { return x.id != id; });
+                    renderAll(); updateUnreadBadge();
+                }).catch(function(){});
         }
 
-        /* ── Mark all read (UI only) ── */
+        /* ── Mark all read ── */
         function markAllRead() {
-            document.querySelectorAll('.teacher-notif-item').forEach(el => {
-                el.dataset.read = 'true';
-                el.classList.add('read');
-                const btn = el.querySelector('.teacher-mark-read-btn');
-                if (btn) { btn.textContent = 'Read'; btn.disabled = true; }
-            });
+            var fd = new URLSearchParams();
+            fd.append('action', 'mark_all_read');
+            fd.append('teacher_id', TEACHER_ID);
+            fetch('TEACHER_BACKEND/teacher_manage_notifications.php', { method: 'POST', body: fd })
+                .then(function() {
+                    allNotifications.forEach(function(n) { n.is_read = true; });
+                    renderAll(); updateUnreadBadge();
+                }).catch(function(){});
         }
 
-        /* ── Clear all (UI only) ── */
+        /* ── Clear all ── */
         function clearAll() {
-            document.querySelectorAll('.teacher-notif-item').forEach(el => { el.style.display = 'none'; });
+            if (!allNotifications.length) return;
+            var fd = new URLSearchParams();
+            fd.append('action', 'clear_all');
+            fd.append('teacher_id', TEACHER_ID);
+            fetch('TEACHER_BACKEND/teacher_manage_notifications.php', { method: 'POST', body: fd })
+                .then(function() {
+                    allNotifications = [];
+                    renderAll(); updateUnreadBadge();
+                }).catch(function(){});
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar();
+            loadNotifications();
+        });
     </script>
 </body>
 

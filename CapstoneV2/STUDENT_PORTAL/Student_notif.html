@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>SPED ALM - Notifications</title>
+  <link rel="icon" type="image/png" href="../ADMIN_ASSETS/logo.png" />
+  <link href="../STUDENT_CSS/Student_notif.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- SIDEBAR -->
+  <aside class="student-sidebar">
+    <div class="student-sidebar-logo">
+      <img alt="SPED ALM Logo" class="student-sidebar-logo-img" src="../STUDENT_ASSETS/logo.png" onerror="this.src='../ADMIN_ASSETS/logo.png'" />
+      <div class="student-sidebar-logo-text">
+        <span class="student-sidebar-title">SPED ALM</span>
+        <span class="student-sidebar-sub">Student Portal</span>
+      </div>
+    </div>
+    <nav class="student-sidebar-nav">
+      <a class="student-nav-item" href="Student_dashboard.html">
+        <i>🏠</i>
+        <span>Dashboard</span>
+      </a>
+      <a class="student-nav-item" href="Student_mymaterials.html">
+        <i>📚</i>
+        <span>My Materials</span>
+      </a>
+      <a class="student-nav-item" href="Student_progress.html">
+        <i>⭐</i>
+        <span>My Progress</span>
+      </a>
+      <a class="student-nav-item" href="Student_settings.html">
+        <i>⚙️</i>
+        <span>Settings</span>
+      </a>
+    </nav>
+    <div class="student-sidebar-footer">
+      <div class="student-sidebar-user">
+        <div class="student-user-avatar" id="sidebar-avatar">?</div>
+        <div class="student-user-info">
+          <span class="student-user-name" id="sidebar-name">Loading...</span>
+          <span class="student-user-role" id="sidebar-role">—</span>
+        </div>
+      </div>
+      <a class="student-signout-btn" href="#" id="signout-btn">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Sign Out</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <student-main class="student-main">
+    <!-- PAGE HEADER -->
+    <header class="student-page-header">
+      <div class="student-page-header-left">
+        <h1 class="student-page-title">Notifications 🔔</h1>
+        <p class="student-page-sub" id="student-unreadCount">Loading...</p>
+      </div>
+      <div class="student-page-actions">
+        <button class="student-action-btn" onclick="markAllRead()" type="button">✓ Mark all read</button>
+        <button class="student-action-btn student-action-btn--danger" onclick="clearAll()" type="button">🗑 Clear all</button>
+      </div>
+    </header>
+
+    <!-- FILTER ROW -->
+    <div class="student-filter-row">
+      <div class="student-filter-tabs">
+        <button class="student-ftab student-active" onclick="switchTab(this, 'all')" type="button">All Notifications</button>
+        <button class="student-ftab" id="student-unreadTab" onclick="switchTab(this, 'unread')" type="button">Unread (0)</button>
+      </div>
+      <button class="student-mark-all-btn" onclick="markAllRead()" type="button">Mark All as Read</button>
+    </div>
+
+    <!-- NOTIFICATIONS LIST -->
+    <div class="student-notif-list" id="student-notifList">
+      <div class="student-notif-empty">
+        <div class="student-notif-empty-icon">🔔</div>
+        <p class="student-notif-empty-title">Loading notifications...</p>
+      </div>
+    </div>
+  </student-main>
+
+  <script>
+    const BACKEND = 'STUDENT_BACKEND/';
+    let currentTab = 'all';
+    let notifications = [];
+    let readSet = new Set();
+
+    function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function getInitials(name) { return (name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().substring(0,2); }
+
+    function relativeTime(dateStr) {
+      if (!dateStr) return '';
+      const diff = (Date.now() - new Date(dateStr)) / 1000;
+      if (diff < 60) return 'Just now';
+      if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+      if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+      if (diff < 172800) return 'Yesterday';
+      return new Date(dateStr).toLocaleDateString('en-PH',{month:'short',day:'numeric'});
+    }
+
+    document.getElementById('signout-btn').addEventListener('click', function(e) {
+      e.preventDefault(); sessionStorage.clear(); window.location.href = '../ADMIN_FILES/login_screen.html';
+    });
+
+    const EMPTY_HTML = `<div class="student-notif-empty">
+      <div class="student-notif-empty-icon">🔔</div>
+      <p class="student-notif-empty-title">No notifications</p>
+      <p class="student-notif-empty-desc">Notifications from activities, your teacher, and system updates will appear here.</p>
+    </div>`;
+
+    function renderList() {
+      const list = document.getElementById('student-notifList');
+      const filtered = currentTab === 'unread'
+        ? notifications.filter((_, i) => !readSet.has(i))
+        : notifications;
+
+      if (!filtered.length) { list.innerHTML = EMPTY_HTML; return; }
+
+      list.innerHTML = filtered.map((n, rawIdx) => {
+        const idx = notifications.indexOf(n);
+        const isRead = readSet.has(idx);
+        return `<div class="notif-item${isRead ? '' : ' unread'}" data-idx="${idx}">
+          <div class="student-notif-icon ${esc(n.icon_class)}">${n.icon}</div>
+          <div class="student-notif-body">
+            <div class="student-notif-row1">
+              <span class="student-notif-title">${esc(n.title)}</span>
+              <span class="student-notif-time">${relativeTime(n.time)}</span>
+            </div>
+            <p class="student-notif-text">${esc(n.text)}</p>
+          </div>
+          <button class="mark-read-btn" ${isRead ? 'disabled' : ''} onclick="markOne(${idx})" type="button">${isRead ? 'Read' : 'Mark read'}</button>
+        </div>`;
+      }).join('');
+
+      recount();
+    }
+
+    function recount() {
+      const n = notifications.length - readSet.size;
+      const unread = Math.max(0, n);
+      document.getElementById('student-unreadCount').textContent = unread + ' unread notification' + (unread === 1 ? '' : 's');
+      document.getElementById('student-unreadTab').textContent = 'Unread (' + unread + ')';
+    }
+
+    function markOne(idx) {
+      readSet.add(idx);
+      renderList();
+    }
+
+    function markAllRead() {
+      notifications.forEach((_, i) => readSet.add(i));
+      renderList();
+    }
+
+    function clearAll() {
+      notifications = [];
+      readSet.clear();
+      document.getElementById('student-notifList').innerHTML = EMPTY_HTML;
+      document.getElementById('student-unreadCount').textContent = '0 unread notifications';
+      document.getElementById('student-unreadTab').textContent = 'Unread (0)';
+    }
+
+    function switchTab(btn, tab) {
+      document.querySelectorAll('.student-ftab').forEach(b => b.classList.remove('student-active'));
+      btn.classList.add('student-active');
+      currentTab = tab;
+      renderList();
+    }
+
+    async function loadPage() {
+      const studentName = sessionStorage.getItem('student_name') || '';
+      const studentRecordId = sessionStorage.getItem('student_record_id');
+      const teacherId = sessionStorage.getItem('teacher_id');
+      const adminId = sessionStorage.getItem('student_id');
+
+      if (!adminId) { window.location.href = '../ADMIN_FILES/login_screen.html'; return; }
+
+      document.getElementById('sidebar-avatar').textContent = getInitials(studentName);
+      document.getElementById('sidebar-name').textContent = studentName || 'Student';
+      const condition = sessionStorage.getItem('student_condition') || '';
+      const grade = sessionStorage.getItem('student_grade') || '';
+      document.getElementById('sidebar-role').textContent = [grade, condition].filter(Boolean).join(' — ');
+
+      if (!studentRecordId || !teacherId) {
+        document.getElementById('student-unreadCount').textContent = '0 unread notifications';
+        document.getElementById('student-notifList').innerHTML = EMPTY_HTML;
+        return;
+      }
+
+      try {
+        const res = await fetch(BACKEND + 'student_get_notifications.php?student_record_id=' + studentRecordId + '&teacher_id=' + teacherId);
+        const data = await res.json();
+        if (data.success) {
+          notifications = data.notifications || [];
+          renderList();
+        } else {
+          document.getElementById('student-unreadCount').textContent = '0 unread notifications';
+          document.getElementById('student-notifList').innerHTML = EMPTY_HTML;
+        }
+      } catch (e) {
+        document.getElementById('student-unreadCount').textContent = '0 unread notifications';
+        document.getElementById('student-notifList').innerHTML = EMPTY_HTML;
+      }
+    }
+
+    loadPage();
+  </script>
+</body>
+</html>

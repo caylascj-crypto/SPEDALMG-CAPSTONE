@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>SPED ALM - Settings</title>
+  <link rel="icon" type="image/png" href="../ADMIN_ASSETS/logo.png" />
+  <link href="../STUDENT_CSS/Student_settings.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- SIDEBAR -->
+  <aside class="student-sidebar">
+    <div class="student-sidebar-logo">
+      <img alt="SPED ALM Logo" class="student-sidebar-logo-img" src="../STUDENT_ASSETS/logo.png" onerror="this.src='../ADMIN_ASSETS/logo.png'" />
+      <div class="student-sidebar-logo-text">
+        <span class="student-sidebar-title">SPED ALM</span>
+        <span class="student-sidebar-sub">Student Portal</span>
+      </div>
+    </div>
+    <nav class="student-sidebar-nav">
+      <a class="student-nav-item" href="Student_dashboard.html">
+        <i>🏠</i>
+        <span>Dashboard</span>
+      </a>
+      <a class="student-nav-item" href="Student_mymaterials.html">
+        <i>📚</i>
+        <span>My Materials</span>
+      </a>
+      <a class="student-nav-item" href="Student_progress.html">
+        <i>⭐</i>
+        <span>My Progress</span>
+      </a>
+      <a class="student-nav-item student-active" href="Student_settings.html">
+        <i>⚙️</i>
+        <span>Settings</span>
+        <i class="student-nav-arrow">›</i>
+      </a>
+    </nav>
+    <div class="student-sidebar-footer">
+      <div class="student-sidebar-user">
+        <div class="student-user-avatar" id="sidebar-avatar">?</div>
+        <div class="student-user-info">
+          <span class="student-user-name" id="sidebar-name">Loading...</span>
+          <span class="student-user-role" id="sidebar-role">—</span>
+        </div>
+      </div>
+      <a class="student-signout-btn" href="#" id="signout-btn">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Sign Out</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <student-main class="student-main">
+    <!-- PAGE HEADER -->
+    <header class="student-page-header">
+      <div>
+        <h1 class="student-page-title">Settings</h1>
+        <p class="student-page-sub">Update your profile and preferences</p>
+      </div>
+      <a class="student-notif-btn" href="Student_notif.html">
+        <i class="fa-regular fa-bell"></i>
+        <span class="student-notif-badge" id="notif-badge" style="display:none"></span>
+      </a>
+    </header>
+
+    <!-- PROFILE CARD -->
+    <div class="student-profile-card">
+      <div class="student-profile-pic-wrap">
+        <div class="student-profile-avatar-fallback" id="student-avatarFallback">?</div>
+      </div>
+      <div class="student-profile-name" id="profile-display-name">—</div>
+      <div class="student-profile-grade" id="profile-display-grade">—</div>
+    </div>
+
+    <!-- MY PROFILE FORM -->
+    <div class="student-settings-card">
+      <div class="student-card-title">My Profile</div>
+      <div id="settings-msg" style="display:none;padding:8px 12px;border-radius:8px;margin-bottom:12px;font-size:0.9rem;"></div>
+      <div class="student-form-grid">
+        <div class="student-form-group">
+          <label>First Name</label>
+          <input id="field-first-name" name="first_name" placeholder="First name" type="text" />
+        </div>
+        <div class="student-form-group">
+          <label>Last Name</label>
+          <input id="field-last-name" name="last_name" placeholder="Last name" type="text" />
+        </div>
+        <div class="student-form-group student-full">
+          <label>Grade Level</label>
+          <select id="field-grade" name="grade_level">
+            <option value="">Select grade level</option>
+            <option>Grade 1</option>
+            <option>Grade 2</option>
+            <option>Grade 3</option>
+            <option>Grade 4</option>
+            <option>Grade 5</option>
+            <option>Grade 6</option>
+          </select>
+        </div>
+      </div>
+      <div class="student-save-wrap">
+        <button class="student-save-btn" id="save-profile-btn" type="button">Save Changes</button>
+      </div>
+    </div>
+
+    <!-- PASSWORD & SECURITY -->
+    <div class="student-password-card">
+      <div class="student-pw-info">
+        <div class="student-pw-title">Password &amp; Security</div>
+        <div class="student-pw-sub">Change your account password</div>
+      </div>
+      <button class="student-change-pw-btn" onclick="openModal()" type="button">Change Password</button>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="student-notif-card">
+      <div class="student-card-title">Notifications</div>
+      <div class="student-notif-row">
+        <div class="student-notif-row-info">
+          <div class="student-notif-row-label">New Activity Available</div>
+          <div class="student-notif-row-desc">When your teacher adds a new activity for you</div>
+        </div>
+        <label class="student-toggle">
+          <input checked="" name="notif_activity" type="checkbox" />
+          <span class="student-toggle-slider"></span>
+        </label>
+      </div>
+      <div class="student-notif-row">
+        <div class="student-notif-row-info">
+          <div class="student-notif-row-label">Progress Updates</div>
+          <div class="student-notif-row-desc">When your score or progress is updated</div>
+        </div>
+        <label class="student-toggle">
+          <input checked="" name="notif_progress" type="checkbox" />
+          <span class="student-toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+  </student-main>
+
+  <!-- CHANGE PASSWORD MODAL -->
+  <div class="student-modal-overlay" id="student-pwModal">
+    <div class="student-modal">
+      <div class="student-modal-header">
+        <span class="student-modal-title">Change Password</span>
+        <button class="student-modal-close" onclick="closeModal()" type="button">✕</button>
+      </div>
+      <!-- Student strip -->
+      <div class="student-modal-user-strip">
+        <div class="student-modal-user-avatar" id="modal-avatar">?</div>
+        <div class="student-modal-user-info">
+          <div class="student-modal-user-name" id="modal-name">—</div>
+          <div class="student-modal-user-meta" id="modal-meta">—</div>
+        </div>
+      </div>
+      <div id="pw-msg" style="display:none;padding:8px 12px;border-radius:8px;margin:8px 16px;font-size:0.9rem;"></div>
+      <div class="student-modal-form">
+        <div class="student-modal-field">
+          <label class="student-modal-label">Current Password</label>
+          <div class="student-pw-input-wrap">
+            <input class="student-pw-input" id="student-currentPw" placeholder="Enter current password" type="password" />
+            <button class="student-pw-eye" onclick="togglePw('student-currentPw', this)" type="button">👁</button>
+          </div>
+        </div>
+        <div class="student-modal-field">
+          <label class="student-modal-label">New Password</label>
+          <div class="student-pw-input-wrap">
+            <input class="student-pw-input" id="student-newPw" oninput="checkReqs()" placeholder="Enter new password" type="password" />
+            <button class="student-pw-eye" onclick="togglePw('student-newPw', this)" type="button">👁</button>
+          </div>
+        </div>
+        <div class="student-modal-field">
+          <label class="student-modal-label">Confirm New Password</label>
+          <div class="student-pw-input-wrap">
+            <input class="student-pw-input" id="student-confirmPw" placeholder="Confirm new password" type="password" />
+            <button class="student-pw-eye" onclick="togglePw('student-confirmPw', this)" type="button">👁</button>
+          </div>
+        </div>
+        <div class="student-pw-reqs">
+          <div class="student-pw-reqs-title">Password must contain:</div>
+          <div class="student-pw-req" id="student-req-length">✓ At least 8 characters</div>
+          <div class="student-pw-req" id="student-req-upper">✓ One uppercase letter</div>
+          <div class="student-pw-req" id="student-req-number">✓ One number</div>
+          <div class="student-pw-req" id="student-req-special">✓ One special character</div>
+        </div>
+      </div>
+      <div class="student-modal-actions">
+        <button class="student-modal-cancel" onclick="closeModal()" type="button">Cancel</button>
+        <button class="student-modal-confirm" id="pw-submit-btn" onclick="submitPassword()" type="button">Update Password</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const BACKEND = 'STUDENT_BACKEND/';
+
+    function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function getInitials(name) { return (name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().substring(0,2); }
+
+    function openModal() { document.getElementById('student-pwModal').classList.add('open'); }
+    function closeModal() {
+      document.getElementById('student-pwModal').classList.remove('open');
+      document.getElementById('student-currentPw').value = '';
+      document.getElementById('student-newPw').value = '';
+      document.getElementById('student-confirmPw').value = '';
+      showMsg('pw-msg', '', '');
+    }
+    document.getElementById('student-pwModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    function togglePw(id, btn) {
+      const input = document.getElementById(id);
+      input.type = input.type === 'password' ? 'text' : 'password';
+      btn.classList.toggle('student-active');
+    }
+
+    function checkReqs() {
+      const val = document.getElementById('student-newPw').value;
+      setReq('student-req-length', val.length >= 8);
+      setReq('student-req-upper', /[A-Z]/.test(val));
+      setReq('student-req-number', /[0-9]/.test(val));
+      setReq('student-req-special', /[^A-Za-z0-9]/.test(val));
+    }
+    function setReq(id, met) { document.getElementById(id).classList.toggle('met', met); }
+
+    function showMsg(id, text, type) {
+      const el = document.getElementById(id);
+      if (!text) { el.style.display = 'none'; return; }
+      el.style.display = '';
+      el.style.background = type === 'success' ? '#dcfce7' : '#fee2e2';
+      el.style.color = type === 'success' ? '#166534' : '#991b1b';
+      el.textContent = text;
+    }
+
+    document.getElementById('signout-btn').addEventListener('click', function(e) {
+      e.preventDefault(); sessionStorage.clear(); window.location.href = '../ADMIN_FILES/login_screen.html';
+    });
+
+    document.getElementById('save-profile-btn').addEventListener('click', async function() {
+      const adminId = sessionStorage.getItem('student_id');
+      const firstName = document.getElementById('field-first-name').value.trim();
+      const lastName = document.getElementById('field-last-name').value.trim();
+
+      if (!firstName || !lastName) { showMsg('settings-msg', 'First and last name are required.', 'error'); return; }
+
+      const btn = this;
+      btn.disabled = true; btn.textContent = 'Saving...';
+
+      try {
+        const fd = new FormData();
+        fd.append('admin_account_id', adminId);
+        fd.append('first_name', firstName);
+        fd.append('last_name', lastName);
+
+        const res = await fetch(BACKEND + 'student_settings_save.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.success) {
+          const fullName = firstName + ' ' + lastName;
+          sessionStorage.setItem('student_name', fullName);
+          document.getElementById('sidebar-name').textContent = fullName;
+          document.getElementById('sidebar-avatar').textContent = getInitials(fullName);
+          document.getElementById('profile-display-name').textContent = fullName;
+          showMsg('settings-msg', 'Profile updated successfully!', 'success');
+        } else {
+          showMsg('settings-msg', data.message || 'Failed to save.', 'error');
+        }
+      } catch (e) {
+        showMsg('settings-msg', 'Network error. Please try again.', 'error');
+      }
+
+      btn.disabled = false; btn.textContent = 'Save Changes';
+    });
+
+    async function submitPassword() {
+      const adminId = sessionStorage.getItem('student_id');
+      const currentPw = document.getElementById('student-currentPw').value;
+      const newPw = document.getElementById('student-newPw').value;
+      const confirmPw = document.getElementById('student-confirmPw').value;
+
+      if (!currentPw || !newPw || !confirmPw) { showMsg('pw-msg', 'All fields are required.', 'error'); return; }
+      if (newPw !== confirmPw) { showMsg('pw-msg', 'Passwords do not match.', 'error'); return; }
+      if (newPw.length < 8) { showMsg('pw-msg', 'Password must be at least 8 characters.', 'error'); return; }
+
+      const btn = document.getElementById('pw-submit-btn');
+      btn.disabled = true; btn.textContent = 'Updating...';
+
+      try {
+        const fd = new FormData();
+        fd.append('admin_account_id', adminId);
+        fd.append('current_password', currentPw);
+        fd.append('new_password', newPw);
+
+        const res = await fetch(BACKEND + 'student_settings_password.php', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.success) {
+          showMsg('pw-msg', 'Password updated successfully!', 'success');
+          setTimeout(closeModal, 1500);
+        } else {
+          showMsg('pw-msg', data.message || 'Failed to update password.', 'error');
+        }
+      } catch (e) {
+        showMsg('pw-msg', 'Network error. Please try again.', 'error');
+      }
+
+      btn.disabled = false; btn.textContent = 'Update Password';
+    }
+
+    async function loadPage() {
+      const adminId = sessionStorage.getItem('student_id');
+      const studentName = sessionStorage.getItem('student_name') || '';
+      const condition = sessionStorage.getItem('student_condition') || '';
+      const grade = sessionStorage.getItem('student_grade') || '';
+
+      if (!adminId) { window.location.href = '../ADMIN_FILES/login_screen.html'; return; }
+
+      const initials = getInitials(studentName);
+      document.getElementById('sidebar-avatar').textContent = initials;
+      document.getElementById('sidebar-name').textContent = studentName || 'Student';
+      document.getElementById('sidebar-role').textContent = [grade, condition].filter(Boolean).join(' — ');
+
+      // Profile card
+      document.getElementById('student-avatarFallback').textContent = initials;
+      document.getElementById('profile-display-name').textContent = studentName || '—';
+      document.getElementById('profile-display-grade').textContent = grade || '—';
+
+      // Pre-fill form
+      const parts = studentName.split(' ');
+      document.getElementById('field-first-name').value = parts[0] || '';
+      document.getElementById('field-last-name').value = parts.slice(1).join(' ') || '';
+      // Set grade dropdown
+      const gradeSelect = document.getElementById('field-grade');
+      for (let opt of gradeSelect.options) {
+        if (opt.value === grade || opt.text === grade) { opt.selected = true; break; }
+      }
+
+      // Modal strip
+      document.getElementById('modal-avatar').textContent = initials;
+      document.getElementById('modal-name').textContent = studentName || '—';
+      document.getElementById('modal-meta').textContent = [grade, condition].filter(Boolean).join(' — ');
+
+      // Notification badge
+      const studentRecordId = sessionStorage.getItem('student_record_id');
+      const teacherId = sessionStorage.getItem('teacher_id');
+      if (studentRecordId && teacherId) {
+        try {
+          const res = await fetch(BACKEND + 'student_get_notifications.php?student_record_id=' + studentRecordId + '&teacher_id=' + teacherId);
+          const notif = await res.json();
+          if (notif.success && notif.unread > 0) {
+            const badge = document.getElementById('notif-badge');
+            badge.textContent = notif.unread; badge.style.display = '';
+          }
+        } catch (e) {}
+      }
+    }
+
+    loadPage();
+  </script>
+</body>
+</html>

@@ -305,6 +305,18 @@ body {
   margin-top: 3px;
 }
 
+.admin-stat-breakdown {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-top: 6px;
+}
+
+.admin-stat-breakdown span {
+  font-size: 11px;
+  color: #888;
+}
+
 /* ===== PANELS ===== */
 .admin-panels-grid {
   display: grid;

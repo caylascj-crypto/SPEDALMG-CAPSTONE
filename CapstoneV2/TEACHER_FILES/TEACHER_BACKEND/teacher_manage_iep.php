@@ -83,10 +83,10 @@ function updateIEP($conn, $teacher_id) {
         return;
     }
     
-    $sql = "UPDATE iep_materials SET iep_goal=?, learning_objective=?, strategies=?, materials=?, assessment_method=?, status=?, last_reviewed=CURDATE(), updated_at=NOW()
+    $sql = "UPDATE iep_materials SET iep_goal=?, learning_objective=?, strategies=?, materials=?, assessment_method=?, status=?, updated_at=NOW()
             WHERE id=? AND teacher_id=?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssii", $iep_goal, $learning_objective, $strategies, $materials, $assessment_method, $status, $iep_id, $teacher_id);
+    $stmt->bind_param("ssssssii", $iep_goal, $learning_objective, $strategies, $materials, $assessment_method, $status, $iep_id, $teacher_id);
     
     if ($stmt->execute()) {
         echo json_encode(['success' => true, 'message' => 'IEP updated successfully']);

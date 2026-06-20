@@ -85,6 +85,10 @@
           <div class="admin-stat-number" id="dashboard-total-users">—</div>
           <div class="admin-stat-label">Total Users</div>
           <div class="admin-stat-sub">Updated from database</div>
+          <div class="admin-stat-breakdown">
+            <span>Teachers: <strong id="dashboard-teacher-count">—</strong></span>
+            <span>Students: <strong id="dashboard-student-count">—</strong></span>
+          </div>
         </div>
       </div>
       <div class="admin-stat-card anim-fade-up anim-d2">
@@ -98,9 +102,19 @@
       <div class="admin-stat-card anim-fade-up anim-d3">
         <div class="admin-stat-icon admin-stat-icon--green">⭐</div>
         <div class="admin-stat-body">
-          <div class="admin-stat-number">—</div>
-          <div class="admin-stat-label">Active Students</div>
-          <div class="admin-stat-sub">No data yet</div>
+          <div class="admin-stat-label">Status Overview</div>
+          <div class="admin-stat-breakdown" style="margin-top:8px;gap:6px;flex-direction:column;">
+            <div style="font-size:11px;color:#555;font-weight:600;">Teachers</div>
+            <div class="admin-stat-breakdown" style="margin-top:0;">
+              <span>Active: <strong id="dash-teacher-active">—</strong></span>
+              <span>Inactive: <strong id="dash-teacher-inactive">—</strong></span>
+            </div>
+            <div style="font-size:11px;color:#555;font-weight:600;margin-top:4px;">Students</div>
+            <div class="admin-stat-breakdown" style="margin-top:0;">
+              <span>Active: <strong id="dash-student-active">—</strong></span>
+              <span>Inactive: <strong id="dash-student-inactive">—</strong></span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -167,14 +181,24 @@
       fetch('ADMIN_BACKEND/admin_stats.php')
         .then(function (response) { return response.json(); })
         .then(function (stats) {
-          var totalUsers = stats.total_users || 0;
-          var activeStudents = stats.students || 0;
+          var totalTeachers  = parseInt(stats.teachers         || 0);
+          var activeTeachers = parseInt(stats.active_teachers  || 0);
+          var totalStudents  = parseInt(stats.student_accounts || 0);
+          var activeStudents = parseInt(stats.active_students  || 0);
 
           var totalUsersEl = document.getElementById('dashboard-total-users');
-          var activeStudentsEl = document.querySelector('.admin-stat-card.anim-fade-up.anim-d3 .admin-stat-number');
+          var teacherEl    = document.getElementById('dashboard-teacher-count');
+          var studentEl    = document.getElementById('dashboard-student-count');
 
-          if (totalUsersEl) totalUsersEl.textContent = totalUsers;
-          if (activeStudentsEl) activeStudentsEl.textContent = activeStudents;
+          if (totalUsersEl) totalUsersEl.textContent = stats.total_users || 0;
+          if (teacherEl)    teacherEl.textContent    = totalTeachers;
+          if (studentEl)    studentEl.textContent    = totalStudents;
+
+          var el = function(id) { return document.getElementById(id); };
+          if (el('dash-teacher-active'))   el('dash-teacher-active').textContent   = activeTeachers;
+          if (el('dash-teacher-inactive')) el('dash-teacher-inactive').textContent = totalTeachers - activeTeachers;
+          if (el('dash-student-active'))   el('dash-student-active').textContent   = activeStudents;
+          if (el('dash-student-inactive')) el('dash-student-inactive').textContent = totalStudents - activeStudents;
         })
         .catch(function () {
           // ignore stats failure

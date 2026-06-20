@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SPED ALM — Material Template Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --blue:#2f6fed; --blue-dark:#1b4fb8;
+    --purple:#7b6ef0; --purple-dark:#5546c4;
+    --green:#2fbf57; --green-dark:#1f9d44;
+    --gold:#ffc34d; --ink:#243a5e; --ink-soft:#5d7299;
+    --field:#f7f9fd; --field-border:#e6ebf4; --line:#eef2f8;
+    --font:"Fredoka","Nunito",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{ font-family:var(--font); color:var(--ink); background:#eef2f9; }
+
+  /* ===== TOP BAR ===== */
+  .mtg-top{
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    background:#fff; padding:14px 22px; border-bottom:1px solid var(--line);
+  }
+  .mtg-logo{ width:46px; height:46px; border-radius:14px; flex:none;
+    background:linear-gradient(135deg,#ff8a5b,#7b6ef0); display:flex; align-items:center; justify-content:center; font-size:24px; }
+  .mtg-top h1{ font-weight:700; font-size:21px; line-height:1.1; }
+  .mtg-top .mtg-tsub{ color:var(--ink-soft); font-size:12px; font-weight:500; }
+  .mtg-top-actions{ margin-left:auto; display:flex; gap:10px; flex-wrap:wrap; }
+  .mtg-btn{ cursor:pointer; border:none; font-family:var(--font); font-weight:700; font-size:14px;
+    padding:11px 18px; border-radius:13px; display:inline-flex; align-items:center; gap:7px;
+    transition:transform .08s ease, filter .1s ease; }
+  .mtg-btn:active{ transform:translateY(2px); }
+  .mtg-btn--ghost{ background:#fff; color:var(--ink); border:1.5px solid var(--field-border); }
+  .mtg-btn--ghost:hover{ background:#f7f9fd; }
+  .mtg-btn--edit{ background:var(--purple); color:#fff; box-shadow:0 4px 0 var(--purple-dark); }
+  .mtg-btn--pub{ background:var(--green); color:#fff; box-shadow:0 4px 0 var(--green-dark); }
+
+  /* ===== BODY GRID ===== */
+  .mtg-body{ display:grid; grid-template-columns:300px 1fr 330px; gap:16px; padding:16px; align-items:start; }
+  .mtg-card{ background:#fff; border:1px solid var(--line); border-radius:18px; padding:16px; }
+  .mtg-card + .mtg-card{ margin-top:16px; }
+  .mtg-step{ font-size:12px; font-weight:800; letter-spacing:.04em; color:var(--ink-soft); text-transform:uppercase; margin-bottom:12px; }
+  .mtg-step .mtg-edit-link{ color:var(--purple); cursor:pointer; font-weight:700; text-transform:none; letter-spacing:0; }
+
+  /* Activity type card */
+  .mtg-type{ display:flex; align-items:center; gap:12px; border:2px solid var(--purple); background:#f3f1fe; border-radius:14px; padding:13px; }
+  .mtg-type-ic{ width:40px; height:40px; border-radius:11px; background:#fff; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 3px 0 #ddd8f7; }
+  .mtg-type b{ font-weight:700; font-size:15px; }
+  .mtg-type-desc{ color:var(--ink-soft); font-size:12.5px; font-weight:500; line-height:1.5; margin-top:12px; }
+
+  /* Items list */
+  .mtg-item-row{ display:flex; align-items:flex-start; gap:8px; padding:9px 0; border-bottom:1px solid var(--line); position:relative; }
+  .mtg-item-row:last-of-type{ border-bottom:none; }
+  .mtg-side{ display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; min-width:0; }
+  .mtg-side-name{ width:100%; padding:5px 6px; border-radius:8px; border:1.5px solid var(--field-border); background:var(--field); font-family:var(--font); font-size:11px; text-align:center; outline:none; color:var(--ink); }
+  .mtg-side-name::placeholder{ color:#aab4c5; }
+  .mtg-side-name:focus{ border-color:var(--purple); background:#fff; }
+  .mtg-thumb{ width:100%; height:46px; flex:none; border-radius:10px; border:1.5px solid var(--field-border);
+    background:var(--field); display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; font-size:24px; }
+  .mtg-thumb img{ width:100%; height:100%; object-fit:cover; }
+  .mtg-row-arrow{ align-self:center; }
+  .mtg-row-arrow{ color:var(--ink-soft); font-size:14px; }
+  .mtg-item-menu{ margin-left:auto; align-self:center; cursor:pointer; border:none; background:none; color:var(--ink-soft); font-size:18px; width:28px; height:28px; border-radius:8px; }
+  .mtg-item-menu:hover{ background:#f1f4fa; }
+  .mtg-pop{ position:absolute; right:0; top:34px; z-index:5; background:#fff; border:1px solid var(--field-border); border-radius:12px; box-shadow:0 8px 24px rgba(36,58,94,.18); padding:6px; display:none; }
+  .mtg-pop.show{ display:block; }
+  .mtg-pop button{ display:block; width:100%; text-align:left; border:none; background:none; cursor:pointer; font-family:var(--font); font-size:13px; padding:8px 14px; border-radius:8px; color:var(--ink); }
+  .mtg-pop button:hover{ background:#f1f4fa; }
+  .mtg-pop button.del{ color:#d6336c; }
+  .mtg-add{ cursor:pointer; width:100%; margin-top:10px; border:1.5px dashed var(--purple); background:#f3f1fe; color:var(--purple); font-family:var(--font); font-weight:700; font-size:13px; padding:9px; border-radius:12px; }
+
+  /* Thumbnail upload */
+  .mtg-thumbbox{ position:relative; border:2px dashed #cbb8f3; background:#faf7ff; border-radius:14px; padding:10px; text-align:center; }
+  .mtg-thumbbox img{ width:100%; border-radius:10px; display:block; }
+  .mtg-thumb-empty{ height:96px; display:flex; align-items:center; justify-content:center; color:var(--ink-soft); font-size:12px; font-weight:600; }
+  .mtg-thumb-check{ position:absolute; top:-8px; right:-8px; width:24px; height:24px; border-radius:50%; background:var(--purple); color:#fff; display:none; align-items:center; justify-content:center; font-size:13px; }
+  .mtg-thumb-check.show{ display:flex; }
+  .mtg-change{ cursor:pointer; width:100%; margin-top:10px; border:1.5px solid var(--field-border); background:#fff; color:var(--ink); font-family:var(--font); font-weight:700; font-size:13px; padding:9px; border-radius:11px; }
+
+  /* Teacher tip */
+  .mtg-tip{ background:#fef6e6; border:1px solid #f6e2b3; border-radius:14px; padding:13px; }
+  .mtg-tip b{ font-size:13px; display:flex; align-items:center; gap:6px; }
+  .mtg-tip p{ color:#7a5e1d; font-size:12px; font-weight:500; line-height:1.5; margin-top:6px; }
+
+  /* ===== CENTER PREVIEW ===== */
+  .mtg-preview-col .mtg-step{ margin-bottom:12px; }
+  .mtg-stage{
+    position:relative; overflow:hidden; border-radius:20px;
+    border:1px solid var(--line);
+    background:#fdf6d8; padding:30px;
+    --mtg-text:#243a5e; font-family:'Comic Sans MS','Comic Sans',cursive; font-size:40px;
+  }
+  .mtg-deco{ position:absolute; inset:0; pointer-events:none; }
+  .mtg-stage.no-deco .mtg-deco{ display:none; }
+  .mtg-deco .d-sun{ position:absolute; top:14px; right:22px; font-size:42px; }
+  .mtg-deco .d-cloud1{ position:absolute; top:18px; left:24px; font-size:30px; opacity:.9; }
+  .mtg-deco .d-cloud2{ position:absolute; top:46%; right:10px; font-size:26px; opacity:.8; }
+  .mtg-deco .d-grass{ position:absolute; left:0; right:0; bottom:0; height:64px;
+    background:linear-gradient(180deg, rgba(126,217,124,0), #aee08a 70%); }
+  .mtg-deco .d-flower1{ position:absolute; bottom:8px; left:18px; font-size:24px; }
+  .mtg-deco .d-flower2{ position:absolute; bottom:6px; right:26px; font-size:22px; }
+
+  .mtg-title{ text-align:center; font-weight:700; font-size:1.25em; color:var(--mtg-text); position:relative; z-index:2; }
+  .mtg-instr{ text-align:center; font-size:.5em; font-weight:500; color:var(--mtg-text); opacity:.85; margin:6px 0 22px; position:relative; z-index:2; }
+  .mtg-match{ position:relative; z-index:2; display:grid; grid-template-columns:1fr 1fr; gap:70px; }
+  .mtg-col{ display:flex; flex-direction:column; gap:16px; }
+  .mtg-pitem{
+    background:#fff; border:3px solid #e2c98f; border-radius:18px; padding:12px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    cursor:pointer; user-select:none; position:relative;
+    box-shadow:0 4px 12px rgba(36,58,94,.08); transition:transform .08s ease, border-color .12s ease;
+  }
+  .mtg-pitem:hover{ transform:translateY(-2px); }
+  .mtg-pitem.sel{ border-color:var(--blue) !important; }
+  .mtg-pitem-img{ width:100%; height:3.6em; object-fit:contain; display:block; }
+  .mtg-pitem-emoji{ font-size:3em; line-height:1; }
+  .mtg-pitem-name{ font-weight:700; font-size:.6em; margin-top:8px; color:var(--mtg-text); }
+  .mtg-dot{ position:absolute; top:50%; width:12px; height:12px; border-radius:50%; background:#cfd8e8; transform:translateY(-50%); }
+  .mtg-col-left .mtg-dot{ right:-41px; }
+  .mtg-col-right .mtg-dot{ left:-41px; }
+  .mtg-lines{ position:absolute; inset:0; pointer-events:none; overflow:visible; z-index:1; }
+
+  /* border style variants */
+  .mtg-stage.bs-dashed .mtg-pitem{ border-style:dashed; }
+  .mtg-stage.bs-solid .mtg-pitem{ border-radius:8px; }
+
+  .mtg-stage-controls{ display:flex; justify-content:center; gap:10px; margin-top:22px; position:relative; z-index:2; }
+  .mtg-mini{ cursor:pointer; border:none; font-family:var(--font); font-weight:700; font-size:.5em; padding:.55em 1.2em; border-radius:12px; }
+  .mtg-mini--reset{ background:#eef3fb; color:var(--ink-soft); }
+  .mtg-mini--check{ background:var(--green); color:#fff; }
+
+  /* accessibility reminders */
+  .mtg-reminders{ background:#f6f2fe; border:1px solid #e4dcfa; border-radius:16px; padding:14px 16px; margin-top:16px; }
+  .mtg-reminders .r-title{ font-size:11px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; color:var(--purple); margin-bottom:12px; }
+  .mtg-rem-list{ display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; }
+  .mtg-rem{ display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; flex:1; min-width:80px; color:var(--ink-soft); font-size:11.5px; font-weight:600; }
+  .mtg-rem .r-ic{ font-size:20px; }
+
+  /* ===== RIGHT SETTINGS ===== */
+  .mtg-set-title{ display:flex; align-items:center; gap:8px; font-weight:700; font-size:15px; margin-bottom:16px; }
+  .mtg-set-label{ font-size:11px; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 9px; }
+  .mtg-set-group{ margin-bottom:18px; }
+  .mtg-swatches{ display:flex; gap:8px; flex-wrap:wrap; }
+  .mtg-sw{ width:38px; height:38px; border-radius:11px; cursor:pointer; border:2px solid #fff; box-shadow:0 0 0 1.5px var(--field-border); position:relative; }
+  .mtg-sw.sel{ box-shadow:0 0 0 2.5px var(--purple); }
+  .mtg-sw.sel::after{ content:"✓"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:var(--purple); font-weight:800; font-size:14px; }
+  .mtg-input, .mtg-select{ width:100%; padding:11px 13px; border-radius:12px; border:1.5px solid var(--field-border); background:#fff; font-family:var(--font); font-size:14px; color:var(--ink); outline:none; }
+  .mtg-input:focus, .mtg-select:focus{ border-color:var(--purple); }
+  .mtg-size-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; }
+  .mtg-size-num{ width:54px; text-align:center; padding:5px; border:1.5px solid var(--field-border); border-radius:8px; font-family:var(--font); font-weight:700; }
+  .mtg-size-row{ display:flex; align-items:center; gap:10px; }
+  .mtg-size-row input[type=range]{ flex:1; accent-color:var(--purple); }
+  .mtg-size-row .a-sm{ font-size:13px; font-weight:700; } .mtg-size-row .a-lg{ font-size:20px; font-weight:700; }
+  .mtg-color-row{ display:flex; align-items:center; gap:8px; }
+  .mtg-color-row input[type=color]{ width:46px; height:34px; border:none; border-radius:9px; background:none; cursor:pointer; }
+  .mtg-seg{ display:flex; gap:8px; }
+  .mtg-seg button{ flex:1; cursor:pointer; border:1.5px solid var(--field-border); background:#fff; border-radius:11px; padding:10px 4px; font-family:var(--font); font-weight:600; font-size:12px; color:var(--ink-soft); display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .mtg-seg button.sel{ border-color:var(--purple); background:#f3f1fe; color:var(--purple); }
+  .mtg-seg .seg-box{ width:30px; height:20px; border:2.5px solid var(--ink-soft); }
+  .mtg-seg button.sel .seg-box{ border-color:var(--purple); }
+  .seg-rounded{ border-radius:8px; } .seg-dashed{ border-style:dashed; border-radius:8px; } .seg-solid{ border-radius:2px; }
+  .mtg-spacing{ display:flex; align-items:center; gap:12px; }
+  .mtg-spacing button{ width:34px; height:34px; border-radius:10px; border:1.5px solid var(--field-border); background:#fff; cursor:pointer; font-size:18px; font-weight:700; color:var(--ink); }
+  .mtg-spacing span{ font-weight:700; font-size:14px; flex:1; text-align:center; }
+  .mtg-check{ display:flex; align-items:center; gap:9px; padding:7px 0; cursor:pointer; font-size:14px; font-weight:600; }
+  .mtg-check input{ width:18px; height:18px; accent-color:var(--purple); }
+  .mtg-set-actions{ display:flex; gap:10px; margin-top:8px; }
+  .mtg-set-actions button{ flex:1; cursor:pointer; border:none; font-family:var(--font); font-weight:700; font-size:14px; padding:12px; border-radius:12px; }
+  .mtg-reset{ background:#eef2f8; color:var(--ink-soft); }
+  .mtg-apply{ background:var(--purple); color:#fff; box-shadow:0 4px 0 var(--purple-dark); }
+
+  /* ===== BOTTOM BAR ===== */
+  .mtg-bottom{ display:flex; align-items:center; gap:18px; flex-wrap:wrap; background:#fff; border-top:1px solid var(--line); padding:14px 22px; }
+  .mtg-bottom .b-main{ display:flex; align-items:center; gap:8px; color:var(--ink-soft); font-weight:600; font-size:13px; }
+  .mtg-badges{ margin-left:auto; display:flex; gap:18px; flex-wrap:wrap; }
+  .mtg-badge{ display:flex; align-items:center; gap:7px; font-weight:700; font-size:13px; color:var(--ink); }
+
+  /* preview-only mode (Preview button) */
+  body.mtg-preview-only .mtg-left-col,
+  body.mtg-preview-only .mtg-right-col{ display:none; }
+  body.mtg-preview-only .mtg-body{ grid-template-columns:1fr; }
+
+  @media (max-width:1100px){
+    .mtg-body{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="mtg-top">
+    <div class="mtg-logo">🧩</div>
+    <div>
+      <h1>Material Template Generator</h1>
+      <div class="mtg-tsub">Create matching type activities for learners (ASD / Intellectual Disability)</div>
+    </div>
+    <div class="mtg-top-actions">
+      <button class="mtg-btn mtg-btn--ghost" id="mtgPreviewBtn" type="button">👁 Preview</button>
+      <button class="mtg-btn mtg-btn--ghost" id="mtgDraftBtn" type="button">💾 Save Draft</button>
+      <button class="mtg-btn mtg-btn--edit" id="mtgEditBtn" type="button">✏️ Edit</button>
+      <button class="mtg-btn mtg-btn--pub" id="mtgPubBtn" type="button">🌐 Publish</button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="mtg-body">
+
+    <!-- LEFT COLUMN -->
+    <div class="mtg-left-col">
+      <div class="mtg-card">
+        <div class="mtg-step">1. Activity Type</div>
+        <div class="mtg-type">
+          <div class="mtg-type-ic">🧩</div>
+          <b>Matching Type</b>
+        </div>
+        <p class="mtg-type-desc">Learners match pictures from the left column to the correct items on the right.</p>
+      </div>
+
+      <div class="mtg-card">
+        <div class="mtg-step">2. Items</div>
+        <div id="mtgItems"></div>
+        <button class="mtg-add" id="mtgAddItem" type="button">+ Add Item</button>
+      </div>
+
+      <div class="mtg-card">
+        <div class="mtg-step">3. Thumbnail Image <span class="mtg-edit-link">(Upload)</span></div>
+        <div class="mtg-thumbbox">
+          <div class="mtg-thumb-check" id="mtgThumbCheck">✓</div>
+          <img id="mtgThumbImg" alt="Thumbnail" style="display:none" />
+          <div class="mtg-thumb-empty" id="mtgThumbEmpty">No thumbnail yet.<br>Upload or press Publish.</div>
+        </div>
+        <label class="mtg-change">⬆ Change Image<input type="file" accept="image/*" id="mtgThumbUpload" hidden /></label>
+      </div>
+
+      <div class="mtg-tip">
+        <b>💡 Teacher Tip</b>
+        <p>Use simple images, high-contrast colors and large fonts for better focus and understanding.</p>
+      </div>
+    </div>
+
+    <!-- CENTER PREVIEW -->
+    <div class="mtg-preview-col">
+      <div class="mtg-step">4. Activity Preview</div>
+      <div class="mtg-stage" id="mtgStage">
+        <div class="mtg-deco">
+          <span class="d-sun">☀️</span><span class="d-cloud1">☁️</span><span class="d-cloud2">☁️</span>
+          <div class="d-grass"></div><span class="d-flower1">🌼</span><span class="d-flower2">🌸</span>
+        </div>
+        <div class="mtg-title" id="mtgTitle"></div>
+        <div class="mtg-instr" id="mtgInstr"></div>
+        <div class="mtg-match" id="mtgMatch">
+          <svg class="mtg-lines" id="mtgLines"></svg>
+          <div class="mtg-col mtg-col-left" id="mtgLeft"></div>
+          <div class="mtg-col mtg-col-right" id="mtgRight"></div>
+        </div>
+        <div class="mtg-stage-controls">
+          <button class="mtg-mini mtg-mini--reset" id="mtgReset" type="button">↺ Reset</button>
+          <button class="mtg-mini mtg-mini--check" id="mtgCheck" type="button">✓ Check answers</button>
+        </div>
+      </div>
+
+      <div class="mtg-reminders">
+        <div class="r-title">♿ Accessibility Reminders</div>
+        <div class="mtg-rem-list">
+          <div class="mtg-rem"><span class="r-ic">🖼️</span>Use clear real images</div>
+          <div class="mtg-rem"><span class="r-ic">🎨</span>High contrast colors</div>
+          <div class="mtg-rem"><span class="r-ic">🔠</span>Large fonts</div>
+          <div class="mtg-rem"><span class="r-ic">💬</span>Simple instructions</div>
+          <div class="mtg-rem"><span class="r-ic">✅</span>One concept per page</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SETTINGS -->
+    <div class="mtg-right-col">
+      <div class="mtg-card">
+        <div class="mtg-set-title">🎨 Design &amp; Settings</div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Background Color</div>
+          <div class="mtg-swatches" id="mtgSwatches"></div>
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Fonts</div>
+          <select class="mtg-select" id="mtgFont">
+            <option value="'Comic Sans MS','Comic Sans',cursive">Comic Sans MS</option>
+            <option value="'Fredoka',sans-serif">Fredoka</option>
+            <option value="'Nunito',sans-serif">Nunito</option>
+            <option value="'Poppins',sans-serif">Poppins</option>
+            <option value="Verdana,sans-serif">Verdana</option>
+            <option value="Arial,sans-serif">Arial</option>
+          </select>
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-size-head">
+            <div class="mtg-set-label" style="margin:0">Font Size</div>
+            <input class="mtg-size-num" id="mtgSizeNum" type="number" min="20" max="64" />
+          </div>
+          <div class="mtg-size-row">
+            <span class="a-sm">A</span>
+            <input type="range" id="mtgSize" min="20" max="64" step="1" />
+            <span class="a-lg">A</span>
+          </div>
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Text Color</div>
+          <div class="mtg-color-row">
+            <input type="color" id="mtgTextColor" />
+            <span style="font-size:13px;color:var(--ink-soft);font-weight:600">Title &amp; labels</span>
+          </div>
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Border Style</div>
+          <div class="mtg-seg" id="mtgBorder">
+            <button data-b="rounded" class="sel" type="button"><span class="seg-box seg-rounded"></span>Rounded</button>
+            <button data-b="dashed" type="button"><span class="seg-box seg-dashed"></span>Dashed</button>
+            <button data-b="solid" type="button"><span class="seg-box seg-solid"></span>Solid</button>
+          </div>
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Spacing</div>
+          <div class="mtg-spacing">
+            <button id="mtgSpaceMinus" type="button">−</button>
+            <span id="mtgSpaceVal">Medium</span>
+            <button id="mtgSpacePlus" type="button">+</button>
+          </div>
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Instruction Text</div>
+          <input class="mtg-input" id="mtgInstrInput" type="text" />
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Title</div>
+          <input class="mtg-input" id="mtgTitleInput" type="text" />
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Other Options</div>
+          <label class="mtg-check"><input type="checkbox" id="mtgShowTitle" checked /> Show title</label>
+          <label class="mtg-check"><input type="checkbox" id="mtgShowInstr" checked /> Show instructions</label>
+          <label class="mtg-check"><input type="checkbox" id="mtgShowDeco" checked /> Show decorations</label>
+        </div>
+
+        <div class="mtg-set-actions">
+          <button class="mtg-reset" id="mtgResetAll" type="button">↻ Reset</button>
+          <button class="mtg-apply" id="mtgApply" type="button">✓ Apply Changes</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="mtg-bottom">
+    <div class="b-main">👥 Designed for learners with ASD and Intellectual Disability</div>
+    <div class="mtg-badges">
+      <div class="mtg-badge">💗 Simple</div>
+      <div class="mtg-badge">🔵 Consistent</div>
+      <div class="mtg-badge">👁 Visual</div>
+      <div class="mtg-badge">🌞 Calming</div>
+    </div>
+  </div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const PALETTE = ["#2f6fed","#19a87c","#f59e0b","#7b6ef0","#ec5b91","#0ea5e9"];
+  const BG_SWATCHES = ["#fdf6d8","#eaf2ff","#e8faf0","#f0eefc","#fdebf2","#ffffff"];
+  const SPACINGS = ["Small","Medium","Large"];
+  const SPACE_GAP = { Small:10, Medium:16, Large:24 };
+
+  const DEFAULTS = {
+    title:"Match the Pictures",
+    instruction:"Draw a line to match the same pictures.",
+    bg:"#fdf6d8", font:"'Comic Sans MS','Comic Sans',cursive", fontSize:40,
+    textColor:"#243a5e", border:"rounded", spacing:"Medium",
+    showTitle:true, showInstr:true, showDeco:true
+  };
+
+  const state = {
+    ...structuredClone(DEFAULTS),
+    items:[
+      {left:{img:null,emoji:"🍎"}, right:{img:null,emoji:"🍎"}},
+      {left:{img:null,emoji:"⚽"}, right:{img:null,emoji:"⚽"}},
+      {left:{img:null,emoji:"🐱"}, right:{img:null,emoji:"🐱"}},
+      {left:{img:null,emoji:"☕"}, right:{img:null,emoji:"☕"}},
+      {left:{img:null,emoji:"🚗"}, right:{img:null,emoji:"🚗"}}
+    ],
+    thumb:null
+  };
+
+  let shuffled=[], selectedLeft=null, matches={};
+  const stage=$("mtgStage"), leftCol=$("mtgLeft"), rightCol=$("mtgRight"), linesSvg=$("mtgLines"), matchBox=$("mtgMatch");
+
+  /* ---------- ITEMS EDITOR ---------- */
+  function sideEditor(i, side){
+    const it = state.items[i][side];
+    const box = document.createElement("div"); box.className = "mtg-side";
+    const lbl = document.createElement("label"); lbl.className = "mtg-thumb";
+    if (it.img){ const im=document.createElement("img"); im.src=it.img; lbl.appendChild(im); }
+    else { lbl.textContent = it.emoji || "+"; }
+    const inp=document.createElement("input"); inp.type="file"; inp.accept="image/*"; inp.hidden=true;
+    inp.addEventListener("change", e=>{
+      const f=e.target.files[0]; if(!f) return;
+      const r=new FileReader(); r.onload=ev=>{ state.items[i][side].img=ev.target.result; renderItems(); renderActivity(); }; r.readAsDataURL(f);
+    });
+    lbl.appendChild(inp); box.appendChild(lbl);
+    const name=document.createElement("input"); name.className="mtg-side-name"; name.placeholder="Name (optional)"; name.value=it.name||"";
+    name.addEventListener("input", e=>{ state.items[i][side].name=e.target.value; renderActivity(); });
+    box.appendChild(name);
+    return box;
+  }
+  function renderItems(){
+    const wrap=$("mtgItems"); wrap.innerHTML="";
+    state.items.forEach((it,i)=>{
+      const row=document.createElement("div"); row.className="mtg-item-row";
+      row.appendChild(sideEditor(i,"left"));
+      const ar=document.createElement("span"); ar.className="mtg-row-arrow"; ar.textContent="→"; row.appendChild(ar);
+      row.appendChild(sideEditor(i,"right"));
+      const menu=document.createElement("button"); menu.className="mtg-item-menu"; menu.type="button"; menu.textContent="⋮";
+      const pop=document.createElement("div"); pop.className="mtg-pop";
+      const del=document.createElement("button"); del.className="del"; del.type="button"; del.textContent="🗑 Remove item";
+      del.addEventListener("click", ()=>{ if(state.items.length<=2){alert("Keep at least 2 items.");return;} state.items.splice(i,1); renderItems(); renderActivity(); });
+      pop.appendChild(del);
+      menu.addEventListener("click", e=>{ e.stopPropagation(); document.querySelectorAll(".mtg-pop").forEach(p=>{ if(p!==pop) p.classList.remove("show"); }); pop.classList.toggle("show"); });
+      row.appendChild(menu); row.appendChild(pop);
+      wrap.appendChild(row);
+    });
+  }
+  document.addEventListener("click", ()=> document.querySelectorAll(".mtg-pop").forEach(p=>p.classList.remove("show")));
+  $("mtgAddItem").addEventListener("click", ()=>{ state.items.push({left:{img:null,emoji:"⭐"},right:{img:null,emoji:"⭐"}}); renderItems(); renderActivity(); });
+
+  /* ---------- ACTIVITY PREVIEW ---------- */
+  function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+  function pitem(i, side, onClick){
+    const it=state.items[i][side];
+    const el=document.createElement("div"); el.className="mtg-pitem"; el.dataset.i=i;
+    if (it.img){ const im=document.createElement("img"); im.className="mtg-pitem-img"; im.src=it.img; el.appendChild(im); }
+    else { const sp=document.createElement("div"); sp.className="mtg-pitem-emoji"; sp.textContent=it.emoji||"?"; el.appendChild(sp); }
+    if (it.name){ const nm=document.createElement("div"); nm.className="mtg-pitem-name"; nm.textContent=it.name; el.appendChild(nm); }
+    const dot=document.createElement("span"); dot.className="mtg-dot"; el.appendChild(dot);
+    el.addEventListener("click", ()=>onClick(i,el));
+    return el;
+  }
+  function renderActivity(){
+    $("mtgTitle").textContent = state.title;
+    $("mtgInstr").textContent = state.instruction;
+    $("mtgTitle").style.display = state.showTitle ? "block":"none";
+    $("mtgInstr").style.display = state.showInstr ? "block":"none";
+    selectedLeft=null; matches={};
+    shuffled = shuffle(state.items.map((p,i)=>i));
+    leftCol.innerHTML=""; rightCol.innerHTML="";
+    state.items.forEach((p,i)=> leftCol.appendChild(pitem(i,"left",selectLeft)));
+    shuffled.forEach(i=> rightCol.appendChild(pitem(i,"right",selectRight)));
+    drawLines();
+  }
+  function selectLeft(i,el){ selectedLeft=i; leftCol.querySelectorAll(".mtg-pitem").forEach(x=>x.classList.remove("sel")); el.classList.add("sel"); }
+  function selectRight(i){ if(selectedLeft===null) return; matches[selectedLeft]=i; leftCol.querySelectorAll(".mtg-pitem").forEach(x=>x.classList.remove("sel")); selectedLeft=null; drawLines(); }
+  function ctr(el){ const r=el.getBoundingClientRect(), b=matchBox.getBoundingClientRect(); return {y:r.top-b.top+r.height/2, l:r.left-b.left, r:r.right-b.left}; }
+  function line(x1,y1,x2,y2,color){ const ln=document.createElementNS("http://www.w3.org/2000/svg","line"); ln.setAttribute("x1",x1);ln.setAttribute("y1",y1);ln.setAttribute("x2",x2);ln.setAttribute("y2",y2);ln.setAttribute("stroke",color);ln.setAttribute("stroke-width","5");ln.setAttribute("stroke-linecap","round"); linesSvg.appendChild(ln); }
+  function drawLines(){
+    linesSvg.innerHTML="";
+    Object.keys(matches).forEach(li=>{
+      const ri=matches[li];
+      const lEl=leftCol.querySelector('[data-i="'+li+'"]'), rEl=rightCol.querySelector('[data-i="'+ri+'"]');
+      if(!lEl||!rEl) return;
+      const a=ctr(lEl), c=ctr(rEl), color=PALETTE[li%PALETTE.length];
+      line(a.r,a.y,c.l,c.y,color); lEl.style.borderColor=color; rEl.style.borderColor=color;
+    });
+  }
+  $("mtgReset").addEventListener("click", ()=>{ matches={}; selectedLeft=null; document.querySelectorAll(".mtg-pitem").forEach(x=>{x.classList.remove("sel"); x.style.borderColor="";}); drawLines(); });
+  $("mtgCheck").addEventListener("click", ()=>{
+    document.querySelectorAll(".mtg-pitem").forEach(x=>x.style.borderColor=""); linesSvg.innerHTML="";
+    Object.keys(matches).forEach(li=>{
+      const ri=matches[li], ok=(+li===+ri), color=ok?"#1f9d44":"#e23b54";
+      const lEl=leftCol.querySelector('[data-i="'+li+'"]'), rEl=rightCol.querySelector('[data-i="'+ri+'"]');
+      const a=ctr(lEl), c=ctr(rEl); line(a.r,a.y,c.l,c.y,color); lEl.style.borderColor=color; rEl.style.borderColor=color;
+    });
+  });
+  window.addEventListener("resize", drawLines);
+
+  /* ---------- APPEARANCE ---------- */
+  function applyAppearance(){
+    stage.style.background = state.bg;
+    stage.style.fontFamily = state.font;
+    stage.style.fontSize = state.fontSize + "px";
+    stage.style.setProperty("--mtg-text", state.textColor);
+    stage.classList.toggle("bs-dashed", state.border==="dashed");
+    stage.classList.toggle("bs-solid", state.border==="solid");
+    stage.classList.toggle("no-deco", !state.showDeco);
+    const gap = SPACE_GAP[state.spacing];
+    leftCol.style.gap = gap+"px"; rightCol.style.gap = gap+"px";
+  }
+
+  function renderSwatches(){
+    const w=$("mtgSwatches"); w.innerHTML="";
+    BG_SWATCHES.forEach(c=>{
+      const sw=document.createElement("div"); sw.className="mtg-sw"+(c===state.bg?" sel":""); sw.style.background=c;
+      sw.addEventListener("click", ()=>{ state.bg=c; applyAppearance(); renderSwatches(); });
+      w.appendChild(sw);
+    });
+  }
+
+  // bind controls
+  $("mtgFont").addEventListener("change", e=>{ state.font=e.target.value; applyAppearance(); });
+  function setSize(v){ v=Math.max(20,Math.min(64,v)); state.fontSize=v; $("mtgSize").value=v; $("mtgSizeNum").value=v; applyAppearance(); drawLines(); }
+  $("mtgSize").addEventListener("input", e=> setSize(+e.target.value));
+  $("mtgSizeNum").addEventListener("input", e=> setSize(+e.target.value||40));
+  $("mtgTextColor").addEventListener("input", e=>{ state.textColor=e.target.value; applyAppearance(); });
+  document.querySelectorAll("#mtgBorder button").forEach(b=>{
+    b.addEventListener("click", ()=>{ state.border=b.dataset.b; document.querySelectorAll("#mtgBorder button").forEach(x=>x.classList.remove("sel")); b.classList.add("sel"); applyAppearance(); });
+  });
+  function setSpacing(dir){ let i=SPACINGS.indexOf(state.spacing)+dir; i=Math.max(0,Math.min(2,i)); state.spacing=SPACINGS[i]; $("mtgSpaceVal").textContent=state.spacing; applyAppearance(); drawLines(); }
+  $("mtgSpaceMinus").addEventListener("click", ()=>setSpacing(-1));
+  $("mtgSpacePlus").addEventListener("click", ()=>setSpacing(1));
+  $("mtgInstrInput").addEventListener("input", e=>{ state.instruction=e.target.value; $("mtgInstr").textContent=state.instruction; });
+  $("mtgTitleInput").addEventListener("input", e=>{ state.title=e.target.value; $("mtgTitle").textContent=state.title; });
+  $("mtgShowTitle").addEventListener("change", e=>{ state.showTitle=e.target.checked; renderActivity(); });
+  $("mtgShowInstr").addEventListener("change", e=>{ state.showInstr=e.target.checked; renderActivity(); });
+  $("mtgShowDeco").addEventListener("change", e=>{ state.showDeco=e.target.checked; applyAppearance(); });
+
+  $("mtgApply").addEventListener("click", ()=>{ applyAppearance(); drawLines(); flash($("mtgApply"),"✓ Applied"); });
+  $("mtgResetAll").addEventListener("click", ()=>{
+    Object.assign(state, structuredClone(DEFAULTS));
+    syncControls(); applyAppearance(); renderActivity();
+  });
+
+  function syncControls(){
+    $("mtgFont").value=state.font; $("mtgSize").value=state.fontSize; $("mtgSizeNum").value=state.fontSize;
+    $("mtgTextColor").value=state.textColor; $("mtgInstrInput").value=state.instruction; $("mtgTitleInput").value=state.title;
+    $("mtgSpaceVal").textContent=state.spacing;
+    $("mtgShowTitle").checked=state.showTitle; $("mtgShowInstr").checked=state.showInstr; $("mtgShowDeco").checked=state.showDeco;
+    document.querySelectorAll("#mtgBorder button").forEach(x=>x.classList.toggle("sel", x.dataset.b===state.border));
+    renderSwatches();
+  }
+
+  /* ---------- TOP ACTIONS ---------- */
+  function flash(btn, txt){ const o=btn.textContent; btn.textContent=txt; setTimeout(()=>btn.textContent=o,1100); }
+  $("mtgPreviewBtn").addEventListener("click", ()=>{ document.body.classList.add("mtg-preview-only"); setTimeout(drawLines,60); });
+  $("mtgEditBtn").addEventListener("click", ()=>{ document.body.classList.remove("mtg-preview-only"); setTimeout(drawLines,60); });
+  $("mtgDraftBtn").addEventListener("click", ()=> flash($("mtgDraftBtn"),"✓ Saved"));
+
+  // Thumbnail upload
+  $("mtgThumbUpload").addEventListener("change", function(){
+    const f=this.files[0]; if(!f) return;
+    const r=new FileReader(); r.onload=ev=> setThumb(ev.target.result); r.readAsDataURL(f);
+  });
+  function setThumb(dataURL){
+    state.thumb=dataURL;
+    $("mtgThumbImg").src=dataURL; $("mtgThumbImg").style.display="block";
+    $("mtgThumbEmpty").style.display="none"; $("mtgThumbCheck").classList.add("show");
+  }
+
+  // Publish = snapshot the activity into a thumbnail + (try) download PNG
+  $("mtgPubBtn").addEventListener("click", ()=>{
+    if (typeof html2canvas === "undefined"){ flash($("mtgPubBtn"),"✓ Published"); alert("Published. (Image export needs internet to generate the PNG/thumbnail.)"); return; }
+    flash($("mtgPubBtn"),"⏳ ...");
+    html2canvas(stage,{scale:2,backgroundColor:state.bg,useCORS:true}).then(canvas=>{
+      // download full PNG
+      const link=document.createElement("a"); link.download=(state.title.replace(/[^a-z0-9]+/gi,"_")||"activity")+".png"; link.href=canvas.toDataURL("image/png"); link.click();
+      // thumbnail
+      const tw=300, th=Math.round(tw*canvas.height/canvas.width); const tc=document.createElement("canvas"); tc.width=tw; tc.height=th;
+      tc.getContext("2d").drawImage(canvas,0,0,tw,th); setThumb(tc.toDataURL("image/png"));
+      $("mtgPubBtn").textContent="🌐 Publish";
+    }).catch(()=>{ $("mtgPubBtn").textContent="🌐 Publish"; alert("Published, but the image could not be generated (check internet)."); });
+  });
+
+  /* ---------- INIT ---------- */
+  renderItems(); renderSwatches(); syncControls(); applyAppearance(); renderActivity();
+</script>
+</body>
+</html>
