@@ -56,8 +56,11 @@ function getTeacherDatabaseConnection() {
         INDEX (teacher_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4";
     $conn->query($createStudentsTableSql);
-    // Add admin_account_id column if missing (migration)
-    $conn->query("ALTER TABLE students ADD COLUMN IF NOT EXISTS admin_account_id INT NULL DEFAULT NULL");
+    // Add admin_account_id column if missing (migration — MySQL 8.0 safe)
+    $col_check = $conn->query("SELECT COUNT(*) AS cnt FROM information_schema.COLUMNS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='students' AND COLUMN_NAME='admin_account_id'");
+    if ($col_check && $col_check->fetch_assoc()['cnt'] == 0) {
+        $conn->query("ALTER TABLE students ADD COLUMN admin_account_id INT NULL DEFAULT NULL");
+    }
 
     // Create activities table
     $createActivitiesTableSql = "CREATE TABLE IF NOT EXISTS teacher_activities (

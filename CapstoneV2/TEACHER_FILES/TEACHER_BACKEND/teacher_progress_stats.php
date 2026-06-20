@@ -10,7 +10,8 @@ if (!$conn) {
 }
 
 session_start();
-$teacher_id = isset($_SESSION['admin_id']) ? intval($_SESSION['admin_id']) : 1;
+$teacher_id = isset($_REQUEST['teacher_id']) ? intval($_REQUEST['teacher_id'])
+            : (isset($_SESSION['admin_id']) ? intval($_SESSION['admin_id']) : 1);
 $student_id = isset($_GET['student_id']) ? intval($_GET['student_id']) : 0;
 
 if (!$student_id) {

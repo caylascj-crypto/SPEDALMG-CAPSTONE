@@ -49,6 +49,7 @@ function getStudentRecord($admin_account_id) {
     if (!$conn) return null;
 
     $stmt = $conn->prepare("SELECT s.id AS student_record_id, s.teacher_id, s.disability_type, s.grade_level, s.student_name FROM students s WHERE s.admin_account_id = ? AND s.status = 'active' LIMIT 1");
+    if (!$stmt) { $conn->close(); return null; }
     $stmt->bind_param("i", $admin_account_id);
     $stmt->execute();
     $row = $stmt->get_result()->fetch_assoc();

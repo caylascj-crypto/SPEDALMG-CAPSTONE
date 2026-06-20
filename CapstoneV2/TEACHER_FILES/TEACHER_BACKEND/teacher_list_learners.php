@@ -10,15 +10,15 @@ if (!$conn) {
 }
 
 session_start();
-$teacher_id = isset($_SESSION['admin_id']) ? intval($_SESSION['admin_id']) : 1; // Default to 1 for testing
+$teacher_id = isset($_REQUEST['teacher_id']) ? intval($_REQUEST['teacher_id'])
+            : (isset($_SESSION['admin_id']) ? intval($_SESSION['admin_id']) : 1);
 
 // Get all students for this teacher
-$sql = "SELECT id, student_name, parent_name, parent_email, parent_phone, disability_type, status, age, created_at 
-        FROM students 
-        WHERE teacher_id = $teacher_id 
-        ORDER BY created_at DESC";
-
-$result = $conn->query($sql);
+$stmt = $conn->prepare("SELECT id, student_name, parent_name, parent_email, parent_phone, disability_type, status, age, grade_level, created_at FROM students WHERE teacher_id = ? ORDER BY created_at DESC");
+if (!$stmt) { echo json_encode([]); $conn->close(); exit; }
+$stmt->bind_param("i", $teacher_id);
+$stmt->execute();
+$result = $stmt->get_result();
 $students = [];
 
 if ($result) {
@@ -32,10 +32,12 @@ if ($result) {
             'disability' => $row['disability_type'],
             'status' => $row['status'],
             'age' => $row['age'],
+            'grade_level' => $row['grade_level'],
             'created_at' => $row['created_at']
         ];
     }
 }
+$stmt->close();
 
 echo json_encode($students);
 $conn->close();

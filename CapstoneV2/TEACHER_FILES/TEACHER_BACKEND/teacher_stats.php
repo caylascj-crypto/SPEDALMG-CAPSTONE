@@ -9,9 +9,9 @@ if (!$conn) {
     exit;
 }
 
-// Get teacher_id from session (admin_id is used for logged-in users)
 session_start();
-$teacher_id = isset($_SESSION['admin_id']) ? intval($_SESSION['admin_id']) : 1; // Default to 1 for testing
+$teacher_id = isset($_REQUEST['teacher_id']) ? intval($_REQUEST['teacher_id'])
+            : (isset($_SESSION['admin_id']) ? intval($_SESSION['admin_id']) : 1);
 
 $stats = [
     'total_students' => 0,
