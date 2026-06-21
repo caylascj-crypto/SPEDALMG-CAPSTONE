@@ -52,7 +52,7 @@
           <span class="admin-user-role">School Administrat...</span>
         </div>
       </div>
-      <a class="admin-signout-btn" href="../login_screen.html#">
+      <a class="admin-signout-btn" href="#" onclick="sessionStorage.clear();window.location.href='login_screen.html';return false;">
         <i class="fa-solid fa-right-from-bracket"></i>
         <span>Sign Out</span>
       </a>
@@ -168,7 +168,8 @@
           this.appendChild(span);
           setTimeout(function () { span.remove(); }, 520);
           if (this.classList.contains('admin-signout-btn')) {
-            window.location.href = this.getAttribute('href') || 'login_screen.html';
+            sessionStorage.clear();
+            window.location.href = 'login_screen.html';
           }
         });
       });
