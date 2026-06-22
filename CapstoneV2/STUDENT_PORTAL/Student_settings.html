@@ -10,6 +10,68 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+  <style>
+    /* ---- Logo fix: show only the logo, no white box around it ---- */
+    .student-sidebar-logo-img {
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      background: transparent;
+      object-fit: contain;
+      box-shadow: none;
+    }
+
+    /* ---- Change Profile Photo feature ---- */
+    .student-profile-pic-wrap {
+      position: relative;
+      width: 84px;
+      height: 84px;
+      flex: none;
+    }
+
+    .student-profile-photo,
+    .student-profile-avatar-fallback {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .student-profile-photo {
+      display: none; /* shown via JS once a photo is set */
+    }
+
+    .student-change-photo-btn {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 30px;
+      height: 30px;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      background: var(--blue, #2f6fed);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 3px 0 var(--blue-dark, #1b4fb8);
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+
+    .student-change-photo-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .student-change-photo-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--blue-dark, #1b4fb8);
+    }
+  </style>
 </head>
 
 <body>
@@ -73,7 +135,12 @@
     <!-- PROFILE CARD -->
     <div class="student-profile-card">
       <div class="student-profile-pic-wrap">
+        <img class="student-profile-photo" id="student-profilePhoto" alt="Profile photo" src="" />
         <div class="student-profile-avatar-fallback" id="student-avatarFallback">?</div>
+        <button class="student-change-photo-btn" id="change-photo-btn" title="Change profile photo" type="button">
+          <i class="fa-solid fa-camera"></i>
+        </button>
+        <input accept="image/*" id="photo-upload-input" style="display:none" type="file" />
       </div>
       <div class="student-profile-name" id="profile-display-name">—</div>
       <div class="student-profile-grade" id="profile-display-grade">—</div>
@@ -244,6 +311,51 @@
       e.preventDefault(); sessionStorage.clear(); window.location.href = '../ADMIN_FILES/login_screen.html';
     });
 
+    // ---- Change Profile Photo ----
+    const photoBtn = document.getElementById('change-photo-btn');
+    const photoInput = document.getElementById('photo-upload-input');
+    const photoImg = document.getElementById('student-profilePhoto');
+    const photoFallback = document.getElementById('student-avatarFallback');
+
+    function showPhoto(src) {
+      photoImg.src = src;
+      photoImg.style.display = 'block';
+      photoFallback.style.display = 'none';
+    }
+
+    photoBtn.addEventListener('click', function() {
+      photoInput.click();
+    });
+
+    photoInput.addEventListener('change', function() {
+      const file = this.files && this.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        showMsg('settings-msg', 'Please choose an image file.', 'error');
+        return;
+      }
+      if (file.size > 3 * 1024 * 1024) {
+        showMsg('settings-msg', 'Image is too large. Please choose one under 3MB.', 'error');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        showPhoto(dataUrl);
+
+        // Keep it showing on this device after reload
+        const adminId = sessionStorage.getItem('student_id');
+        if (adminId) sessionStorage.setItem('student_photo_' + adminId, dataUrl);
+
+        // NOTE: To make this permanent across devices, send `file` to your
+        // backend here (e.g. via FormData to a php endpoint) and store the
+        // returned photo URL instead of relying on sessionStorage.
+      };
+      reader.readAsDataURL(file);
+    });
+
     document.getElementById('save-profile-btn').addEventListener('click', async function() {
       const adminId = sessionStorage.getItem('student_id');
       const firstName = document.getElementById('field-first-name').value.trim();
@@ -330,6 +442,9 @@
       document.getElementById('student-avatarFallback').textContent = initials;
       document.getElementById('profile-display-name').textContent = studentName || '—';
       document.getElementById('profile-display-grade').textContent = grade || '—';
+
+      const savedPhoto = sessionStorage.getItem('student_photo_' + adminId);
+      if (savedPhoto) showPhoto(savedPhoto);
 
       // Pre-fill form
       const parts = studentName.split(' ');
