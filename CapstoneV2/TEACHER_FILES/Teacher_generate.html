@@ -54,7 +54,7 @@
                         <span class="teacher-role">SPED Teacher</span>
                     </div>
                 </div>
-                <a class="teacher-signout-btn" href="../login_screen.html#">
+                <a class="teacher-signout-btn" href="../ADMIN_FILES/login_screen.html">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Sign Out</span>
                 </a>
@@ -274,8 +274,28 @@
 
         let selectedIndex = null;
 
+        // Map each template's idx to its own generator page.
+        // Templates without a dedicated generator yet fall back to
+        // 'Teacher_content.html' until their own file is created.
+        const templateDestinations = {
+            1: 'TEMPLATES/Picture_Matching_Template.html',  // Picture Matching
+            2: 'Teacher_content.html',              // Word Matching
+            3: 'Teacher_content.html',              // Multiple Choice (Visual)
+            4: 'Teacher_content.html',              // True or False
+            5: 'Teacher_content.html',              // Identification
+            6: 'Teacher_content.html',              // Fill in the Blank (Guided)
+            7: 'Teacher_content.html',              // Drag and Drop
+            8: 'TEMPLATES/Sorting_Type_Template.html',  // Sorting / Categorization
+            9: 'TEMPLATES/Sequencing_Type_Template.html',  // Sequencing / Arrange in Order
+            10: 'Teacher_content.html',             // Odd One Out
+            11: 'Teacher_content.html',             // Label the Picture
+            12: 'Teacher_content.html',             // Count and Choose
+            13: 'Teacher_content.html',             // Trace / Pattern Completion
+            14: 'Teacher_content.html'              // Scenario-Based Choice
+        };
+
         function selectTemplate(el, idx) {
-            window.location.href = 'Teacher_content.html';
+            window.location.href = templateDestinations[idx] || 'Teacher_content.html';
         }
     </script>
 </body>

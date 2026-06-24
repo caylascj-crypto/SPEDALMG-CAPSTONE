@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPED ALM — Matching Type Template Generator</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <link rel="stylesheet" href="../../TEACHER.CSS/Picture_Matching_Template.css" />
+</head>
+
+<body>
+
+  <!-- Floating exit button (visible only in preview/fullscreen mode — works even on phones without an ESC key) -->
+  <button class="mtg-exit-float" id="mtgExitFloatBtn" type="button">✖ Exit</button>
+
+  <!-- TOP BAR -->
+  <div class="mtg-top">
+    <div class="mtg-logo">🧩</div>
+    <div>
+      <h1>Matching Type Template Generator</h1>
+      <div class="mtg-tsub">Create matching type activities for learners (ASD / Intellectual Disability)</div>
+    </div>
+    <div class="mtg-top-actions">
+      <button class="mtg-btn mtg-btn--print" id="mtgPrintBtn" type="button">🖨️ Generate Printable</button>
+      <button class="mtg-btn mtg-btn--ghost" id="mtgPreviewBtn" type="button">👁 Preview</button>
+      <button class="mtg-btn mtg-btn--ghost" id="mtgDraftBtn" type="button">💾 Save Draft</button>
+      <button class="mtg-btn mtg-btn--pub" id="mtgPubBtn" type="button">🌐 Publish</button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="mtg-body">
+
+    <!-- LEFT COLUMN -->
+    <div class="mtg-left-col">
+
+      <!-- Multiple activities (slides) inside one activity set -->
+      <div class="mtg-card">
+        <div class="mtg-step">Activity Slides <span class="mtg-edit-link">(suggested: ~5 per set)</span></div>
+        <div class="mtg-slidebar">
+          <button id="mtgPrevSlide" type="button">◂</button>
+          <div class="mtg-slide-label" id="mtgSlideLabel">Slide 1 of 1</div>
+          <button id="mtgNextSlide" type="button">▸</button>
+        </div>
+        <div class="mtg-slide-actions">
+          <button id="mtgAddSlide" type="button">+ Add Slide</button>
+          <button id="mtgDeleteSlide" type="button" class="danger">🗑 Delete</button>
+        </div>
+      </div>
+
+      <div class="mtg-card">
+        <div class="mtg-step">1. Activity Type</div>
+        <div class="mtg-type">
+          <div class="mtg-type-ic">🧩</div>
+          <b>Matching Type</b>
+        </div>
+        <p class="mtg-type-desc">Learners match pictures from the left column to the correct items on the right.</p>
+      </div>
+
+      <div class="mtg-card">
+        <div class="mtg-step">2. Items <span class="mtg-edit-link">(left ↔ right = correct pair)</span></div>
+        <div id="mtgItems"></div>
+        <button class="mtg-add" id="mtgAddItem" type="button">+ Add Item</button>
+      </div>
+
+      <div class="mtg-card">
+        <div class="mtg-step">3. Thumbnail Image <span class="mtg-edit-link">(Upload)</span></div>
+        <div class="mtg-thumbbox">
+          <div class="mtg-thumb-check" id="mtgThumbCheck">✓</div>
+          <img id="mtgThumbImg" alt="Thumbnail" style="display:none" />
+          <div class="mtg-thumb-empty" id="mtgThumbEmpty">No thumbnail yet.<br>Upload or press Publish.</div>
+        </div>
+        <label class="mtg-change">⬆ Change Image<input type="file" accept="image/*" id="mtgThumbUpload"
+            hidden /></label>
+      </div>
+    </div>
+
+    <!-- CENTER PREVIEW -->
+    <div class="mtg-preview-col">
+      <div class="mtg-step">4. Activity Preview</div>
+      <div class="mtg-stage" id="mtgStage">
+        <div class="mtg-deco">
+          <span class="d-sun">☀️</span><span class="d-cloud1">☁️</span><span class="d-cloud2">☁️</span>
+          <div class="d-grass"></div><span class="d-flower1">🌼</span><span class="d-flower2">🌸</span>
+        </div>
+        <div class="mtg-stage-inner" id="mtgStageInner">
+          <div class="mtg-title" id="mtgTitle"></div>
+          <div class="mtg-instr" id="mtgInstr"></div>
+          <div class="mtg-match" id="mtgMatch">
+            <svg class="mtg-lines" id="mtgLines"></svg>
+            <div class="mtg-col mtg-col-left" id="mtgLeft"></div>
+            <div class="mtg-col mtg-col-right" id="mtgRight"></div>
+          </div>
+          <div class="mtg-stage-controls">
+            <div class="mtg-hint" id="mtgHint"></div>
+            <div class="mtg-stage-btnrow">
+              <button class="mtg-mini mtg-mini--reset" id="mtgReset" type="button">↺ Try Again</button>
+              <button class="mtg-mini mtg-mini--check" id="mtgCheck" type="button">✓ Check answers</button>
+            </div>
+            <div class="mtg-stage-nav" id="mtgStageNav">
+              <button id="mtgStagePrev" type="button">◂ Previous</button>
+              <span id="mtgStageSlideLabel">Slide 1 of 1</span>
+              <button id="mtgStageNext" type="button">Next ▸</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mtg-reminders">
+        <div class="r-title">♿ Accessibility Reminders</div>
+        <div class="mtg-rem-list">
+          <div class="mtg-rem"><span class="r-ic">🖼️</span>Use clear real images</div>
+          <div class="mtg-rem"><span class="r-ic">🎨</span>High contrast colors</div>
+          <div class="mtg-rem"><span class="r-ic">🔠</span>Large fonts</div>
+          <div class="mtg-rem"><span class="r-ic">💬</span>Simple instructions</div>
+          <div class="mtg-rem"><span class="r-ic">✅</span>One concept per page</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SETTINGS -->
+    <div class="mtg-right-col" id="mtgRightCol">
+      <div class="mtg-card mtg-right-panel-full" id="mtgRightPanelFull">
+        <div class="mtg-set-title">🎨 Design &amp; Settings
+          <button class="mtg-collapse-btn" id="mtgCollapseBtn" type="button" title="Hide panel">⮜</button>
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Background Color</div>
+          <div class="mtg-swatches" id="mtgSwatches"></div>
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Fonts</div>
+          <select class="mtg-select" id="mtgFont">
+            <option value="'Comic Sans MS','Comic Sans',cursive">Comic Sans MS</option>
+            <option value="'Fredoka',sans-serif">Fredoka</option>
+            <option value="'Nunito',sans-serif">Nunito</option>
+            <option value="'Poppins',sans-serif">Poppins</option>
+            <option value="Verdana,sans-serif">Verdana</option>
+            <option value="Arial,sans-serif">Arial</option>
+          </select>
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-size-head">
+            <div class="mtg-set-label" style="margin:0">Font Size</div>
+            <input class="mtg-size-num" id="mtgSizeNum" type="number" min="20" max="64" />
+          </div>
+          <div class="mtg-size-row">
+            <span class="a-sm">A</span>
+            <input type="range" id="mtgSize" min="20" max="64" step="1" />
+            <span class="a-lg">A</span>
+          </div>
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Text Color</div>
+          <div class="mtg-color-row">
+            <input type="color" id="mtgTextColor" />
+            <span style="font-size:13px;color:var(--ink-soft);font-weight:600">Title &amp; labels</span>
+          </div>
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Border Style</div>
+          <div class="mtg-seg" id="mtgBorder">
+            <button data-b="rounded" class="sel" type="button"><span class="seg-box seg-rounded"></span>Rounded</button>
+            <button data-b="dashed" type="button"><span class="seg-box seg-dashed"></span>Dashed</button>
+            <button data-b="solid" type="button"><span class="seg-box seg-solid"></span>Solid</button>
+          </div>
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Spacing</div>
+          <div class="mtg-spacing">
+            <button id="mtgSpaceMinus" type="button">−</button>
+            <span id="mtgSpaceVal">Medium</span>
+            <button id="mtgSpacePlus" type="button">+</button>
+          </div>
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Instruction Text</div>
+          <input class="mtg-input" id="mtgInstrInput" type="text" />
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Title</div>
+          <input class="mtg-input" id="mtgTitleInput" type="text" />
+        </div>
+
+        <div class="mtg-set-group">
+          <div class="mtg-set-label">Other Options</div>
+          <label class="mtg-check"><input type="checkbox" id="mtgShowTitle" checked /> Show title</label>
+          <label class="mtg-check"><input type="checkbox" id="mtgShowInstr" checked /> Show instructions</label>
+          <label class="mtg-check"><input type="checkbox" id="mtgShowDeco" checked /> Show decorations</label>
+        </div>
+
+        <div class="mtg-set-actions">
+          <button class="mtg-reset" id="mtgResetAll" type="button">↻ Reset</button>
+          <button class="mtg-apply" id="mtgApply" type="button">✓ Apply Changes</button>
+        </div>
+      </div>
+
+      <!-- Shown instead of the settings panel whenever it is hidden,
+           so this space is never left empty. -->
+      <div class="mtg-tip mtg-right-panel-guide" id="mtgRightPanelGuide">
+        <b>💡 Template Guide
+          <button class="mtg-guide-settings-btn" id="mtgShowSettingsBtn" type="button" title="Show Design & Settings">🎨
+            Settings</button>
+        </b>
+        <p>
+          • Upload your own images.<br>
+          • Add optional text labels.<br>
+          • Change colors, fonts, and spacing.<br>
+          • Preview before publishing.<br>
+          • Create as many matching pairs as needed.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SCORE MODAL (appears after "Check answers") -->
+  <div class="mtg-modal-overlay" id="mtgModalOverlay">
+    <div class="mtg-modal-card">
+      <img class="mtg-modal-emoji" id="mtgModalEmoji" src="" alt="Result" />
+      <div class="mtg-modal-score" id="mtgModalScore">0 / 0 correct</div>
+      <div class="mtg-modal-msg" id="mtgModalMsg">Great job!</div>
+      <div class="mtg-modal-actions">
+        <button class="mtg-modal-close" id="mtgModalCloseBtn" type="button">✖ Close</button>
+        <button class="mtg-modal-try" id="mtgModalTryBtn" type="button">🔁 Try Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PUBLISH MODAL (appears when "Publish" is clicked) -->
+  <div class="mtg-modal-overlay" id="mtgPublishOverlay">
+    <div class="mtg-modal-card mtg-publish-card">
+      <h3>🌐 Publish Activity</h3>
+      <div class="mtg-publish-thumb-wrap" id="mtgPublishThumbWrap">
+        <div class="mtg-publish-thumb-empty" id="mtgPublishThumbEmpty">No thumbnail uploaded yet.</div>
+        <img id="mtgPublishThumbImg" alt="Activity thumbnail preview" style="display:none" />
+      </div>
+      <div class="mtg-publish-field">
+        <label for="mtgDeadlineInput">📅 Deadline</label>
+        <input type="date" id="mtgDeadlineInput" />
+        <div class="mtg-publish-hint">Choose the last day the activity can still be submitted.</div>
+      </div>
+      <div class="mtg-modal-actions">
+        <button class="mtg-modal-close" id="mtgPublishCancelBtn" type="button">✖ Cancel</button>
+        <button class="mtg-modal-try mtg-publish-confirm" id="mtgPublishConfirmBtn" type="button">✅ Confirm
+          Publish</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    /* =====================================================================
+       MATCHING TYPE TEMPLATE GENERATOR — main script
+       Sections below:
+         1. STATE            – design settings + the list of activity slides
+         2. SLIDE NAVIGATION – switching / adding / deleting activity slides
+         3. ITEMS EDITOR     – the left-hand "Items" list (teacher input)
+         4. ACTIVITY PREVIEW – the left↔right matching interaction
+         5. SCORE MODAL      – popup shown after "Check answers"
+         6. APPEARANCE       – design & settings panel (right column)
+         7. TOP BAR ACTIONS  – preview / save / collapse panel / publish
+         8. INIT             – first render on page load
+       ===================================================================== */
+
+    const $ = id => document.getElementById(id);
+
+    /* ------------------------------------------------------------- *
+     * 1. STATE
+     * ------------------------------------------------------------- */
+
+    // Design settings are shared by every slide, so the whole activity
+    // set keeps one consistent look.
+    const DEFAULT_DESIGN = {
+      bg: "#fdf6d8", font: "'Comic Sans MS','Comic Sans',cursive", fontSize: 40,
+      textColor: "#243a5e", border: "rounded", spacing: "Medium",
+      showTitle: true, showInstr: true, showDeco: true
+    };
+    const BG_SWATCHES = ["#fdf6d8", "#eaf2ff", "#e8faf0", "#f0eefc", "#fdebf2", "#ffffff"];
+    const SPACINGS = ["Small", "Medium", "Large"];
+    const SPACE_GAP = { Small: 10, Medium: 16, Large: 24 };
+
+    // One "activity" = one matching task (its own title, instruction, pairs).
+    function makeDefaultActivity() {
+      return {
+        title: "Match the Pictures",
+        instruction: "Draw a line to match the same pictures.",
+        items: [
+          { left: { img: null, emoji: "🍎" }, right: { img: null, emoji: "🍎" } },
+          { left: { img: null, emoji: "⚽" }, right: { img: null, emoji: "⚽" } },
+          { left: { img: null, emoji: "🐱" }, right: { img: null, emoji: "🐱" } },
+          { left: { img: null, emoji: "☕" }, right: { img: null, emoji: "☕" } },
+          { left: { img: null, emoji: "🚗" }, right: { img: null, emoji: "🚗" } }
+        ]
+      };
+    }
+    function makeBlankActivity(slideNumber) {
+      return {
+        title: "New Activity " + slideNumber,
+        instruction: "Draw a line to match the same pictures.",
+        items: [
+          { left: { img: null, emoji: "⭐" }, right: { img: null, emoji: "⭐" } },
+          { left: { img: null, emoji: "⭐" }, right: { img: null, emoji: "⭐" } }
+        ]
+      };
+    }
+
+    const state = {
+      ...structuredClone(DEFAULT_DESIGN),
+      thumb: null,
+      activities: [makeDefaultActivity()], // the slides in this activity set
+      currentIndex: 0                         // which slide is being edited/previewed
+    };
+
+    // Shortcut used everywhere below: "the slide we are currently working on".
+    function currentActivity() { return state.activities[state.currentIndex]; }
+
+    // Matching interaction state — reset whenever a new slide is shown.
+    let shuffled = [], selectedLeft = null, matches = {};
+    // How much the stage is currently scaled down to fit the screen in
+    // preview mode (1 = no scaling). Used to keep the SVG lines aligned.
+    let stageScale = 1;
+
+    const stage = $("mtgStage"), stageInner = $("mtgStageInner"), leftCol = $("mtgLeft"), rightCol = $("mtgRight"),
+      linesSvg = $("mtgLines"), matchBox = $("mtgMatch");
+
+    /* ------------------------------------------------------------- *
+     * 2. SLIDE NAVIGATION (multiple activities in one set)
+     * ------------------------------------------------------------- */
+
+    function renderSlideNav() {
+      const total = state.activities.length;
+      $("mtgSlideLabel").textContent = `Slide ${state.currentIndex + 1} of ${total}`;
+      $("mtgPrevSlide").disabled = state.currentIndex === 0;
+      $("mtgNextSlide").disabled = state.currentIndex === total - 1;
+      $("mtgDeleteSlide").disabled = total <= 1;
+
+      // Keep the in-stage navigator (visible even in student/preview mode) in sync.
+      $("mtgStageSlideLabel").textContent = `Slide ${state.currentIndex + 1} of ${total}`;
+      $("mtgStagePrev").disabled = state.currentIndex === 0;
+      $("mtgStageNext").disabled = state.currentIndex === total - 1;
+      $("mtgStageNav").style.display = total > 1 ? "flex" : "none";
+    }
+
+    // Re-draws everything that depends on which slide is active.
+    function refreshSlideUI() {
+      renderItems();
+      $("mtgTitleInput").value = currentActivity().title;
+      $("mtgInstrInput").value = currentActivity().instruction;
+      renderActivity();
+      renderSlideNav();
+    }
+
+    function goToSlide(index) {
+      state.currentIndex = Math.max(0, Math.min(state.activities.length - 1, index));
+      refreshSlideUI();
+    }
+
+    $("mtgPrevSlide").addEventListener("click", () => goToSlide(state.currentIndex - 1));
+    $("mtgNextSlide").addEventListener("click", () => goToSlide(state.currentIndex + 1));
+    $("mtgStagePrev").addEventListener("click", () => goToSlide(state.currentIndex - 1));
+    $("mtgStageNext").addEventListener("click", () => goToSlide(state.currentIndex + 1));
+
+    $("mtgAddSlide").addEventListener("click", () => {
+      state.activities.push(makeBlankActivity(state.activities.length + 1));
+      goToSlide(state.activities.length - 1); // jump straight to the new slide
+    });
+
+    $("mtgDeleteSlide").addEventListener("click", () => {
+      if (state.activities.length <= 1) { alert("Keep at least one slide."); return; }
+      state.activities.splice(state.currentIndex, 1);
+      goToSlide(Math.min(state.currentIndex, state.activities.length - 1));
+    });
+
+    /* ------------------------------------------------------------- *
+     * 3. ITEMS EDITOR (left column "Items" list)
+     * ------------------------------------------------------------- */
+
+    function sideEditor(itemIndex, side) {
+      const items = currentActivity().items;
+      const it = items[itemIndex][side];
+      const box = document.createElement("div"); box.className = "mtg-side";
+      const lbl = document.createElement("label"); lbl.className = "mtg-thumb";
+      if (it.img) { const im = document.createElement("img"); im.src = it.img; lbl.appendChild(im); }
+      else { lbl.textContent = it.emoji || "+"; }
+      const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.hidden = true;
+      inp.addEventListener("change", e => {
+        const f = e.target.files[0]; if (!f) return;
+        const r = new FileReader();
+        r.onload = ev => { items[itemIndex][side].img = ev.target.result; renderItems(); renderActivity(); };
+        r.readAsDataURL(f);
+      });
+      lbl.appendChild(inp); box.appendChild(lbl);
+      const name = document.createElement("input");
+      name.className = "mtg-side-name"; name.placeholder = "Name (optional)"; name.value = it.name || "";
+      name.addEventListener("input", e => { items[itemIndex][side].name = e.target.value; renderActivity(); });
+      box.appendChild(name);
+      return box;
+    }
+
+    function renderItems() {
+      const wrap = $("mtgItems"); wrap.innerHTML = "";
+      const items = currentActivity().items;
+      items.forEach((it, i) => {
+        const row = document.createElement("div"); row.className = "mtg-item-row";
+        row.appendChild(sideEditor(i, "left"));
+        const ar = document.createElement("span"); ar.className = "mtg-row-arrow"; ar.textContent = "→"; row.appendChild(ar);
+        row.appendChild(sideEditor(i, "right"));
+        const menu = document.createElement("button"); menu.className = "mtg-item-menu"; menu.type = "button"; menu.textContent = "⋮";
+        const pop = document.createElement("div"); pop.className = "mtg-pop";
+        const del = document.createElement("button"); del.className = "del"; del.type = "button"; del.textContent = "🗑 Remove item";
+        del.addEventListener("click", () => {
+          if (items.length <= 2) { alert("Keep at least 2 items."); return; }
+          items.splice(i, 1); renderItems(); renderActivity();
+        });
+        pop.appendChild(del);
+        menu.addEventListener("click", e => {
+          e.stopPropagation();
+          document.querySelectorAll(".mtg-pop").forEach(p => { if (p !== pop) p.classList.remove("show"); });
+          pop.classList.toggle("show");
+        });
+        row.appendChild(menu); row.appendChild(pop);
+        wrap.appendChild(row);
+      });
+    }
+    document.addEventListener("click", () => document.querySelectorAll(".mtg-pop").forEach(p => p.classList.remove("show")));
+
+    $("mtgAddItem").addEventListener("click", () => {
+      currentActivity().items.push({ left: { img: null, emoji: "⭐" }, right: { img: null, emoji: "⭐" } });
+      renderItems(); renderActivity();
+    });
+
+    /* ------------------------------------------------------------- *
+     * 4. ACTIVITY PREVIEW (left ↔ right matching interaction)
+     * ------------------------------------------------------------- */
+
+    function shuffle(array) {
+      const copy = array.slice();
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    let dragFromIndex = null, dragStartX = 0, dragStartY = 0, dragMoved = false, tempLine = null;
+
+    function pitem(itemIndex, side) {
+      const it = currentActivity().items[itemIndex][side];
+      const el = document.createElement("div"); el.className = "mtg-pitem"; el.dataset.i = itemIndex;
+      if (it.img) { const im = document.createElement("img"); im.className = "mtg-pitem-img"; im.src = it.img; el.appendChild(im); }
+      else { const sp = document.createElement("div"); sp.className = "mtg-pitem-emoji"; sp.textContent = it.emoji || "?"; el.appendChild(sp); }
+      if (it.name) { const nm = document.createElement("div"); nm.className = "mtg-pitem-name"; nm.textContent = it.name; el.appendChild(nm); }
+      const dot = document.createElement("span"); dot.className = "mtg-dot"; el.appendChild(dot);
+
+      if (side === "left") {
+        // Press-and-drag from a left picture straight to its right pair —
+        // the connecting line follows the finger/cursor as you drag.
+        el.addEventListener("pointerdown", e => startDrag(itemIndex, el, e));
+      } else {
+        // Right-side pictures are the drop targets. Plain tapping still
+        // works too (select a left item, then tap its right pair) for
+        // learners who find press-and-drag harder.
+        el.addEventListener("click", () => selectRight(itemIndex));
+      }
+      return el;
+    }
+
+    // Renders the whole matching board for the slide that is currently active.
+    function renderActivity() {
+      const activity = currentActivity();
+      $("mtgTitle").textContent = activity.title;
+      $("mtgInstr").textContent = activity.instruction;
+      $("mtgTitle").style.display = state.showTitle ? "block" : "none";
+      $("mtgInstr").style.display = state.showInstr ? "block" : "none";
+
+      selectedLeft = null; matches = {};
+      shuffled = shuffle(activity.items.map((_, i) => i));
+      leftCol.innerHTML = ""; rightCol.innerHTML = "";
+      activity.items.forEach((_, i) => leftCol.appendChild(pitem(i, "left")));
+      shuffled.forEach(i => rightCol.appendChild(pitem(i, "right")));
+      $("mtgHint").textContent = "";
+      drawLines();
+      if (document.body.classList.contains("mtg-preview-only")) setTimeout(fitStageToScreen, 30);
+    }
+
+    // ----- Tap-to-connect (select a left item, then tap its right pair) -----
+    function selectLeft(itemIndex, el) {
+      selectedLeft = itemIndex;
+      leftCol.querySelectorAll(".mtg-pitem").forEach(x => x.classList.remove("sel"));
+      el.classList.add("sel");
+    }
+    function selectRight(itemIndex) {
+      if (selectedLeft === null) return;
+      matches[selectedLeft] = itemIndex;
+      leftCol.querySelectorAll(".mtg-pitem").forEach(x => x.classList.remove("sel"));
+      selectedLeft = null;
+      $("mtgHint").textContent = "";
+      drawLines();
+    }
+
+    // ----- Drag-to-connect (press a left item and drag a line to its pair) -----
+    function startDrag(itemIndex, el, e) {
+      e.preventDefault();
+      dragFromIndex = itemIndex; dragStartX = e.clientX; dragStartY = e.clientY; dragMoved = false;
+      selectLeft(itemIndex, el);
+      tempLine = document.createElementNS(SVG_NS, "line");
+      tempLine.setAttribute("stroke", "#000"); tempLine.setAttribute("stroke-width", "5");
+      tempLine.setAttribute("stroke-linecap", "round"); tempLine.setAttribute("stroke-dasharray", "10,8");
+      linesSvg.appendChild(tempLine);
+      document.addEventListener("pointermove", onDragMove);
+      document.addEventListener("pointerup", onDragEnd, { once: true });
+    }
+    function onDragMove(e) {
+      if (dragFromIndex === null || !tempLine) return;
+      if (Math.abs(e.clientX - dragStartX) > 4 || Math.abs(e.clientY - dragStartY) > 4) dragMoved = true;
+      const lEl = leftCol.querySelector('[data-i="' + dragFromIndex + '"]');
+      const a = ctr(lEl), b = matchBox.getBoundingClientRect();
+      const x2 = (e.clientX - b.left) / stageScale, y2 = (e.clientY - b.top) / stageScale;
+      tempLine.setAttribute("x1", a.x); tempLine.setAttribute("y1", a.y);
+      tempLine.setAttribute("x2", x2); tempLine.setAttribute("y2", y2);
+    }
+    function onDragEnd(e) {
+      document.removeEventListener("pointermove", onDragMove);
+      if (tempLine) { tempLine.remove(); tempLine = null; }
+      const fromIndex = dragFromIndex; dragFromIndex = null;
+      if (fromIndex === null || !dragMoved) return; // a plain tap — let selectLeft's highlight stand, waiting for a tap on the right side
+      const dropTarget = document.elementFromPoint(e.clientX, e.clientY);
+      const rightEl = dropTarget ? dropTarget.closest(".mtg-pitem") : null;
+      if (rightEl && rightCol.contains(rightEl)) {
+        matches[fromIndex] = +rightEl.dataset.i;
+        selectedLeft = null;
+        leftCol.querySelectorAll(".mtg-pitem").forEach(x => x.classList.remove("sel"));
+        $("mtgHint").textContent = "";
+      }
+      drawLines();
+    }
+
+    function ctr(el) {
+      const dot = el.querySelector(".mtg-dot");
+      const target = dot || el;
+      const r = target.getBoundingClientRect(), b = matchBox.getBoundingClientRect();
+      // Divide out the current zoom-to-fit scale: the rectangles above are
+      // already in real screen pixels (post-scale), but the <line> we draw
+      // lives inside the same scaled wrapper, so it would get scaled a
+      // second time unless we compensate here.
+      return {
+        x: (r.left + r.width / 2 - b.left) / stageScale,
+        y: (r.top + r.height / 2 - b.top) / stageScale
+      };
+    }
+    function line(x1, y1, x2, y2, color) {
+      const ln = document.createElementNS(SVG_NS, "line");
+      ln.setAttribute("x1", x1); ln.setAttribute("y1", y1); ln.setAttribute("x2", x2); ln.setAttribute("y2", y2);
+      ln.setAttribute("stroke", color); ln.setAttribute("stroke-width", "5"); ln.setAttribute("stroke-linecap", "round");
+      linesSvg.appendChild(ln);
+    }
+    function drawLines() {
+      linesSvg.innerHTML = "";
+      Object.keys(matches).forEach(li => {
+        const ri = matches[li];
+        const lEl = leftCol.querySelector('[data-i="' + li + '"]'), rEl = rightCol.querySelector('[data-i="' + ri + '"]');
+        if (!lEl || !rEl) return;
+        const a = ctr(lEl), c = ctr(rEl), color = "#000000";
+        line(a.x, a.y, c.x, c.y, color); lEl.style.borderColor = color; rEl.style.borderColor = color;
+      });
+    }
+
+    function resetMatches() {
+      matches = {}; selectedLeft = null;
+      document.querySelectorAll(".mtg-pitem").forEach(x => { x.classList.remove("sel"); x.style.borderColor = ""; });
+      $("mtgHint").textContent = "";
+      drawLines();
+    }
+    $("mtgReset").addEventListener("click", resetMatches);
+
+    $("mtgCheck").addEventListener("click", () => {
+      const totalItems = currentActivity().items.length;
+      if (Object.keys(matches).length < totalItems) {
+        $("mtgHint").textContent = "Match all the items first before checking.";
+        return;
+      }
+      document.querySelectorAll(".mtg-pitem").forEach(x => x.style.borderColor = ""); linesSvg.innerHTML = "";
+      let correctCount = 0;
+      Object.keys(matches).forEach(li => {
+        const ri = matches[li], isCorrect = (+li === +ri), color = isCorrect ? "#1f9d44" : "#e23b54";
+        if (isCorrect) correctCount++;
+        const lEl = leftCol.querySelector('[data-i="' + li + '"]'), rEl = rightCol.querySelector('[data-i="' + ri + '"]');
+        const a = ctr(lEl), c = ctr(rEl); line(a.x, a.y, c.x, c.y, color); lEl.style.borderColor = color; rEl.style.borderColor = color;
+      });
+      openScoreModal(correctCount, totalItems);
+    });
+    window.addEventListener("resize", () => {
+      if (document.body.classList.contains("mtg-preview-only")) fitStageToScreen();
+      else drawLines();
+    });
+
+    /* ------------------------------------------------------------- *
+     * 5. SCORE MODAL
+     * ------------------------------------------------------------- */
+
+    function openScoreModal(correctCount, totalItems) {
+      const percent = correctCount / totalItems;
+      // Reward images — drop your own files in at these same paths/names.
+      let image, message;
+      if (percent === 1) {
+        image = "../../TEACHER_ASSETS/perfect.png";
+        message = "Perfect! You got them all correct! 🎊";
+
+        confetti({
+          particleCount: 200,
+          spread: 120,
+          startVelocity: 40,
+          origin: { y: 0.6 }
+        });
+
+        setTimeout(() => {
+          confetti({
+            particleCount: 100,
+            spread: 80,
+            origin: { x: 0.2, y: 0.6 }
+          });
+
+          confetti({
+            particleCount: 100,
+            spread: 80,
+            origin: { x: 0.8, y: 0.6 }
+          });
+        }, 300);
+      }
+      else if (percent >= 0.5) {
+        image = "../../TEACHER_ASSETS/goodjob.png";
+        message = "Good job, you can do it! ⭐";
+      }
+      else {
+        image = "../../TEACHER_ASSETS/tryagain.png";
+        message = "Good try! Let's practice again! 💪";
+      }
+      $("mtgModalEmoji").src = image;
+      $("mtgModalScore").textContent = `${correctCount} / ${totalItems} correct`;
+      $("mtgModalMsg").textContent = message;
+      $("mtgModalOverlay").classList.add("show");
+    }
+    function closeScoreModal() { $("mtgModalOverlay").classList.remove("show"); }
+
+    $("mtgModalCloseBtn").addEventListener("click", closeScoreModal);
+    $("mtgModalTryBtn").addEventListener("click", () => { closeScoreModal(); resetMatches(); });
+
+    /* ------------------------------------------------------------- *
+     * 6. APPEARANCE (Design & Settings panel)
+     * ------------------------------------------------------------- */
+
+    function applyAppearance() {
+      stage.style.background = state.bg;
+      stage.style.fontFamily = state.font;
+      stage.style.fontSize = state.fontSize + "px";
+      stage.style.setProperty("--mtg-text", state.textColor);
+      stage.classList.toggle("bs-dashed", state.border === "dashed");
+      stage.classList.toggle("bs-solid", state.border === "solid");
+      stage.classList.toggle("no-deco", !state.showDeco);
+      const gap = SPACE_GAP[state.spacing];
+      leftCol.style.gap = gap + "px"; rightCol.style.gap = gap + "px";
+    }
+
+    function renderSwatches() {
+      const wrap = $("mtgSwatches"); wrap.innerHTML = "";
+      BG_SWATCHES.forEach(color => {
+        const swatch = document.createElement("div");
+        swatch.className = "mtg-sw" + (color === state.bg ? " sel" : "");
+        swatch.style.background = color;
+        swatch.addEventListener("click", () => { state.bg = color; applyAppearance(); renderSwatches(); });
+        wrap.appendChild(swatch);
+      });
+    }
+
+    $("mtgFont").addEventListener("change", e => { state.font = e.target.value; applyAppearance(); });
+
+    function setFontSize(value) {
+      value = Math.max(20, Math.min(64, value));
+      state.fontSize = value;
+      $("mtgSize").value = value; $("mtgSizeNum").value = value;
+      applyAppearance(); drawLines();
+    }
+    $("mtgSize").addEventListener("input", e => setFontSize(+e.target.value));
+    $("mtgSizeNum").addEventListener("input", e => setFontSize(+e.target.value || 40));
+
+    $("mtgTextColor").addEventListener("input", e => { state.textColor = e.target.value; applyAppearance(); });
+
+    document.querySelectorAll("#mtgBorder button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.border = btn.dataset.b;
+        document.querySelectorAll("#mtgBorder button").forEach(b => b.classList.remove("sel"));
+        btn.classList.add("sel");
+        applyAppearance();
+      });
+    });
+
+    function setSpacing(delta) {
+      let index = SPACINGS.indexOf(state.spacing) + delta;
+      index = Math.max(0, Math.min(SPACINGS.length - 1, index));
+      state.spacing = SPACINGS[index];
+      $("mtgSpaceVal").textContent = state.spacing;
+      applyAppearance(); drawLines();
+    }
+    $("mtgSpaceMinus").addEventListener("click", () => setSpacing(-1));
+    $("mtgSpacePlus").addEventListener("click", () => setSpacing(1));
+
+    $("mtgInstrInput").addEventListener("input", e => {
+      currentActivity().instruction = e.target.value;
+      $("mtgInstr").textContent = e.target.value;
+    });
+    $("mtgTitleInput").addEventListener("input", e => {
+      currentActivity().title = e.target.value;
+      $("mtgTitle").textContent = e.target.value;
+    });
+
+    $("mtgShowTitle").addEventListener("change", e => { state.showTitle = e.target.checked; renderActivity(); });
+    $("mtgShowInstr").addEventListener("change", e => { state.showInstr = e.target.checked; renderActivity(); });
+    $("mtgShowDeco").addEventListener("change", e => { state.showDeco = e.target.checked; applyAppearance(); });
+
+    $("mtgApply").addEventListener("click", () => { applyAppearance(); drawLines(); flash($("mtgApply"), "✓ Applied"); });
+
+    // "Reset" only restores the design settings — it does not touch the
+    // teacher's items/content, so nothing the teacher typed gets lost.
+    $("mtgResetAll").addEventListener("click", () => {
+      Object.assign(state, structuredClone(DEFAULT_DESIGN));
+      syncDesignControls(); applyAppearance(); renderActivity();
+    });
+
+    function syncDesignControls() {
+      $("mtgFont").value = state.font;
+      $("mtgSize").value = state.fontSize; $("mtgSizeNum").value = state.fontSize;
+      $("mtgTextColor").value = state.textColor;
+      $("mtgSpaceVal").textContent = state.spacing;
+      $("mtgShowTitle").checked = state.showTitle; $("mtgShowInstr").checked = state.showInstr;
+      $("mtgShowDeco").checked = state.showDeco;
+      document.querySelectorAll("#mtgBorder button").forEach(b => b.classList.toggle("sel", b.dataset.b === state.border));
+      renderSwatches();
+    }
+
+    /* ------------------------------------------------------------- *
+     * 7. TOP BAR ACTIONS
+     * ------------------------------------------------------------- */
+
+    function flash(button, text) {
+      const original = button.textContent;
+      button.textContent = text;
+      setTimeout(() => button.textContent = original, 1100);
+    }
+
+    // Cross-browser helpers — different browsers still use different
+    // (vendor-prefixed) names for the Fullscreen API.
+    function requestFullscreen(el) {
+      const request = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+      if (request) request.call(el).catch(() => { /* ignore — not every device/browser allows it */ });
+    }
+    function exitFullscreen() {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (exit) exit.call(document).catch(() => { });
+      }
+    }
+
+    function enterPreview() {
+      document.body.classList.add("mtg-preview-only");
+      requestFullscreen(document.documentElement);
+      setTimeout(fitStageToScreen, 120);
+    }
+    function exitPreview() {
+      document.body.classList.remove("mtg-preview-only");
+      exitFullscreen();
+      stageScale = 1;
+      stageInner.style.transform = "";
+      setTimeout(drawLines, 60);
+    }
+    $("mtgPreviewBtn").addEventListener("click", enterPreview);
+    $("mtgExitFloatBtn").addEventListener("click", exitPreview);
+    $("mtgDraftBtn").addEventListener("click", () => flash($("mtgDraftBtn"), "✓ Saved"));
+
+    // Shrinks the whole activity (title, instruction, pairs, buttons) just
+    // enough so it always fits on screen in preview mode — no scrollbar,
+    // nothing cut off, the exact view the student will answer.
+    function fitStageToScreen() {
+      if (!document.body.classList.contains("mtg-preview-only")) return;
+      stageInner.style.transform = "none";
+      stageScale = 1;
+      const available = window.innerHeight - 110; // extra breathing margin top & bottom
+      const naturalHeight = stageInner.scrollHeight;
+      stageScale = naturalHeight > available ? available / naturalHeight : 1;
+      stageInner.style.transform = `scale(${stageScale})`;
+      drawLines();
+    }
+
+    // If the student/teacher exits fullscreen another way (ESC key on desktop,
+    // swipe-down on some devices), make sure our own preview mode follows suit.
+    ["fullscreenchange", "webkitfullscreenchange"].forEach(evt => {
+      document.addEventListener(evt, () => {
+        const stillFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+        if (!stillFullscreen) document.body.classList.remove("mtg-preview-only");
+      });
+    });
+
+    // Collapse / expand the right-hand "Design & Settings" panel. When it's
+    // hidden, the Template Guide card is shown in that same space instead.
+    $("mtgCollapseBtn").addEventListener("click", () => document.body.classList.add("mtg-right-collapsed"));
+    $("mtgShowSettingsBtn").addEventListener("click", () => document.body.classList.remove("mtg-right-collapsed"));
+
+    // Thumbnail upload
+    $("mtgThumbUpload").addEventListener("change", function () {
+      const f = this.files[0]; if (!f) return;
+      const r = new FileReader();
+      r.onload = ev => setThumb(ev.target.result);
+      r.readAsDataURL(f);
+    });
+    function setThumb(dataURL) {
+      state.thumb = dataURL;
+      $("mtgThumbImg").src = dataURL; $("mtgThumbImg").style.display = "block";
+      $("mtgThumbEmpty").style.display = "none"; $("mtgThumbCheck").classList.add("show");
+    }
+
+    // Publish = open a confirmation modal showing the activity's Thumbnail
+    // Image (step 3) plus a deadline date field.
+    function openPublishModal() {
+      $("mtgPublishOverlay").classList.add("show");
+
+      // The preview always mirrors whatever image is currently set as the
+      // Thumbnail Image in step 3 — it does NOT generate a separate snapshot.
+      if (state.thumb) {
+        $("mtgPublishThumbImg").src = state.thumb;
+        $("mtgPublishThumbImg").style.display = "block";
+        $("mtgPublishThumbEmpty").style.display = "none";
+      } else {
+        $("mtgPublishThumbImg").style.display = "none";
+        $("mtgPublishThumbEmpty").style.display = "flex";
+        $("mtgPublishThumbEmpty").textContent = "No thumbnail uploaded yet. Add one in step 3.";
+      }
+    }
+
+    function closePublishModal() {
+      $("mtgPublishOverlay").classList.remove("show");
+    }
+
+    $("mtgPubBtn").addEventListener("click", openPublishModal);
+    $("mtgPublishCancelBtn").addEventListener("click", closePublishModal);
+
+    // Note: "Confirm Publish" is intentionally left without a function for now.
+
+    /* ------------------------------------------------------------- *
+     * 8. INIT
+     * ------------------------------------------------------------- */
+
+    renderItems();
+    renderSwatches();
+    syncDesignControls();
+    applyAppearance();
+    renderActivity();
+    renderSlideNav();
+  </script>
+</body>
+
+</html>

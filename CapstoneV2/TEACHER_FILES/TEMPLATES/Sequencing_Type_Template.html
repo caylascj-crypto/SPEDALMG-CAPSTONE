@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPED ALM — Sequencing Template Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="../../TEACHER.CSS/Sequencing_Type_Template.css" />
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div class="seq-top">
+    <div class="seq-logo">🔢</div>
+    <div>
+      <h1>Sequencing Template Generator</h1>
+      <div class="seq-tsub">Step / Picture Sequencing (Task Analysis) activities for learners (ASD / Intellectual
+        Disability)</div>
+    </div>
+    <div class="seq-top-actions">
+      <button class="seq-btn seq-btn--print" id="seqPrintBtn" type="button">🖨️ Generate Printable</button>
+      <button class="seq-btn seq-btn--ghost" id="seqPreviewBtn" type="button">👁 Preview</button>
+      <button class="seq-btn seq-btn--ghost" id="seqDraftBtn" type="button">💾 Save Draft</button>
+      <button class="seq-btn seq-btn--pub" id="seqPubBtn" type="button">🌐 Publish</button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="seq-body">
+
+    <!-- LEFT COLUMN -->
+    <div class="seq-left-col">
+
+      <!-- Multiple activities (slides) inside one activity set -->
+      <div class="seq-card">
+        <div class="seq-step">Activity Slides <span class="seq-edit-link">(suggested: ~5 per set)</span></div>
+        <div class="seq-slidebar">
+          <button id="seqPrevSlide" type="button">◂</button>
+          <div class="seq-slide-label" id="seqSlideLabel">Slide 1 of 1</div>
+          <button id="seqNextSlide" type="button">▸</button>
+        </div>
+        <div class="seq-slide-actions">
+          <button id="seqAddSlide" type="button">+ Add Slide</button>
+          <button id="seqDeleteSlide" type="button" class="danger">🗑 Delete</button>
+        </div>
+      </div>
+
+      <div class="seq-card">
+        <div class="seq-step">1. Activity Type</div>
+        <div class="seq-type">
+          <div class="seq-type-ic">🔢</div>
+          <b>Sequencing Type</b>
+        </div>
+        <p class="seq-type-desc">Learners tap the picture steps in the correct order (1 → 2 → 3 → 4). A number badge
+          appears on each step as it is tapped. Best for daily living / self-help routines (Task Analysis).</p>
+      </div>
+
+      <div class="seq-card">
+        <div class="seq-step">2. Steps <span class="seq-edit-link">(this order = correct answer)</span></div>
+        <div id="seqItems"></div>
+        <button class="seq-add" id="seqAddItem" type="button">+ Add Step</button>
+      </div>
+
+      <div class="seq-card">
+        <div class="seq-step">3. Thumbnail Image <span class="seq-edit-link">(Upload)</span></div>
+        <div class="seq-thumbbox">
+          <div class="seq-thumb-check" id="seqThumbCheck">✓</div>
+          <img id="seqThumbImg" alt="Thumbnail" style="display:none" />
+          <div class="seq-thumb-empty" id="seqThumbEmpty">No thumbnail yet.<br>Upload or press Publish.</div>
+        </div>
+        <label class="seq-change">⬆ Change Image<input type="file" accept="image/*" id="seqThumbUpload"
+            hidden /></label>
+      </div>
+
+    </div>
+
+    <!-- CENTER PREVIEW -->
+    <div class="seq-preview-col">
+      <div class="seq-step">4. Activity Preview</div>
+      <div class="seq-stage" id="seqStage">
+        <div class="seq-deco">
+          <span class="d-sun">☀️</span><span class="d-cloud1">☁️</span><span class="d-cloud2">☁️</span>
+          <div class="d-grass"></div><span class="d-flower1">🌼</span><span class="d-flower2">🌸</span>
+        </div>
+        <div class="seq-title" id="seqTitle"></div>
+        <div class="seq-instr" id="seqInstr"></div>
+        <div class="seq-grid" id="seqGrid"></div>
+        <div class="seq-stage-controls">
+          <div class="seq-hint" id="seqHint"></div>
+          <div class="seq-stage-btnrow">
+            <button class="seq-mini seq-mini--reset" id="seqReset" type="button">🔁 Try Again</button>
+            <button class="seq-mini seq-mini--check" id="seqCheck" type="button">✓ Check answers</button>
+          </div>
+          <div class="seq-stage-nav" id="seqStageNav">
+            <button id="seqStagePrev" type="button">◂ Previous</button>
+            <span id="seqStageSlideLabel">Slide 1 of 1</span>
+            <button id="seqStageNext" type="button">Next ▸</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="seq-reminders">
+        <div class="r-title">♿ Accessibility Reminders</div>
+        <div class="seq-rem-list">
+          <div class="seq-rem"><span class="r-ic">🖼️</span>Use real, clear photos</div>
+          <div class="seq-rem"><span class="r-ic">🎨</span>High contrast colors</div>
+          <div class="seq-rem"><span class="r-ic">🔠</span>Large fonts</div>
+          <div class="seq-rem"><span class="r-ic">🔢</span>Keep steps short (3–6)</div>
+          <div class="seq-rem"><span class="r-ic">✅</span>One routine per page</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SETTINGS -->
+    <div class="seq-right-col" id="seqRightCol">
+      <div class="seq-card seq-right-panel-full" id="seqRightPanelFull">
+        <div class="seq-set-title">🎨 Design &amp; Settings
+          <button class="seq-collapse-btn" id="seqCollapseBtn" type="button" title="Hide panel">⮜</button>
+        </div>
+
+        <div class="seq-set-group">
+          <div class="seq-set-label">Background Color</div>
+          <div class="seq-swatches" id="seqSwatches"></div>
+        </div>
+
+        <div class="seq-set-group">
+          <div class="seq-set-label">Fonts</div>
+          <select class="seq-select" id="seqFont">
+            <option value="'Comic Sans MS','Comic Sans',cursive">Comic Sans MS</option>
+            <option value="'Fredoka',sans-serif">Fredoka</option>
+            <option value="'Nunito',sans-serif">Nunito</option>
+            <option value="'Poppins',sans-serif">Poppins</option>
+            <option value="Verdana,sans-serif">Verdana</option>
+            <option value="Arial,sans-serif">Arial</option>
+          </select>
+        </div>
+
+        <div class="seq-set-group">
+          <div class="seq-size-head">
+            <div class="seq-set-label" style="margin:0">Font Size</div>
+            <input class="seq-size-num" id="seqSizeNum" type="number" min="20" max="64" />
+          </div>
+          <div class="seq-size-row">
+            <span class="a-sm">A</span>
+            <input type="range" id="seqSize" min="20" max="64" step="1" />
+            <span class="a-lg">A</span>
+          </div>
+        </div>
+
+        <div class="seq-set-group">
+          <div class="seq-set-label">Text Color</div>
+          <div class="seq-color-row">
+            <input type="color" id="seqTextColor" />
+            <span style="font-size:13px;color:var(--ink-soft);font-weight:600">Title &amp; labels</span>
+          </div>
+        </div>
+
+        <div class="seq-set-group">
+          <div class="seq-set-label">Number Badge Color</div>
+          <div class="seq-color-row">
+            <input type="color" id="seqBadgeColor" />
+            <span style="font-size:13px;color:var(--ink-soft);font-weight:600">Tap badge</span>
+          </div>
+        </div>
+
+        <div class="seq-set-group">
+          <div class="seq-set-label">Border Style</div>
+          <div class="seq-seg" id="seqBorder">
+            <button data-b="rounded" class="sel" type="button"><span class="seg-box seg-rounded"></span>Rounded</button>
+            <button data-b="dashed" type="button"><span class="seg-box seg-dashed"></span>Dashed</button>
+            <button data-b="solid" type="button"><span class="seg-box seg-solid"></span>Solid</button>
+          </div>
+        </div>
+
+        <div class="seq-set-group">
+          <div class="seq-set-label">Steps per Row</div>
+          <div class="seq-spacing">
+            <button id="seqColsMinus" type="button">−</button>
+            <span id="seqColsVal">4</span>
+            <button id="seqColsPlus" type="button">+</button>
+          </div>
+        </div>
+
+        <div class="seq-set-group">
+          <div class="seq-set-label">Spacing</div>
+          <div class="seq-spacing">
+            <button id="seqSpaceMinus" type="button">−</button>
+            <span id="seqSpaceVal">Medium</span>
+            <button id="seqSpacePlus" type="button">+</button>
+          </div>
+        </div>
+
+        <div class="seq-set-group">
+          <div class="seq-set-label">Instruction Text</div>
+          <input class="seq-input" id="seqInstrInput" type="text" />
+        </div>
+
+        <div class="seq-set-group">
+          <div class="seq-set-label">Title</div>
+          <input class="seq-input" id="seqTitleInput" type="text" />
+        </div>
+
+        <div class="seq-set-group">
+          <div class="seq-set-label">Other Options</div>
+          <label class="seq-check"><input type="checkbox" id="seqShowTitle" checked /> Show title</label>
+          <label class="seq-check"><input type="checkbox" id="seqShowInstr" checked /> Show instructions</label>
+          <label class="seq-check"><input type="checkbox" id="seqShowLabels" checked /> Show step labels</label>
+          <label class="seq-check"><input type="checkbox" id="seqShowDeco" checked /> Show decorations</label>
+        </div>
+
+        <div class="seq-set-actions">
+          <button class="seq-reset" id="seqResetAll" type="button">↻ Reset</button>
+          <button class="seq-apply" id="seqApply" type="button">✓ Apply Changes</button>
+        </div>
+      </div>
+
+      <!-- Shown instead of the settings panel whenever it is hidden,
+           so this space is never left empty. -->
+      <div class="seq-tip seq-right-panel-guide" id="seqRightPanelGuide">
+        <b>💡 Template Guide
+          <button class="seq-guide-settings-btn" id="seqShowSettingsBtn" type="button" title="Show Design & Settings">🎨
+            Settings</button>
+        </b>
+        <p>
+          • Upload custom images for each sequence step.<br>
+          • Add clear text descriptions or instructions.<br>
+          • Arrange steps in the correct order using the move controls.<br>
+          • Customize colors, fonts, and spacing to match learner needs.<br>
+          • Preview the activity before publishing.<br>
+          • Add or remove steps as needed.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Floating exit button — always reachable in preview/fullscreen mode,
+       even on phones where there is no ESC key. -->
+  <button class="seq-exit-float" id="seqExitFloatBtn" type="button">✖ Exit</button>
+
+  <!-- SCORE MODAL (appears after "Check answers") -->
+
+  <div class="seq-modal-overlay" id="seqModalOverlay">
+    <div class="seq-modal-card">
+
+      <img class="seq-modal-emoji" id="seqModalEmoji" src="" alt="Result">
+
+      <div class="seq-modal-score" id="seqModalScore">
+        0 / 0 correct
+      </div>
+
+      <div class="seq-modal-msg" id="seqModalMsg">
+        Great job!
+      </div>
+
+      <div class="seq-modal-actions">
+        <button class="seq-modal-close" id="seqModalCloseBtn" type="button">
+          ✖ Close
+        </button>
+
+        <button class="seq-modal-try" id="seqModalTryBtn" type="button">
+          🔁 Try Again
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PUBLISH MODAL (appears when "Publish" is clicked) -->
+  <div class="seq-modal-overlay" id="seqPublishOverlay">
+    <div class="seq-modal-card seq-publish-card">
+      <h3>🌐 Publish Activity</h3>
+      <div class="seq-publish-thumb-wrap" id="seqPublishThumbWrap">
+        <div class="seq-publish-thumb-empty" id="seqPublishThumbEmpty">No thumbnail uploaded yet.</div>
+        <img id="seqPublishThumbImg" alt="Activity thumbnail preview" style="display:none" />
+      </div>
+      <div class="seq-publish-field">
+        <label for="seqDeadlineInput">📅 Deadline</label>
+        <input type="date" id="seqDeadlineInput" />
+        <div class="seq-publish-hint">Choose the last day the activity can still be submitted.</div>
+      </div>
+      <div class="seq-modal-actions">
+        <button class="seq-modal-close" id="seqPublishCancelBtn" type="button">✖ Cancel</button>
+        <button class="seq-modal-try seq-publish-confirm" id="seqPublishConfirmBtn" type="button">✅ Confirm
+          Publish</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =====================================================================
+       SEQUENCING TEMPLATE GENERATOR — main script
+       Sections below:
+         1. STATE            – design settings + the list of activity slides
+         2. SLIDE NAVIGATION – switching / adding / deleting activity slides
+         3. STEPS EDITOR     – the left-hand "Steps" list (teacher input)
+         4. ACTIVITY PREVIEW – the tap-to-order interaction in the stage
+         5. SCORE MODAL      – popup shown after "Check answers"
+         6. APPEARANCE       – design & settings panel (right column)
+         7. TOP BAR ACTIONS  – preview / save / collapse panel / publish
+         8. PRINTABLE OUTPUT – worksheet + performance checklist generator
+         9. INIT             – first render on page load
+       ===================================================================== */
+
+    const $ = id => document.getElementById(id);
+
+    /* ------------------------------------------------------------- *
+     * 1. STATE
+     * ------------------------------------------------------------- */
+
+    // Design settings are shared by every slide, so the whole activity
+    // set keeps one consistent look.
+    const DEFAULT_DESIGN = {
+      bg: "#fdf6d8", font: "'Comic Sans MS','Comic Sans',cursive", fontSize: 40,
+      textColor: "#243a5e", badgeColor: "#2f6fed", border: "rounded", spacing: "Medium", cols: 4,
+      showTitle: true, showInstr: true, showDeco: true, showLabels: true
+    };
+    const BG_SWATCHES = ["#fdf6d8", "#eaf2ff", "#e8faf0", "#f0eefc", "#fdebf2", "#ffffff"];
+    const SPACINGS = ["Small", "Medium", "Large"];
+    const SPACE_GAP = { Small: 14, Medium: 22, Large: 32 };
+
+    // One "activity" = one sequencing task (its own title, instruction, steps).
+    function makeDefaultActivity() {
+      return {
+        title: "Arrange the Steps",
+        instruction: "Tap the pictures in the correct order. Start with step 1.",
+        steps: [
+          { img: null, emoji: "🚪", label: "Enter the CR" },
+          { img: null, emoji: "🚰", label: "Turn on the faucet" },
+          { img: null, emoji: "🧼", label: "Apply soap & scrub" },
+          { img: null, emoji: "🤲", label: "Rinse & dry hands" }
+        ]
+      };
+    }
+    function makeBlankActivity(slideNumber) {
+      return {
+        title: "New Activity " + slideNumber,
+        instruction: "Tap the pictures in the correct order. Start with step 1.",
+        steps: [
+          { img: null, emoji: "⭐", label: "" },
+          { img: null, emoji: "⭐", label: "" }
+        ]
+      };
+    }
+
+    const state = {
+      ...structuredClone(DEFAULT_DESIGN),
+      thumb: null,
+      activities: [makeDefaultActivity()], // the slides in this activity set
+      currentIndex: 0                         // which slide is being edited/previewed
+    };
+
+    // Shortcut used everywhere below: "the slide we are currently working on".
+    function currentActivity() { return state.activities[state.currentIndex]; }
+
+    // Tracks the order in which the student has tapped the cards (by their
+    // original / correct index), reset whenever a new slide is shown.
+    let tapOrder = [];
+
+    const stage = $("seqStage"), grid = $("seqGrid");
+
+    /* ------------------------------------------------------------- *
+     * 2. SLIDE NAVIGATION (multiple activities in one set)
+     * ------------------------------------------------------------- */
+
+    function renderSlideNav() {
+      const total = state.activities.length;
+      $("seqSlideLabel").textContent = `Slide ${state.currentIndex + 1} of ${total}`;
+      $("seqPrevSlide").disabled = state.currentIndex === 0;
+      $("seqNextSlide").disabled = state.currentIndex === total - 1;
+      $("seqDeleteSlide").disabled = total <= 1;
+
+      // Keep the in-stage navigator (visible even in student/preview mode) in sync.
+      $("seqStageSlideLabel").textContent = `Slide ${state.currentIndex + 1} of ${total}`;
+      $("seqStagePrev").disabled = state.currentIndex === 0;
+      $("seqStageNext").disabled = state.currentIndex === total - 1;
+      $("seqStageNav").style.display = total > 1 ? "flex" : "none";
+    }
+
+    // Re-draws everything that depends on which slide is active.
+    function refreshSlideUI() {
+      renderItems();
+      $("seqTitleInput").value = currentActivity().title;
+      $("seqInstrInput").value = currentActivity().instruction;
+      renderActivity();
+      renderSlideNav();
+    }
+
+    function goToSlide(index) {
+      state.currentIndex = Math.max(0, Math.min(state.activities.length - 1, index));
+      refreshSlideUI();
+    }
+
+    $("seqPrevSlide").addEventListener("click", () => goToSlide(state.currentIndex - 1));
+    $("seqNextSlide").addEventListener("click", () => goToSlide(state.currentIndex + 1));
+    $("seqStagePrev").addEventListener("click", () => goToSlide(state.currentIndex - 1));
+    $("seqStageNext").addEventListener("click", () => goToSlide(state.currentIndex + 1));
+
+    $("seqAddSlide").addEventListener("click", () => {
+      state.activities.push(makeBlankActivity(state.activities.length + 1));
+      goToSlide(state.activities.length - 1); // jump straight to the new slide
+    });
+
+    $("seqDeleteSlide").addEventListener("click", () => {
+      if (state.activities.length <= 1) { alert("Keep at least one slide."); return; }
+      state.activities.splice(state.currentIndex, 1);
+      goToSlide(Math.min(state.currentIndex, state.activities.length - 1));
+    });
+
+    /* ------------------------------------------------------------- *
+     * 3. STEPS EDITOR (left column "Steps" list)
+     * ------------------------------------------------------------- */
+
+    function stepEditorRow(stepIndex) {
+      const steps = currentActivity().steps;
+      const step = steps[stepIndex];
+      const row = document.createElement("div"); row.className = "seq-item-row";
+
+      const orderBadge = document.createElement("div");
+      orderBadge.className = "seq-order-badge"; orderBadge.textContent = stepIndex + 1;
+      row.appendChild(orderBadge);
+
+      // Image / emoji upload box
+      const box = document.createElement("div"); box.className = "seq-side";
+      const thumbLabel = document.createElement("label"); thumbLabel.className = "seq-thumb";
+      if (step.img) { const im = document.createElement("img"); im.src = step.img; thumbLabel.appendChild(im); }
+      else { thumbLabel.textContent = step.emoji || "+"; }
+      const fileInput = document.createElement("input");
+      fileInput.type = "file"; fileInput.accept = "image/*"; fileInput.hidden = true;
+      fileInput.addEventListener("change", e => {
+        const file = e.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => { steps[stepIndex].img = ev.target.result; renderItems(); renderActivity(); };
+        reader.readAsDataURL(file);
+      });
+      thumbLabel.appendChild(fileInput); box.appendChild(thumbLabel);
+
+      // Step label text field
+      const labelInput = document.createElement("input");
+      labelInput.className = "seq-side-name";
+      labelInput.placeholder = "Step label (e.g. Turn on faucet)";
+      labelInput.value = step.label || "";
+      labelInput.addEventListener("input", e => { steps[stepIndex].label = e.target.value; renderActivity(); });
+      box.appendChild(labelInput);
+      row.appendChild(box);
+
+      // Move up / down buttons (this is how the teacher sets the correct order)
+      const orderControls = document.createElement("div"); orderControls.className = "seq-order-controls";
+      const upBtn = document.createElement("button"); upBtn.type = "button"; upBtn.textContent = "↑";
+      upBtn.disabled = stepIndex === 0;
+      upBtn.addEventListener("click", () => {
+        if (stepIndex === 0) return;
+        [steps[stepIndex - 1], steps[stepIndex]] = [steps[stepIndex], steps[stepIndex - 1]];
+        renderItems(); renderActivity();
+      });
+      const downBtn = document.createElement("button"); downBtn.type = "button"; downBtn.textContent = "↓";
+      downBtn.disabled = stepIndex === steps.length - 1;
+      downBtn.addEventListener("click", () => {
+        if (stepIndex === steps.length - 1) return;
+        [steps[stepIndex + 1], steps[stepIndex]] = [steps[stepIndex], steps[stepIndex + 1]];
+        renderItems(); renderActivity();
+      });
+      orderControls.appendChild(upBtn); orderControls.appendChild(downBtn);
+      row.appendChild(orderControls);
+
+      // "⋮" menu → remove this step
+      const menuBtn = document.createElement("button"); menuBtn.className = "seq-item-menu"; menuBtn.type = "button"; menuBtn.textContent = "⋮";
+      const menuPopup = document.createElement("div"); menuPopup.className = "seq-pop";
+      const deleteBtn = document.createElement("button"); deleteBtn.className = "del"; deleteBtn.type = "button"; deleteBtn.textContent = "🗑 Remove step";
+      deleteBtn.addEventListener("click", () => {
+        if (steps.length <= 2) { alert("Keep at least 2 steps."); return; }
+        steps.splice(stepIndex, 1); renderItems(); renderActivity();
+      });
+      menuPopup.appendChild(deleteBtn);
+      menuBtn.addEventListener("click", e => {
+        e.stopPropagation();
+        document.querySelectorAll(".seq-pop").forEach(p => { if (p !== menuPopup) p.classList.remove("show"); });
+        menuPopup.classList.toggle("show");
+      });
+      row.appendChild(menuBtn); row.appendChild(menuPopup);
+      return row;
+    }
+
+    function renderItems() {
+      const wrap = $("seqItems"); wrap.innerHTML = "";
+      currentActivity().steps.forEach((_, i) => wrap.appendChild(stepEditorRow(i)));
+    }
+    document.addEventListener("click", () => document.querySelectorAll(".seq-pop").forEach(p => p.classList.remove("show")));
+
+    $("seqAddItem").addEventListener("click", () => {
+      currentActivity().steps.push({ img: null, emoji: "⭐", label: "" });
+      renderItems(); renderActivity();
+    });
+
+    /* ------------------------------------------------------------- *
+     * 4. ACTIVITY PREVIEW (tap-to-order interaction)
+     * ------------------------------------------------------------- */
+
+    function shuffle(array) {
+      const copy = array.slice();
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function stepCard(stepIndex) {
+      const step = currentActivity().steps[stepIndex];
+      const card = document.createElement("div"); card.className = "seq-card-it"; card.dataset.i = stepIndex;
+
+      const badge = document.createElement("div"); badge.className = "seq-badge-num"; card.appendChild(badge);
+
+      if (step.img) { const im = document.createElement("img"); im.className = "seq-card-it-img"; im.src = step.img; card.appendChild(im); }
+      else { const emojiBox = document.createElement("div"); emojiBox.className = "seq-card-it-emoji"; emojiBox.textContent = step.emoji || "?"; card.appendChild(emojiBox); }
+
+      if (step.label) {
+        const labelBox = document.createElement("div"); labelBox.className = "seq-card-it-name";
+        labelBox.textContent = step.label; labelBox.style.display = state.showLabels ? "block" : "none";
+        card.appendChild(labelBox);
+      }
+
+      card.addEventListener("click", () => onCardTap(stepIndex));
+      return card;
+    }
+
+    // Tapping a card adds it to tapOrder; tapping an already-tapped card
+    // removes it again, so students can undo a mistake.
+    function onCardTap(stepIndex) {
+      const existingPosition = tapOrder.indexOf(stepIndex);
+      if (existingPosition === -1) tapOrder.push(stepIndex);
+      else tapOrder.splice(existingPosition, 1);
+      $("seqHint").textContent = "";
+      refreshBadges();
+    }
+
+    function refreshBadges() {
+      document.querySelectorAll(".seq-card-it").forEach(card => {
+        const stepIndex = +card.dataset.i;
+        const position = tapOrder.indexOf(stepIndex);
+        const badge = card.querySelector(".seq-badge-num");
+        if (position === -1) { card.classList.remove("tapped"); badge.textContent = ""; badge.style.background = ""; }
+        else { card.classList.add("tapped"); badge.textContent = position + 1; badge.style.background = ""; }
+      });
+    }
+
+    function applyCols() { grid.style.gridTemplateColumns = `repeat(${state.cols}, 1fr)`; }
+
+    // Renders the whole preview stage for the slide that is currently active.
+    function renderActivity() {
+      const activity = currentActivity();
+      $("seqTitle").textContent = activity.title;
+      $("seqInstr").textContent = activity.instruction;
+      $("seqTitle").style.display = state.showTitle ? "block" : "none";
+      $("seqInstr").style.display = state.showInstr ? "block" : "none";
+
+      tapOrder = [];
+      const shuffledOrder = shuffle(activity.steps.map((_, i) => i));
+      grid.innerHTML = "";
+      applyCols();
+      shuffledOrder.forEach(stepIndex => grid.appendChild(stepCard(stepIndex)));
+      $("seqHint").textContent = "";
+    }
+
+    function resetTaps() {
+      tapOrder = [];
+      document.querySelectorAll(".seq-card-it").forEach(card => {
+        card.classList.remove("tapped"); card.style.borderColor = "";
+      });
+      refreshBadges();
+      $("seqHint").textContent = "";
+    }
+    $("seqReset").addEventListener("click", resetTaps);
+
+    $("seqCheck").addEventListener("click", () => {
+      const totalSteps = currentActivity().steps.length;
+      if (tapOrder.length < totalSteps) {
+        $("seqHint").textContent = "Tap all the steps first before checking.";
+        return;
+      }
+      let correctCount = 0;
+      document.querySelectorAll(".seq-card-it").forEach(card => {
+        const stepIndex = +card.dataset.i;
+        const position = tapOrder.indexOf(stepIndex);
+        const isCorrect = position === stepIndex; // correct order = the original (pre-shuffle) index
+        if (isCorrect) correctCount++;
+        card.style.borderColor = isCorrect ? "#1f9d44" : "#e23b54";
+        card.querySelector(".seq-badge-num").style.background = isCorrect ? "#1f9d44" : "#e23b54";
+      });
+      openScoreModal(correctCount, totalSteps);
+    });
+
+    /* ------------------------------------------------------------- *
+     * 5. SCORE MODAL
+     * ------------------------------------------------------------- */
+
+    function openScoreModal(correctCount, totalSteps) {
+      const percent = correctCount / totalSteps;
+
+      let image, message;
+      if (percent === 1) {
+        image = "../../TEACHER_ASSETS/perfect.png";
+        message = "Perfect! You got them all correct! 🎊";
+
+        confetti({
+          particleCount: 200,
+          spread: 120,
+          startVelocity: 40,
+          origin: { y: 0.6 }
+        });
+
+        setTimeout(() => {
+          confetti({
+            particleCount: 100,
+            spread: 80,
+            origin: { x: 0.2, y: 0.6 }
+          });
+
+          confetti({
+            particleCount: 100,
+            spread: 80,
+            origin: { x: 0.8, y: 0.6 }
+          });
+        }, 300);
+      }
+      else if (percent >= 0.5) {
+        image = "../../TEACHER_ASSETS/goodjob.png";
+        message = "Good job, you can do it! ⭐";
+      }
+      else {
+        image = "../../TEACHER_ASSETS/tryagain.png";
+        message = "Good try! Let's practice again! 💪";
+      }
+      $("seqModalEmoji").src = image;
+      $("seqModalScore").textContent =
+        `${correctCount} / ${totalSteps} correct`;
+      $("seqModalMsg").textContent = message;
+
+      $("seqModalOverlay").classList.add("show");
+
+    }
+
+    function closeScoreModal() { $("seqModalOverlay").classList.remove("show"); }
+
+    $("seqModalCloseBtn").addEventListener("click", closeScoreModal);
+    $("seqModalTryBtn").addEventListener("click", () => { closeScoreModal(); resetTaps(); });
+
+    /* ------------------------------------------------------------- *
+     * 6. APPEARANCE (Design & Settings panel)
+     * ------------------------------------------------------------- */
+
+    function applyAppearance() {
+      stage.style.background = state.bg;
+      stage.style.fontFamily = state.font;
+      stage.style.fontSize = state.fontSize + "px";
+      stage.style.setProperty("--seq-text", state.textColor);
+      stage.style.setProperty("--seq-badge", state.badgeColor);
+      stage.classList.toggle("bs-dashed", state.border === "dashed");
+      stage.classList.toggle("bs-solid", state.border === "solid");
+      stage.classList.toggle("no-deco", !state.showDeco);
+      grid.style.gap = SPACE_GAP[state.spacing] + "px";
+      applyCols();
+    }
+
+    function renderSwatches() {
+      const wrap = $("seqSwatches"); wrap.innerHTML = "";
+      BG_SWATCHES.forEach(color => {
+        const swatch = document.createElement("div");
+        swatch.className = "seq-sw" + (color === state.bg ? " sel" : "");
+        swatch.style.background = color;
+        swatch.addEventListener("click", () => { state.bg = color; applyAppearance(); renderSwatches(); });
+        wrap.appendChild(swatch);
+      });
+    }
+
+    $("seqFont").addEventListener("change", e => { state.font = e.target.value; applyAppearance(); });
+
+    function setFontSize(value) {
+      value = Math.max(20, Math.min(64, value));
+      state.fontSize = value;
+      $("seqSize").value = value; $("seqSizeNum").value = value;
+      applyAppearance();
+    }
+    $("seqSize").addEventListener("input", e => setFontSize(+e.target.value));
+    $("seqSizeNum").addEventListener("input", e => setFontSize(+e.target.value || 40));
+
+    $("seqTextColor").addEventListener("input", e => { state.textColor = e.target.value; applyAppearance(); });
+    $("seqBadgeColor").addEventListener("input", e => { state.badgeColor = e.target.value; applyAppearance(); });
+
+    document.querySelectorAll("#seqBorder button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.border = btn.dataset.b;
+        document.querySelectorAll("#seqBorder button").forEach(b => b.classList.remove("sel"));
+        btn.classList.add("sel");
+        applyAppearance();
+      });
+    });
+
+    function setColumns(delta) {
+      state.cols = Math.max(2, Math.min(6, state.cols + delta));
+      $("seqColsVal").textContent = state.cols;
+      applyAppearance();
+    }
+    $("seqColsMinus").addEventListener("click", () => setColumns(-1));
+    $("seqColsPlus").addEventListener("click", () => setColumns(1));
+
+    function setSpacing(delta) {
+      let index = SPACINGS.indexOf(state.spacing) + delta;
+      index = Math.max(0, Math.min(SPACINGS.length - 1, index));
+      state.spacing = SPACINGS[index];
+      $("seqSpaceVal").textContent = state.spacing;
+      applyAppearance();
+    }
+    $("seqSpaceMinus").addEventListener("click", () => setSpacing(-1));
+    $("seqSpacePlus").addEventListener("click", () => setSpacing(1));
+
+    $("seqInstrInput").addEventListener("input", e => {
+      currentActivity().instruction = e.target.value;
+      $("seqInstr").textContent = e.target.value;
+    });
+    $("seqTitleInput").addEventListener("input", e => {
+      currentActivity().title = e.target.value;
+      $("seqTitle").textContent = e.target.value;
+    });
+
+    $("seqShowTitle").addEventListener("change", e => { state.showTitle = e.target.checked; renderActivity(); });
+    $("seqShowInstr").addEventListener("change", e => { state.showInstr = e.target.checked; renderActivity(); });
+    $("seqShowLabels").addEventListener("change", e => { state.showLabels = e.target.checked; renderActivity(); });
+    $("seqShowDeco").addEventListener("change", e => { state.showDeco = e.target.checked; applyAppearance(); });
+
+    $("seqApply").addEventListener("click", () => { applyAppearance(); flash($("seqApply"), "✓ Applied"); });
+
+    // "Reset" only restores the design settings — it does not touch the
+    // teacher's steps/content, so nothing the teacher typed gets lost.
+    $("seqResetAll").addEventListener("click", () => {
+      Object.assign(state, structuredClone(DEFAULT_DESIGN));
+      syncDesignControls(); applyAppearance(); renderActivity();
+    });
+
+    function syncDesignControls() {
+      $("seqFont").value = state.font;
+      $("seqSize").value = state.fontSize; $("seqSizeNum").value = state.fontSize;
+      $("seqTextColor").value = state.textColor; $("seqBadgeColor").value = state.badgeColor;
+      $("seqSpaceVal").textContent = state.spacing; $("seqColsVal").textContent = state.cols;
+      $("seqShowTitle").checked = state.showTitle; $("seqShowInstr").checked = state.showInstr;
+      $("seqShowLabels").checked = state.showLabels; $("seqShowDeco").checked = state.showDeco;
+      document.querySelectorAll("#seqBorder button").forEach(b => b.classList.toggle("sel", b.dataset.b === state.border));
+      renderSwatches();
+    }
+
+    /* ------------------------------------------------------------- *
+     * 7. TOP BAR ACTIONS
+     * ------------------------------------------------------------- */
+
+    function flash(button, text) {
+      const original = button.textContent;
+      button.textContent = text;
+      setTimeout(() => button.textContent = original, 1100);
+    }
+
+    // Cross-browser helpers — different browsers still use different
+    // (vendor-prefixed) names for the Fullscreen API.
+    function requestFullscreen(el) {
+      const request = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+      if (request) request.call(el).catch(() => { /* ignore — not every device/browser allows it */ });
+    }
+    function exitFullscreen() {
+      const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (exit) exit.call(document).catch(() => { });
+      }
+    }
+
+    function enterPreviewMode() {
+      document.body.classList.add("seq-preview-only");
+      requestFullscreen(document.documentElement);
+    }
+    function exitPreviewMode() {
+      document.body.classList.remove("seq-preview-only");
+      exitFullscreen();
+    }
+
+    $("seqPreviewBtn").addEventListener("click", enterPreviewMode);
+    $("seqExitFloatBtn").addEventListener("click", exitPreviewMode);
+
+    // If the student/teacher exits fullscreen another way (ESC key on desktop,
+    // swipe-down on some devices), make sure our own preview mode follows suit.
+    ["fullscreenchange", "webkitfullscreenchange"].forEach(evt => {
+      document.addEventListener(evt, () => {
+        const stillFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+        if (!stillFullscreen) document.body.classList.remove("seq-preview-only");
+      });
+    });
+
+    $("seqDraftBtn").addEventListener("click", () => flash($("seqDraftBtn"), "✓ Saved"));
+
+    // Collapse / expand the right-hand "Design & Settings" panel. When it's
+    // hidden, the Template Guide card is shown in that same space instead.
+    $("seqCollapseBtn").addEventListener("click", () => document.body.classList.add("seq-right-collapsed"));
+    $("seqShowSettingsBtn").addEventListener("click", () => document.body.classList.remove("seq-right-collapsed"));
+
+    // Thumbnail upload
+    $("seqThumbUpload").addEventListener("change", function () {
+      const file = this.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => setThumb(ev.target.result);
+      reader.readAsDataURL(file);
+    });
+    function setThumb(dataURL) {
+      state.thumb = dataURL;
+      $("seqThumbImg").src = dataURL; $("seqThumbImg").style.display = "block";
+      $("seqThumbEmpty").style.display = "none"; $("seqThumbCheck").classList.add("show");
+    }
+
+    // Publish = open a confirmation modal showing the activity's Thumbnail
+    // Image (step 3) plus a deadline date field.
+    function openPublishModal() {
+      $("seqPublishOverlay").classList.add("show");
+
+      // The preview always mirrors whatever image is currently set as the
+      // Thumbnail Image in step 3 — it does NOT generate a separate snapshot.
+      if (state.thumb) {
+        $("seqPublishThumbImg").src = state.thumb;
+        $("seqPublishThumbImg").style.display = "block";
+        $("seqPublishThumbEmpty").style.display = "none";
+      } else {
+        $("seqPublishThumbImg").style.display = "none";
+        $("seqPublishThumbEmpty").style.display = "flex";
+        $("seqPublishThumbEmpty").textContent = "No thumbnail uploaded yet. Add one in step 3.";
+      }
+    }
+
+    function closePublishModal() {
+      $("seqPublishOverlay").classList.remove("show");
+    }
+
+    $("seqPubBtn").addEventListener("click", openPublishModal);
+    $("seqPublishCancelBtn").addEventListener("click", closePublishModal);
+
+    // Note: "Confirm Publish" is intentionally left without a function for now.
+
+    /* ------------------------------------------------------------- *
+     * 9. INIT
+     * ------------------------------------------------------------- */
+
+    renderItems();
+    renderSwatches();
+    syncDesignControls();
+    applyAppearance();
+    renderActivity();
+    renderSlideNav();
+  </script>
+</body>
+
+</html>
