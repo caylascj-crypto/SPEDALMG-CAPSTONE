@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS admin_accounts (
   password_changed BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  last_login TIMESTAMP NULL DEFAULT NULL,
   CONSTRAINT chk_admin_email_domain CHECK (admin_email LIKE '%@spedalm.edu.ph')
 );
 
