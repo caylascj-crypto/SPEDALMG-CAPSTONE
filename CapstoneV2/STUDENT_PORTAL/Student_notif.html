@@ -158,16 +158,51 @@
       document.getElementById('student-notifList').innerHTML = html;
     }
 
+    var _cachedNotifs = [];
+
     function loadNotifs() {
-      var notifs = [];
-      try {
-        var _raw = JSON.parse(localStorage.getItem('student_notifications') || '[]');
-        notifs = Array.isArray(_raw) ? _raw : [];
-      } catch(e) {}
-      try { renderNotifs(notifs); } catch(e) {
-        document.getElementById('student-notifList').innerHTML = EMPTY_HTML;
+      var srid = sessionStorage.getItem('student_record_id');
+      var tid  = sessionStorage.getItem('teacher_id');
+      if (!srid || !tid) {
+        // Fallback to localStorage if session not available
+        try {
+          var _raw = JSON.parse(localStorage.getItem('student_notifications') || '[]');
+          _cachedNotifs = Array.isArray(_raw) ? _raw.map(function(n, i) {
+            return { id: null, title: n.title || 'Notification', message: n.message || n.text || '', type: n.type || 'message', isRead: !!n.isRead, createdAt: n.createdAt || n.time || null };
+          }) : [];
+        } catch(e) { _cachedNotifs = []; }
+        renderNotifs(_cachedNotifs);
+        recount();
+        return;
       }
-      recount();
+      fetch('../STUDENT_BACKEND/student_get_notifications.php?student_record_id=' + srid + '&teacher_id=' + tid)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (!data.success) { renderNotifs([]); recount(); return; }
+          _cachedNotifs = data.notifications.map(function(n) {
+            return {
+              id:        n.id || null,
+              title:     n.title,
+              message:   n.text || n.message || '',
+              type:      n.type || 'message',
+              isRead:    !!n.read,
+              createdAt: n.time || null
+            };
+          });
+          // Also persist to localStorage as cache
+          try { localStorage.setItem('student_notifications', JSON.stringify(_cachedNotifs)); } catch(e) {}
+          renderNotifs(_cachedNotifs);
+          recount();
+        })
+        .catch(function() {
+          // Fallback to localStorage
+          try {
+            var _raw = JSON.parse(localStorage.getItem('student_notifications') || '[]');
+            _cachedNotifs = Array.isArray(_raw) ? _raw : [];
+          } catch(e) { _cachedNotifs = []; }
+          renderNotifs(_cachedNotifs);
+          recount();
+        });
     }
 
     function recount() {
@@ -192,10 +227,20 @@
     }
 
     function markOne(btn, idx) {
-      var notifs = [];
-      try { notifs = JSON.parse(localStorage.getItem('student_notifications') || '[]'); } catch(e) {}
-      if (notifs[idx]) notifs[idx].isRead = true;
-      try { localStorage.setItem('student_notifications', JSON.stringify(notifs)); } catch(e) {}
+      if (_cachedNotifs[idx]) _cachedNotifs[idx].isRead = true;
+      try { localStorage.setItem('student_notifications', JSON.stringify(_cachedNotifs)); } catch(e) {}
+      // Sync to server if it has a DB id
+      var notif = _cachedNotifs[idx];
+      var srid = sessionStorage.getItem('student_record_id');
+      var tid  = sessionStorage.getItem('teacher_id');
+      if (notif && notif.id && srid && tid) {
+        var fd = new FormData();
+        fd.append('action', 'mark_read');
+        fd.append('teacher_id', tid);
+        fd.append('student_id', srid);
+        fd.append('notif_id', notif.id);
+        fetch('../TEACHER_FILES/TEACHER_BACKEND/teacher_notify_student.php', { method: 'POST', body: fd }).catch(function(){});
+      }
       var item = btn.closest('.notif-item');
       item.classList.remove('unread');
       btn.textContent = 'Read';
@@ -204,16 +249,25 @@
     }
 
     function markAllRead() {
-      var notifs = [];
-      try { notifs = JSON.parse(localStorage.getItem('student_notifications') || '[]'); } catch(e) {}
-      notifs.forEach(function(n) { n.isRead = true; });
-      try { localStorage.setItem('student_notifications', JSON.stringify(notifs)); } catch(e) {}
+      _cachedNotifs.forEach(function(n) { n.isRead = true; });
+      try { localStorage.setItem('student_notifications', JSON.stringify(_cachedNotifs)); } catch(e) {}
+      // Sync all to server
+      var srid = sessionStorage.getItem('student_record_id');
+      var tid  = sessionStorage.getItem('teacher_id');
+      if (srid && tid) {
+        var fd = new FormData();
+        fd.append('action', 'mark_read');
+        fd.append('teacher_id', tid);
+        fd.append('student_id', srid);
+        fetch('../TEACHER_FILES/TEACHER_BACKEND/teacher_notify_student.php', { method: 'POST', body: fd }).catch(function(){});
+      }
       document.querySelectorAll('.notif-item.unread').forEach(function(el) { el.classList.remove('unread'); });
       document.querySelectorAll('.mark-read-btn').forEach(function(btn) { btn.textContent = 'Read'; btn.disabled = true; });
       recount();
     }
 
     function clearAll() {
+      _cachedNotifs = [];
       try { localStorage.setItem('student_notifications', '[]'); } catch(e) {}
       document.getElementById('student-notifList').innerHTML = EMPTY_HTML;
       document.getElementById('student-unreadCount').textContent = '0 unread notifications';

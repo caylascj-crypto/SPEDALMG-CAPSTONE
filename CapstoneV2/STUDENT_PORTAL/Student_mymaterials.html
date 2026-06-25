@@ -234,42 +234,115 @@
       ].join('');
     }
 
-    function loadMaterials() {
-      var all = [];
-      try { all = JSON.parse(localStorage.getItem('published_activities') || '[]'); } catch (e) {}
-      var prog = [];
-      try { prog = JSON.parse(localStorage.getItem('student_progress') || '[]'); } catch (e) {}
+    function renderFromData(dbMaterials, dbCompleted, dbInProgress, dbNew) {
+      // Merge DB data with localStorage activities (localStorage takes priority for activity content)
+      var lsAll = [];
+      try { lsAll = JSON.parse(localStorage.getItem('published_activities') || '[]'); } catch(e) {}
+      var lsProg = [];
+      try { lsProg = JSON.parse(localStorage.getItem('student_progress') || '[]'); } catch(e) {}
 
-      var completedCount = all.filter(function(a){ return prog.some(function(r){ return r.pubId === a.id; }); }).length;
-      document.getElementById('statTotal').textContent = all.length;
-      document.getElementById('statNew').textContent = all.length - completedCount;
-      document.getElementById('statCompleted').textContent = completedCount;
+      // Build combined list: DB activities + any localStorage-only activities not in DB
+      var dbIds = dbMaterials.map(function(m) { return String(m.id); });
+      var lsExtras = lsAll.filter(function(a) {
+        // Include localStorage activity if it has no matching DB id
+        return !dbMaterials.some(function(m) { return String(m.db_activity_id || m.id) === String(a.db_activity_id || a.id); });
+      });
 
-      var sections = ['First', 'Second', 'Third'].map(function (g) {
-        var items = all.filter(function (a) { return a.grading === g; });
-        return renderGradingSection(g, items, prog);
+      var combinedTotal = dbMaterials.length + lsExtras.length;
+      var combinedCompleted = dbCompleted + lsExtras.filter(function(a) {
+        return lsProg.some(function(r) { return r.pubId === a.id; });
+      }).length;
+
+      document.getElementById('statTotal').textContent = combinedTotal;
+      document.getElementById('statNew').textContent = combinedTotal - combinedCompleted;
+      document.getElementById('statCompleted').textContent = combinedCompleted;
+
+      // Map DB materials into the format renderGradingSection expects
+      var allForRender = dbMaterials.map(function(m) {
+        return {
+          id:             m.id,
+          db_activity_id: m.id,
+          title:          m.activity_title,
+          type:           m.activity_type || 'Matching',
+          grading:        'First', // DB doesn't store grading period yet; default to First
+          subject:        m.subject || '',
+          difficulty:     m.difficulty || 'Easy',
+          progress_status: m.progress_status,
+          score:          m.score,
+        };
+      }).concat(lsExtras.map(function(a) {
+        var done = lsProg.some(function(r) { return r.pubId === a.id; });
+        return Object.assign({}, a, { progress_status: done ? 'completed' : 'new' });
+      }));
+
+      // Update localStorage with DB materials so start activity still works
+      try {
+        var merged = allForRender.map(function(a) { return Object.assign({}, a); });
+        var existing = [];
+        try { existing = JSON.parse(localStorage.getItem('published_activities') || '[]'); } catch(e) {}
+        // Update existing entries with DB status
+        merged.forEach(function(m) {
+          var idx = existing.findIndex(function(e) { return e.db_activity_id == m.db_activity_id || e.id == m.id; });
+          if (idx >= 0) existing[idx] = Object.assign(existing[idx], { progress_status: m.progress_status, score: m.score });
+        });
+        localStorage.setItem('published_activities', JSON.stringify(existing.length > 0 ? existing : merged));
+      } catch(e) {}
+
+      var prog_for_render = lsProg.concat(
+        dbMaterials.filter(function(m) { return m.progress_status === 'completed'; }).map(function(m) {
+          return { pubId: String(m.id), score: m.score };
+        })
+      );
+
+      var sections = ['First', 'Second', 'Third'].map(function(g) {
+        var items = allForRender.filter(function(a) { return (a.grading || 'First') === g; });
+        return renderGradingSection(g, items, prog_for_render);
       }).join('');
       document.getElementById('gradingSections').innerHTML = sections;
+    }
 
-      // update notif badge
-      var notifs = [];
-      try { notifs = JSON.parse(localStorage.getItem('student_notifications') || '[]'); } catch (e) {}
-      var unread = notifs.filter(function (n) { return !n.isRead; }).length;
-      var badge = document.getElementById('notifBadge');
-      if (unread > 0) { badge.textContent = unread > 9 ? '9+' : unread; badge.style.display = 'flex'; }
-      else { badge.style.display = 'none'; }
-
-      // sync profile from settings
+    function loadMaterials() {
+      // Sync profile from localStorage/sessionStorage
       var sp = {};
       try { sp = JSON.parse(localStorage.getItem('student_profile') || '{}'); } catch (e) {}
-      var spFirst = (sp.firstName || 'Juan').trim();
-      var spLast  = (sp.lastName  || 'Santos').trim();
+      var spFirst = (sp.firstName || sessionStorage.getItem('admin_name') || 'Student').split(' ')[0].trim();
+      var spLast  = (sp.lastName  || '').trim();
       document.getElementById('sidebarName').textContent = [spFirst, spLast].filter(Boolean).join(' ');
-      document.getElementById('sidebarRole').textContent = sp.grade || 'Grade 4';
+      document.getElementById('sidebarRole').textContent = sp.grade || sessionStorage.getItem('student_grade') || 'Student';
       var matAv = document.getElementById('sidebarInitials');
       if (matAv) matAv.innerHTML = sp.photo
         ? '<img src="' + sp.photo + '" style="width:100%;height:100%;object-fit:cover;display:block;" />'
-        : ((spFirst[0]||'J') + (spLast[0]||'S')).toUpperCase();
+        : ((spFirst[0]||'S') + (spLast[0]||'')).toUpperCase();
+
+      // Update notif badge from backend
+      var srid = sessionStorage.getItem('student_record_id');
+      var tid  = sessionStorage.getItem('teacher_id');
+      if (srid && tid) {
+        fetch('../STUDENT_BACKEND/student_get_notifications.php?student_record_id=' + srid + '&teacher_id=' + tid)
+          .then(function(r) { return r.json(); })
+          .then(function(d) {
+            var unread = d.success ? (d.unread || 0) : 0;
+            var badge = document.getElementById('notifBadge');
+            if (unread > 0) { badge.textContent = unread > 9 ? '9+' : unread; badge.style.display = 'flex'; }
+            else { badge.style.display = 'none'; }
+          }).catch(function() {});
+
+        // Load materials from DB
+        fetch('../STUDENT_BACKEND/student_get_materials.php?student_record_id=' + srid + '&teacher_id=' + tid)
+          .then(function(r) { return r.json(); })
+          .then(function(d) {
+            if (d.success) {
+              renderFromData(d.materials, d.completed, d.in_progress, d.new);
+            } else {
+              // DB failed — fall back to localStorage
+              renderFromData([], 0, 0, 0);
+            }
+          })
+          .catch(function() { renderFromData([], 0, 0, 0); });
+      } else {
+        // No session — use localStorage only
+        renderFromData([], 0, 0, 0);
+      }
     }
 
     // Filter tabs

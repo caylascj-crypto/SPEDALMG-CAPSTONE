@@ -116,6 +116,31 @@
                     <button class="teacher-mark-all-btn" onclick="markAllRead()" type="button">Mark All as Read</button>
                 </div>
             </div>
+            <!-- SEND NOTIFICATION TO STUDENT -->
+            <div style="background:#fff;border-radius:14px;border:1px solid #e8ecf4;padding:20px 22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.04);">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+                <span style="font-size:20px;">📢</span>
+                <h3 style="font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;color:#1e3a8a;margin:0;">Send Notification to Student</h3>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                <select id="notif-student-select" style="padding:9px 12px;border:1px solid #dde3f0;border-radius:9px;font-size:13px;font-family:'Poppins',sans-serif;color:#333;background:#f8faff;">
+                  <option value="">Broadcast to all students</option>
+                </select>
+                <select id="notif-type-select" style="padding:9px 12px;border:1px solid #dde3f0;border-radius:9px;font-size:13px;font-family:'Poppins',sans-serif;color:#333;background:#f8faff;">
+                  <option value="message">💬 Message</option>
+                  <option value="reminder">🔔 Reminder</option>
+                  <option value="achievement">⭐ Achievement</option>
+                  <option value="alert">⚠️ Alert</option>
+                </select>
+              </div>
+              <input id="notif-title-input" placeholder="Notification title…" type="text" style="width:100%;padding:9px 12px;border:1px solid #dde3f0;border-radius:9px;font-size:13px;font-family:'Poppins',sans-serif;margin-bottom:8px;box-sizing:border-box;" />
+              <textarea id="notif-msg-input" placeholder="Write your message here…" rows="2" style="width:100%;padding:9px 12px;border:1px solid #dde3f0;border-radius:9px;font-size:13px;font-family:'Poppins',sans-serif;resize:vertical;box-sizing:border-box;margin-bottom:10px;"></textarea>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <button onclick="sendStudentNotif()" type="button" style="padding:9px 22px;background:#1e3a8a;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;cursor:pointer;">Send</button>
+                <span id="notif-send-status" style="font-size:12px;color:#16a34a;font-family:'Poppins',sans-serif;"></span>
+              </div>
+            </div>
+
             <!-- NOTIFICATION LIST — backend: inject .teacher-notif-item cards here -->
             <div class="teacher-notif-list" id="teacher-notifList">
                 <!-- ══════════════════════════════════════════
@@ -295,9 +320,68 @@
                 }).catch(function(){});
         }
 
+        /* ── Load students into send-notif dropdown ── */
+        function loadStudentDropdown() {
+            fetch('TEACHER_BACKEND/teacher_list_learners.php?teacher_id=' + TEACHER_ID)
+                .then(function(r) { return r.json(); })
+                .then(function(d) {
+                    var sel = document.getElementById('notif-student-select');
+                    if (!sel) return;
+                    var students = d.students || d.learners || [];
+                    students.forEach(function(s) {
+                        var opt = document.createElement('option');
+                        opt.value = s.id;
+                        opt.textContent = s.student_name || s.name;
+                        sel.appendChild(opt);
+                    });
+                }).catch(function(){});
+        }
+
+        /* ── Send notification to student ── */
+        function sendStudentNotif() {
+            var studentId = document.getElementById('notif-student-select').value;
+            var title     = document.getElementById('notif-title-input').value.trim();
+            var message   = document.getElementById('notif-msg-input').value.trim();
+            var type      = document.getElementById('notif-type-select').value;
+            var status    = document.getElementById('notif-send-status');
+
+            if (!title || !message) {
+                status.style.color = '#dc2626';
+                status.textContent = 'Title and message are required.';
+                return;
+            }
+
+            var fd = new FormData();
+            fd.append('action', 'send');
+            fd.append('teacher_id', TEACHER_ID);
+            fd.append('student_id', studentId);
+            fd.append('title', title);
+            fd.append('message', message);
+            fd.append('type', type);
+
+            fetch('TEACHER_BACKEND/teacher_notify_student.php', { method: 'POST', body: fd })
+                .then(function(r) { return r.json(); })
+                .then(function(d) {
+                    if (d.success) {
+                        status.style.color = '#16a34a';
+                        status.textContent = d.message || 'Notification sent!';
+                        document.getElementById('notif-title-input').value = '';
+                        document.getElementById('notif-msg-input').value = '';
+                        setTimeout(function() { status.textContent = ''; }, 3000);
+                    } else {
+                        status.style.color = '#dc2626';
+                        status.textContent = d.message || 'Failed to send.';
+                    }
+                }).catch(function() {
+                    status.style.color = '#dc2626';
+                    status.textContent = 'Network error. Please try again.';
+                });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             loadSidebar();
             loadNotifications();
+            loadStudentDropdown();
         });
     </script>
 </body>

@@ -174,8 +174,27 @@ function getTeacherDatabaseConnection() {
         INDEX (teacher_id, student_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
-    // Seed default teacher account in teacher_accounts
-    $conn->query("INSERT IGNORE INTO teacher_accounts (teacher_email, teacher_password, first_name, last_name, school_name, status) VALUES ('teacher@spedalm.edu.ph', 'Teacher@123', 'Demo', 'Teacher', 'Mamatid Elementary School', 'active')");
+    // student_notifications — teacher-sent messages visible in student portal
+    $conn->query("CREATE TABLE IF NOT EXISTS student_notifications (
+        id                INT AUTO_INCREMENT PRIMARY KEY,
+        teacher_id        INT NOT NULL,
+        student_id        INT NOT NULL,
+        title             VARCHAR(255) NOT NULL,
+        message           TEXT,
+        notification_type VARCHAR(50) DEFAULT 'message',
+        is_read           TINYINT(1)  DEFAULT 0,
+        created_at        TIMESTAMP   DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (teacher_id) REFERENCES teacher_accounts(id) ON DELETE CASCADE,
+        FOREIGN KEY (student_id) REFERENCES students(id)         ON DELETE CASCADE,
+        INDEX idx_student_read (student_id, is_read)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    // Seed default teacher only when table is empty
+    $t_seed_check = $conn->query("SELECT COUNT(*) AS cnt FROM teacher_accounts");
+    if ($t_seed_check && $t_seed_check->fetch_assoc()['cnt'] == 0) {
+        $h_teacher_seed = password_hash('Teacher@123', PASSWORD_DEFAULT);
+        $conn->query("INSERT IGNORE INTO teacher_accounts (teacher_email, teacher_password, first_name, last_name, school_name, status) VALUES ('teacher@spedalm.edu.ph', '$h_teacher_seed', 'Demo', 'Teacher', 'Mamatid Elementary School', 'active')");
+    }
 
     // Seed default student record — linked to the default teacher above.
     // We look up the teacher_accounts.id dynamically so auto_increment values don't matter.

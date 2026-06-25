@@ -43,13 +43,28 @@ function getDatabaseConnection() {
         created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
-    // Default accounts — seeded on first run
-    $conn->query("INSERT IGNORE INTO admin_accounts (admin_email, admin_password, first_name, last_name, school_name, role, status)
-        VALUES ('admin@spedalm.edu.ph', 'Admin@123', 'Admin', 'User', 'Mamatid Elementary School', 'admin', 'active')");
-    $conn->query("INSERT IGNORE INTO admin_accounts (admin_email, admin_password, first_name, last_name, school_name, role, status)
-        VALUES ('teacher@spedalm.edu.ph', 'Teacher@123', 'Demo', 'Teacher', 'Mamatid Elementary School', 'teacher', 'active')");
-    $conn->query("INSERT IGNORE INTO admin_accounts (admin_email, admin_password, first_name, last_name, school_name, role, status, condition_info)
-        VALUES ('student@spedalm.edu.ph', 'Student@123', 'Demo', 'Student', 'Mamatid Elementary School', 'student', 'active', 'ADHD')");
+    // Login rate-limiting table
+    $conn->query("CREATE TABLE IF NOT EXISTS login_attempts (
+        id           INT AUTO_INCREMENT PRIMARY KEY,
+        ip_address   VARCHAR(45) NOT NULL,
+        email        VARCHAR(255),
+        attempted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_ip_time (ip_address, attempted_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    // Seed default accounts only when table is empty (avoids running password_hash() on every request)
+    $seed_check = $conn->query("SELECT COUNT(*) AS cnt FROM admin_accounts");
+    if ($seed_check && $seed_check->fetch_assoc()['cnt'] == 0) {
+        $h_admin   = password_hash('Admin@123',   PASSWORD_DEFAULT);
+        $h_teacher = password_hash('Teacher@123', PASSWORD_DEFAULT);
+        $h_student = password_hash('Student@123', PASSWORD_DEFAULT);
+        $conn->query("INSERT IGNORE INTO admin_accounts (admin_email, admin_password, first_name, last_name, school_name, role, status)
+            VALUES ('admin@spedalm.edu.ph', '$h_admin', 'Admin', 'User', 'Mamatid Elementary School', 'admin', 'active')");
+        $conn->query("INSERT IGNORE INTO admin_accounts (admin_email, admin_password, first_name, last_name, school_name, role, status)
+            VALUES ('teacher@spedalm.edu.ph', '$h_teacher', 'Demo', 'Teacher', 'Mamatid Elementary School', 'teacher', 'active')");
+        $conn->query("INSERT IGNORE INTO admin_accounts (admin_email, admin_password, first_name, last_name, school_name, role, status, condition_info)
+            VALUES ('student@spedalm.edu.ph', '$h_student', 'Demo', 'Student', 'Mamatid Elementary School', 'student', 'active', 'ADHD')");
+    }
 
     return $conn;
 }

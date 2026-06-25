@@ -220,22 +220,34 @@ function changePassword($conn, $teacher_id) {
     $check_row = $check->get_result()->fetch_assoc();
     $check->close();
 
-    if (!$check_row || $check_row['admin_password'] !== $current_password) {
+    if (!$check_row) {
+        echo json_encode(['success' => false, 'message' => 'Account not found']);
+        $admin_conn->close();
+        return;
+    }
+
+    $stored = $check_row['admin_password'];
+    $match  = password_verify($current_password, $stored)
+           || (!str_starts_with($stored, '$2y$') && $current_password === $stored);
+
+    if (!$match) {
         echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
         $admin_conn->close();
         return;
     }
 
+    $new_hash = password_hash($new_password, PASSWORD_DEFAULT);
+
     // Update admin_accounts (this is what login checks)
     $upd_admin = $admin_conn->prepare("UPDATE admin_accounts SET admin_password=? WHERE admin_email=? AND role='teacher'");
-    $upd_admin->bind_param("ss", $new_password, $email_row['teacher_email']);
+    $upd_admin->bind_param("ss", $new_hash, $email_row['teacher_email']);
     $upd_admin->execute();
     $upd_admin->close();
     $admin_conn->close();
 
     // Also update teacher_accounts.teacher_password for consistency
     $upd_teacher = $conn->prepare("UPDATE teacher_accounts SET teacher_password=? WHERE id=?");
-    $upd_teacher->bind_param("si", $new_password, $teacher_id);
+    $upd_teacher->bind_param("si", $new_hash, $teacher_id);
     $upd_teacher->execute();
     $upd_teacher->close();
 

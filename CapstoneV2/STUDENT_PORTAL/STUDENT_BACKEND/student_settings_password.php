@@ -42,15 +42,18 @@ if (!$row) {
     exit;
 }
 
-if ($row['admin_password'] !== $current_pw) {
+$stored = $row['admin_password'];
+$match  = password_verify($current_pw, $stored)
+       || (!str_starts_with($stored, '$2y$') && $current_pw === $stored);
+if (!$match) {
     echo json_encode(['success' => false, 'message' => 'Current password is incorrect']);
     $conn->close();
     exit;
 }
 
-// Update password
+$new_pw_hash = password_hash($new_pw, PASSWORD_DEFAULT);
 $stmt2 = $conn->prepare("UPDATE admin_accounts SET admin_password = ? WHERE id = ? AND role = 'student'");
-$stmt2->bind_param("si", $new_pw, $admin_account_id);
+$stmt2->bind_param("si", $new_pw_hash, $admin_account_id);
 
 if ($stmt2->execute()) {
     echo json_encode(['success' => true, 'message' => 'Password updated successfully']);

@@ -13,26 +13,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get user_id from POST (should be passed via JavaScript)
     // For now, we'll extract it from a hidden input or from the session
     $user_id = isset($_POST['user_id']) ? intval($_POST['user_id']) : 0;
-    $temp_password = isset($_POST['enter_temporary_password']) ? trim($_POST['enter_temporary_password']) : 'Temp@1234';
-    
+    $temp_password = isset($_POST['enter_temporary_password']) && trim($_POST['enter_temporary_password']) !== ''
+        ? trim($_POST['enter_temporary_password'])
+        : 'Temp@1234';
+
     if (!$user_id) {
         echo json_encode(['success' => false, 'message' => 'User ID is required']);
         exit;
     }
-    
-    // Update password and set password_changed flag to FALSE
-    $stmt = $conn->prepare("UPDATE admin_accounts SET admin_password = ?, password_changed = FALSE WHERE id = ?");
+
+    $hashed = password_hash($temp_password, PASSWORD_DEFAULT);
+    $stmt = $conn->prepare("UPDATE admin_accounts SET admin_password = ? WHERE id = ?");
     if (!$stmt) {
         echo json_encode(['success' => false, 'message' => 'Query preparation failed']);
         exit;
     }
-    
-    $stmt->bind_param("si", $temp_password, $user_id);
-    
+
+    $stmt->bind_param("si", $hashed, $user_id);
+
     if ($stmt->execute()) {
         echo json_encode([
-            'success' => true, 
-            'message' => 'Password reset successfully',
+            'success'       => true,
+            'message'       => 'Password reset successfully',
             'temp_password' => $temp_password
         ]);
     } else {
