@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/../../ADMIN_FILES/ADMIN_BACKEND/db.php';
 
 header('Content-Type: application/json');
@@ -42,22 +43,26 @@ if (!$stmt) {
     exit;
 }
 
-$stmt->bind_param("iiiss", $teacher_id, $student_id, $activity_id, $score, $notes);
+$stmt->bind_param("iiiis", $teacher_id, $student_id, $activity_id, $score, $notes);
 
 if ($stmt->execute()) {
     // Get student name from teacher database
-    $student_query = $teacher_conn->query("SELECT student_name FROM students WHERE id = $student_id AND teacher_id = $teacher_id");
     $student_name = 'Unknown Student';
-    if ($student_query && $row = $student_query->fetch_assoc()) {
-        $student_name = $row['student_name'];
-    }
-    
+    $sq = $teacher_conn->prepare("SELECT student_name FROM students WHERE id=? AND teacher_id=?");
+    $sq->bind_param("ii", $student_id, $teacher_id);
+    $sq->execute();
+    $sqr = $sq->get_result();
+    if ($row = $sqr->fetch_assoc()) { $student_name = $row['student_name']; }
+    $sq->close();
+
     // Get activity title
-    $activity_query = $teacher_conn->query("SELECT activity_title FROM teacher_activities WHERE id = $activity_id");
     $activity_title = 'Unknown Activity';
-    if ($activity_query && $row = $activity_query->fetch_assoc()) {
-        $activity_title = $row['activity_title'];
-    }
+    $aq = $teacher_conn->prepare("SELECT activity_title FROM teacher_activities WHERE id=?");
+    $aq->bind_param("i", $activity_id);
+    $aq->execute();
+    $aqr = $aq->get_result();
+    if ($row = $aqr->fetch_assoc()) { $activity_title = $row['activity_title']; }
+    $aq->close();
     
     // Log activity to admin_activities table
     $logSql = "INSERT INTO admin_activities (activity_type, user_type, user_name, user_email, action_detail) 

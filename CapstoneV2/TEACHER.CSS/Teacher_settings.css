@@ -79,10 +79,11 @@
         }
 
         .teacher-profile-box .profile-avatar {
-            width: 80px; height: 80px; border-radius: 50%;
+            width: 110px; height: 110px; border-radius: 50%;
             background: #4A90E2; color: #fff;
             display: flex; align-items: center; justify-content: center;
-            font-size: 28px; font-weight: 700; margin: 0 auto 12px;
+            font-size: 36px; font-weight: 700; margin: 0 auto 14px;
+            overflow: hidden; border: 3px solid #e3e8f0;
         }
 
         .teacher-profile-box h3 { font-size: 14.5px; font-weight: 700; color: #1e2a3a; }
@@ -135,10 +136,11 @@
 
         .teacher-profile-header-avatar-wrap { position: relative; }
         .teacher-profile-header-avatar {
-            width: 72px; height: 72px; border-radius: 50%;
+            width: 90px; height: 90px; border-radius: 50%;
             background: #4A90E2; color: #fff;
             display: flex; align-items: center; justify-content: center;
-            font-size: 26px; font-weight: 700;
+            font-size: 32px; font-weight: 700;
+            overflow: hidden; border: 3px solid #e3e8f0;
         }
         .teacher-edit-avatar-btn {
             position: absolute; bottom: 0; right: 0;
@@ -249,3 +251,17 @@
         .teacher-btn-modal-cancel:hover { background: #e3e8f0; }
         .teacher-btn-modal-save { background: #0D47A1; color: #fff; border: none; border-radius: 14px; padding: 10px 24px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Poppins', sans-serif; transition: background 0.15s; }
         .teacher-btn-modal-save:hover { background: #0a3580; }
+
+        /* ── Profile picture upload ── */
+        #avatar-upload { display: none; }
+
+        .avatar-uploaded-img {
+            width: 100%; height: 100%;
+            object-fit: cover; border-radius: 50%; display: block;
+        }
+
+        .teacher-edit-avatar-btn {
+            background: #f5a623;
+            transition: background 0.15s, transform 0.15s;
+        }
+        .teacher-edit-avatar-btn:hover { background: #e0911a; transform: scale(1.15); }

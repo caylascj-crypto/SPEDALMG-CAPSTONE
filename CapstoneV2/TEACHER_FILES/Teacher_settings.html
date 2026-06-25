@@ -1,4 +1,4 @@
-<!--
+﻿<!--
     CHANGED: Teacher_settings.html — full rewrite of settings page
     - Removed all hardcoded data (Maria Teresa Cruz, mcruz@mamatides.edu.ph, etc.)
     - Added dynamic profile loading from teacher_get_profile.php on page load
@@ -13,7 +13,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <link rel="icon" type="image/png" href="../TEACHER_ASSETS/logo.png" />
+    <link rel="icon" type="image/png" href="../ASSETS/logo.png" />
     <title>Settings – SPED ALM</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
@@ -25,7 +25,7 @@
     <!-- SIDEBAR -->
     <aside class="teacher-sidebar">
         <div class="teacher-sidebar-logo">
-            <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../TEACHER_ASSETS/logo.png" />
+            <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../ASSETS/logo.png" />
             <div>
                 <span class="teacher-sidebar-title">SPED ALM</span>
                 <span class="teacher-sidebar-sub">Teacher Portal</span>
@@ -40,9 +40,9 @@
         </nav>
         <div class="teacher-sidebar-footer">
             <div class="teacher-profile">
-                <div class="teacher-avatar" id="sidebar-avatar">?</div>
+                <div class="teacher-avatar" id="sidebar-avatar">M</div>
                 <div>
-                    <span class="teacher-name" id="sidebar-name">Loading...</span>
+                    <span class="teacher-name" id="sidebar-name">Teacher</span>
                     <span class="teacher-role">SPED Teacher</span>
                 </div>
             </div>
@@ -70,8 +70,8 @@
             <!-- LEFT PANEL -->
             <div class="teacher-left-panel">
                 <div class="teacher-profile-box">
-                    <div class="profile-avatar" id="panel-avatar">?</div>
-                    <h3 id="panel-name">Loading...</h3>
+                    <div class="profile-avatar" id="panel-avatar">M</div>
+                    <h3 id="panel-name">Teacher</h3>
                     <p id="panel-spec">SPED Teacher</p>
                     <div class="teacher-status-badge">
                         <span class="teacher-status-dot"></span>Active
@@ -99,15 +99,16 @@
                 </div>
                 <div class="teacher-profile-header-card">
                     <div class="teacher-profile-header-avatar-wrap">
-                        <div class="teacher-profile-header-avatar" id="header-avatar">?</div>
-                        <button class="teacher-edit-avatar-btn" type="button">
-                            <i class="fa-solid fa-pen" style="font-size:10px;"></i>
+                        <div class="teacher-profile-header-avatar" id="header-avatar">M</div>
+                        <button class="teacher-edit-avatar-btn" id="btn-edit-avatar" type="button" title="Upload profile picture">
+                            <i class="fa-solid fa-camera" style="font-size:10px;"></i>
                         </button>
+                        <input type="file" id="avatar-upload" accept="image/*" aria-label="Upload profile picture" />
                     </div>
                     <div class="teacher-profile-header-info">
-                        <h3 id="header-name">Loading...</h3>
+                        <h3 id="header-name">Teacher</h3>
                         <p class="teacher-role-text">Special Education Teacher</p>
-                        <p class="teacher-email-text" id="header-email"></p>
+                        <p class="teacher-email-text" id="header-email">teacher@spedschool.edu.ph</p>
                     </div>
                 </div>
                 <div class="teacher-form-grid">
@@ -257,6 +258,54 @@ document.addEventListener('DOMContentLoaded', function () {
         return parseInt(sessionStorage.getItem('teacher_id') || '1');
     }
 
+    /* ── Load stored name / profile pic immediately (no flash of Loading...) ── */
+    function initDefaults() {
+        var name = sessionStorage.getItem('teacher_name') || 'Teacher';
+        var initial = name.trim().charAt(0).toUpperCase();
+        setText('sidebar-avatar', initial);
+        setText('sidebar-name',   name);
+        setText('panel-avatar',   initial);
+        setText('panel-name',     name);
+        setText('header-avatar',  initial);
+        setText('header-name',    name);
+        var email = sessionStorage.getItem('teacher_email') || 'teacher@spedschool.edu.ph';
+        setText('header-email', email);
+        applyProfilePic();
+    }
+
+    /* ── Apply stored profile picture to all avatar elements ── */
+    function applyProfilePic() {
+        var pic = sessionStorage.getItem('teacher_profile_pic');
+        if (!pic) return;
+        ['sidebar-avatar', 'panel-avatar', 'header-avatar'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.textContent = '';
+            el.style.background = 'transparent';
+            el.style.padding = '0';
+            el.innerHTML = '<img src="' + pic + '" alt="Profile" class="avatar-uploaded-img" />';
+        });
+    }
+
+    /* ── Profile picture upload ── */
+    document.getElementById('btn-edit-avatar').addEventListener('click', function () {
+        document.getElementById('avatar-upload').click();
+    });
+
+    document.getElementById('avatar-upload').addEventListener('change', function () {
+        var file = this.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            sessionStorage.setItem('teacher_profile_pic', e.target.result);
+            applyProfilePic();
+        };
+        reader.readAsDataURL(file);
+        this.value = '';
+    });
+
+    initDefaults();
+
     function showMsg(elId, text, ok) {
         var el = document.getElementById(elId);
         if (!el) return;
@@ -316,15 +365,21 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(function (data) {
                 if (!data.success || !data.teacher) return;
                 var t = data.teacher;
+                var initial = t.avatarLetter || (t.name || 'M').charAt(0).toUpperCase();
 
-                setText('sidebar-avatar', t.avatarLetter || '?');
+                sessionStorage.setItem('teacher_name',  t.name  || '');
+                sessionStorage.setItem('teacher_email', t.email || '');
+
+                setText('sidebar-avatar', initial);
                 setText('sidebar-name',   t.name || '');
-                setText('panel-avatar',   t.avatarLetter || '?');
+                setText('panel-avatar',   initial);
                 setText('panel-name',     t.name || '');
                 setText('panel-spec',     t.specialization || 'SPED Teacher');
-                setText('header-avatar',  t.avatarLetter || '?');
+                setText('header-avatar',  initial);
                 setText('header-name',    t.name || '');
                 setText('header-email',   t.email || '');
+
+                applyProfilePic();
 
                 setVal('field-first-name', t.firstName || '');
                 setVal('field-last-name',  t.lastName  || '');

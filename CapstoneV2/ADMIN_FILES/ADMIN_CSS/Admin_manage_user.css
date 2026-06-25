@@ -1,6 +1,6 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html, body { height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; background: #f5f0e8; }
+html, body { height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; background:  #eaf0fc; }
 body { display: flex; }
 
 /* ===== SIDEBAR — Teacher-matched style ===== */
@@ -188,14 +188,14 @@ body { display: flex; }
 }
 /* Stat cards */
 .admin-stat-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
-.admin-stat-card { border-radius: 16px; padding: 18px 20px; display: flex; align-items: center; gap: 14px; }
-.admin-stat-card--purple { background: #f0ecfc; }
-.admin-stat-card--yellow { background: #fffbe6; }
-.admin-stat-card--green  { background: #edfaf3; }
-.admin-stat-card--pink   { background: #fff0f5; }
-.admin-stat-card-icon { font-size: 22px; }
-.admin-stat-card-num { font-family: 'Nunito',sans-serif; font-size: 28px; font-weight: 900; color: #ccc; line-height: 1; }
-.admin-stat-card-label { font-size: 12px; font-weight: 600; color: #777; margin-top: 3px; }
+.admin-stat-card { border-radius: 16px; padding: 25px 15px; display: flex; align-items: center; gap: 14px; }
+.admin-stat-card--purple { background: #fceded; border: 1px solid rgb(206, 198, 198)}
+.admin-stat-card--yellow { background: #faf5df; border: 1px solid rgb(206, 198, 198)}
+.admin-stat-card--green  { background: #e1fff0; border: 1px solid rgb(206, 198, 198)}
+.admin-stat-card--pink   { background: #fad8e3; border: 1px solid rgb(206, 198, 198)}
+.admin-stat-card-icon { font-size: 32px; }
+.admin-stat-card-num { font-family: 'Nunito',sans-serif; font-size: 28px; font-weight: 900; color: #0a0a0a; line-height: 1; }
+.admin-stat-card-label { font-size: 12px; font-weight: 600; color: #4e4141; margin-top: 3px; }
 
 /* Filter row */
 .admin-filter-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -296,10 +296,10 @@ body { display: flex; }
 .admin-modal-footer-row { padding: 16px 24px 20px; display: flex; gap: 12px; border-top: 1px solid #f0ebe1; }
 
 /* View modal */
-.admin-view-avatar-wrap { display: flex; flex-direction: column; align-items: center; padding: 28px 24px 20px; gap: 8px; border-bottom: 1px solid #f0ebe1; }
+.admin-view-avatar-wrap { display: flex; flex-direction: column; align-items: center; padding: 28px 24px 20px; gap: 8px; border-bottom: 1px solid #f0ebe1; position: relative; }
 .admin-view-avatar { width: 68px; height: 68px; border-radius: 50%; background: #1a3a8f; color: #fff; font-family: 'Nunito',sans-serif; font-weight: 900; font-size: 22px; display: flex; align-items: center; justify-content: center; }
 .admin-view-name { font-family: 'Nunito',sans-serif; font-size: 18px; font-weight: 900; color: #1a1a2e; }
-.admin-view-info-list { padding: 16px 24px; display: flex; flex-direction: column; }
+.admin-view-info-list { padding: 16px 24px; display: flex; flex-direction: column; overflow-y: auto; flex: 1 1 auto; min-height: 0; }
 .admin-view-info-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f7f4ee; font-size: 14px; }
 .admin-view-info-row:last-child { border-bottom: none; }
 .admin-vi-icon { font-size: 16px; width: 24px; text-align: center; flex-shrink: 0; }
@@ -312,6 +312,9 @@ body { display: flex; }
 .admin-input-wrap { display: flex; align-items: center; gap: 10px; background: #f5f0e8; border-radius: 10px; padding: 12px 14px; }
 .admin-input-wrap input { border: none; outline: none; background: transparent; font-size: 14px; color: #333; width: 100%; font-family: 'Inter',sans-serif; }
 .admin-input-wrap input::placeholder { color: #aaa; }
+
+/* Field helper / note text (e.g. email hints, status lock notice, "no teacher yet" warning) */
+.admin-field-note { font-size: 12px; color: #888; margin-top: 6px; line-height: 1.5; }
 
 /* Role cards */
 .admin-role-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -331,11 +334,7 @@ body { display: flex; }
 .admin-cond-btn { padding: 12px; border: 2px solid #e0dbd0; border-radius: 10px; background: #fff; font-size: 14px; font-weight: 700; color: #aaa; cursor: pointer; transition: all .2s; }
 .admin-cond-btn.cond-active { border-color: #1a3a8f; color: #1a3a8f; background: #eef2fb; }
 
-/* Status buttons */
-.admin-status-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.admin-status-btn { padding: 12px; border: 2px solid #e0dbd0; border-radius: 10px; background: #fff; font-size: 14px; font-weight: 700; color: #aaa; cursor: pointer; transition: all .2s; }
-.admin-status-active { border-color: #1e8c4e; color: #1e8c4e; background: #edfaf3; }
-.admin-status-inactive { border-color: #aaa; color: #aaa; background: #f5f0e8; }
+/* Status badge (read-only, shown in table/view modal only) */
 
 /* Reset card */
 .admin-reset-card { background: #eef2fb; border-radius: 14px; padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
@@ -768,4 +767,10 @@ body { display: flex; }
 .admin-cond-select:focus {
   border-color: #1a3a8f;
   box-shadow: 0 0 0 3px rgba(26,58,143,0.1);
+}
+
+.admin-cond-select:disabled {
+  background: #ececec;
+  color: #aaa;
+  cursor: not-allowed;
 }

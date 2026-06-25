@@ -15,8 +15,12 @@ if (!$teacher_conn || !$admin_conn) { echo json_encode([]); exit; }
 
 // Names already enrolled by this teacher
 $enrolled = [];
-$res = $teacher_conn->query("SELECT LOWER(TRIM(student_name)) as sn FROM students WHERE teacher_id=$teacher_id");
-if ($res) { while ($r = $res->fetch_assoc()) $enrolled[] = $r['sn']; }
+$stmt = $teacher_conn->prepare("SELECT LOWER(TRIM(student_name)) as sn FROM students WHERE teacher_id=?");
+$stmt->bind_param("i", $teacher_id);
+$stmt->execute();
+$res = $stmt->get_result();
+while ($r = $res->fetch_assoc()) $enrolled[] = $r['sn'];
+$stmt->close();
 
 // All active student accounts from admin
 $result = $admin_conn->query("SELECT id, admin_email, first_name, last_name, condition_info

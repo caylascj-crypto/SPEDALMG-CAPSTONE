@@ -1,14 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en">
 
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <link rel="icon" type="image/png" href="../ADMIN_ASSETS/logo.png" />
+  <link rel="icon" type="image/png" href="../ASSETS/logo.png" />
   <title>SPED ALM - Manage Users</title>
   <link href="ADMIN_CSS/animations.css" rel="stylesheet" />
-  <link href="ADMIN_CSS/Admin_manage_user.css" rel="stylesheet" />
+   <link href="ADMIN_CSS/Admin_manage_user.css" rel="stylesheet" />
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap"
     rel="stylesheet" />
@@ -19,7 +19,7 @@
   <!-- SIDEBAR -->
   <aside class="admin-sidebar">
     <div class="admin-sidebar-logo">
-      <img alt="SPED ALM Logo" class="admin-sidebar-logo-img" src="../ADMIN_ASSETS/logo.png" />
+      <img alt="SPED ALM Logo" class="admin-sidebar-logo-img" src="../ASSETS/logo.png" />
       <div class="admin-sidebar-logo-text">
         <span class="admin-sidebar-title">SPED ALM</span>
         <span class="admin-sidebar-sub">Admin Portal</span>
@@ -65,11 +65,7 @@
         <h1 class="admin-page-title">Manage Users</h1>
         <p class="admin-page-sub">Manage teachers, students and admin accounts</p>
       </div>
-      <div class="admin-topbar-right">
-        <div class="admin-search-bar">
-          <span>🔍</span>
-          <input name="search" placeholder="Search..." type="text" />
-        </div>
+      
         <a class="admin-notif-btn" href="Admin_notif.html">
           <i class="fa-regular fa-bell"></i>
           <span class="admin-notif-badge"></span>
@@ -191,24 +187,31 @@
   <div class="admin-modal-overlay" id="admin-modal-view">
     <div class="admin-modal-box admin-modal-box--narrow">
       <div class="admin-view-avatar-wrap">
+        <button class="admin-modal-close" onclick="hideModal('admin-modal-view')" type="button">✕</button>
         <div class="admin-view-avatar">HL</div>
         <h3 class="admin-view-name">No User Selected</h3>
         <span class="admin-badge admin-badge--blue">—</span>
       </div>
       <div class="admin-view-info-list">
-        <div class="admin-view-info-row"><span class="admin-vi-icon">📧</span><span
+        <div class="admin-view-info-row" id="admin-vi-row-email"><span class="admin-vi-icon">📧</span><span
             class="admin-vi-label">Email</span><span class="admin-vi-val">—</span></div>
-        <div class="admin-view-info-row"><span class="admin-vi-icon">📞</span><span
+        <div class="admin-view-info-row" id="admin-vi-row-phone"><span class="admin-vi-icon">📞</span><span
             class="admin-vi-label">Phone</span><span class="admin-vi-val">—</span></div>
-        <div class="admin-view-info-row"><span class="admin-vi-icon">👤</span><span
+        <div class="admin-view-info-row" id="admin-vi-row-role"><span class="admin-vi-icon">👤</span><span
             class="admin-vi-label">Role</span><span class="admin-vi-val">—</span></div>
-        <div class="admin-view-info-row"><span class="admin-vi-icon">🔵</span><span
+        <div class="admin-view-info-row" id="admin-vi-row-section"><span class="admin-vi-icon">🏷️</span><span
+            class="admin-vi-label">Section</span><span class="admin-vi-val">—</span></div>
+        <div class="admin-view-info-row" id="admin-vi-row-condition"><span class="admin-vi-icon">🔵</span><span
             class="admin-vi-label">Condition</span><span class="admin-vi-val">—</span></div>
-        <div class="admin-view-info-row"><span class="admin-vi-icon">📅</span><span class="admin-vi-label">Date
+        <div class="admin-view-info-row" id="admin-vi-row-parent"><span class="admin-vi-icon">👪</span><span
+            class="admin-vi-label">Parent/Guardian</span><span class="admin-vi-val">—</span></div>
+        <div class="admin-view-info-row" id="admin-vi-row-teacher"><span class="admin-vi-icon">🎓</span><span
+            class="admin-vi-label">Assigned Teacher</span><span class="admin-vi-val">—</span></div>
+        <div class="admin-view-info-row" id="admin-vi-row-created"><span class="admin-vi-icon">📅</span><span class="admin-vi-label">Date
             Created</span><span class="admin-vi-val">—</span></div>
-        <div class="admin-view-info-row"><span class="admin-vi-icon">🕐</span><span class="admin-vi-label">Last
+        <div class="admin-view-info-row" id="admin-vi-row-lastactive"><span class="admin-vi-icon">🕐</span><span class="admin-vi-label">Last
             Active</span><span class="admin-vi-val">—</span></div>
-        <div class="admin-view-info-row"><span class="admin-vi-icon">🔵</span><span
+        <div class="admin-view-info-row" id="admin-vi-row-status"><span class="admin-vi-icon">🔵</span><span
             class="admin-vi-label">Status</span><span class="admin-vi-val"><span
               class="admin-badge admin-badge--gray">—</span></span></div>
       </div>
@@ -264,6 +267,19 @@
             </div>
             <input type="hidden" id="admin-edit-role-input" name="admin_edit_role_input" value="teacher" />
           </div>
+          <div class="admin-field-group" id="admin-edit-section-wrap" style="display:none">
+            <label>Section</label>
+            <div class="admin-cond-dropdown-wrap">
+              <select class="admin-cond-select" id="admin-edit-section-select" name="grade_level">
+                <option value="">Select Section</option>
+                <option>Non-Graded Maya</option>
+                <option>Non-Graded Pipit</option>
+                <option>Non-Graded Aguila</option>
+                <option>Non-Graded Kilyawan</option>
+                <option>Non-Graded Tikling</option>
+              </select>
+            </div>
+          </div>
           <div class="admin-field-group" id="admin-edit-condition-wrap" style="display:none">
             <label>Condition</label>
             <div class="admin-cond-dropdown-wrap">
@@ -286,18 +302,22 @@
               </select>
             </div>
           </div>
-          <div class="admin-field-group">
-            <label>Status</label>
-            <div class="admin-status-btns">
-              <button class="admin-status-btn admin-status-active" onclick="pickStatus(this,'active')" type="button">●
-                Active</button>
-              <button class="admin-status-btn" onclick="pickStatus(this,'inactive')" type="button">● Inactive</button>
+          <div class="admin-field-group" id="admin-edit-parent-wrap" style="display:none">
+            <label>Parent/Guardian Full Name</label>
+            <div class="admin-input-wrap"><span>👤</span><input id="admin-edit-parent-name" name="parent_name" placeholder="Parent/Guardian full name..."
+                type="text" /></div>
+          </div>
+          <div class="admin-field-group" id="admin-edit-teacher-wrap" style="display:none">
+            <label>Assigned Teacher</label>
+            <div class="admin-cond-dropdown-wrap">
+              <select class="admin-cond-select" id="admin-edit-teacher-select" name="assigned_teacher_id">
+                <option value="">Select teacher...</option>
+              </select>
             </div>
-            <input type="hidden" id="admin-edit-status-input" name="admin_status_input" value="active" />
+            <div class="admin-field-note" id="admin-edit-teacher-note" style="display:none;color:#b45309;font-weight:500;">No teacher accounts yet. Add a teacher account first.</div>
           </div>
           <div class="admin-field-group">
-            <label>Date Created</label>
-            <div class="admin-input-wrap" style="pointer-events: none; opacity: 0.7;"><span>📅</span><input id="admin-edit-date-created" placeholder="Date created..." type="text" disabled /></div>
+            <input type="hidden" id="admin-edit-status-input" name="admin_status_input" value="active" />
           </div>
           <div class="admin-reset-card">
             <div>
@@ -357,6 +377,21 @@
             <input type="hidden" name="enter_role" id="admin-add-role-input" value="teacher" />
             <input type="hidden" name="enter_condition" id="admin-add-condition-input" value="" />
             <input type="hidden" name="enter_password" id="admin-add-password-input" value="Teacher@123" />
+            <input type="hidden" name="enter_status" id="admin-add-status-input" value="inactive" />
+            <div class="admin-field-note">🔒 Status can't be set manually here — the account starts as <strong>Inactive</strong> and automatically switches to <strong>Active</strong> once the user logs in.</div>
+          </div>
+          <div class="admin-field-group" id="admin-add-section-wrap" style="display:block">
+            <label>Section</label>
+            <div class="admin-cond-dropdown-wrap">
+              <select class="admin-cond-select" id="admin-add-section-select" name="grade_level">
+                <option value="">Select Section</option>
+                <option>Non-Graded Maya</option>
+                <option>Non-Graded Pipit</option>
+                <option>Non-Graded Aguila</option>
+                <option>Non-Graded Kilyawan</option>
+                <option>Non-Graded Tikling</option>
+              </select>
+            </div>
           </div>
           <div class="admin-field-group" id="admin-add-condition-wrap" style="display:none">
             <label>Condition</label>
@@ -379,6 +414,24 @@
                 <option value="Others">Others</option>
               </select>
             </div>
+          </div>
+          <div class="admin-field-group" id="admin-add-parent-wrap" style="display:none">
+            <label>Parent/Guardian Full Name</label>
+            <div class="admin-input-wrap"><span>👤</span><input id="admin-add-parent-name" name="enter_parent_name" placeholder="Enter parent/guardian full name..."
+                type="text" /></div>
+          </div>
+          <div class="admin-field-group" id="admin-add-teacher-wrap" style="display:none">
+            <label>Assigned Teacher</label>
+            <div class="admin-cond-dropdown-wrap">
+              <select class="admin-cond-select" id="admin-add-teacher-select" name="assigned_teacher_id">
+                <option value="">Select teacher...</option>
+              </select>
+            </div>
+            <div class="admin-field-note" id="admin-add-teacher-note" style="display:none;color:#b45309;font-weight:500;">No teacher accounts yet. Add a teacher account first — the list will appear here once one exists.</div>
+          </div>
+          <div class="admin-field-group">
+            <label>Date Created</label>
+            <div class="admin-input-wrap" style="pointer-events: none; opacity: 0.7;"><span>📅</span><input id="admin-add-date-created" placeholder="Date created..." type="text" disabled /></div>
           </div>
         </div>
         <div class="admin-modal-footer-row">
@@ -482,9 +535,19 @@
         document.getElementById('admin_manage_user_form_2').reset();
         document.getElementById('admin-add-role-input').value = 'teacher';
         document.getElementById('admin-add-password-input').value = 'Teacher@123';
+        document.getElementById('admin-add-status-input').value = 'inactive';
         document.getElementById('admin-add-condition-input').value = '';
         document.getElementById('admin-add-cond-select').value = '';
         document.getElementById('admin-add-condition-wrap').style.display = 'none';
+        // Default role is teacher: show Section, hide parent/teacher fields
+        document.getElementById('admin-add-section-wrap').style.display = 'block';
+        document.getElementById('admin-add-section-select').value = '';
+        document.getElementById('admin-add-parent-wrap').style.display = 'none';
+        document.getElementById('admin-add-teacher-wrap').style.display = 'none';
+        document.getElementById('admin-add-parent-name').value = '';
+        // Date Created is always "today" for a brand-new account
+        var todayFormatted = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('admin-add-date-created').value = todayFormatted;
         // Reset role cards
         document.querySelectorAll('#admin-modal-add .admin-role-card').forEach(function(card) {
           card.classList.remove('admin-active-teacher', 'admin-active-student');
@@ -636,23 +699,51 @@
       modal.querySelector('.admin-view-avatar').textContent = account.initials;
       modal.querySelector('.admin-view-name').textContent = account.full_name;
       modal.querySelector('.admin-view-avatar-wrap .admin-badge').textContent = account.role;
-      var infoVals = modal.querySelectorAll('.admin-vi-val');
-      infoVals[0].textContent = account.admin_email;
-      infoVals[1].textContent = account.phone_number || '—';
-      infoVals[2].textContent = account.role;
-      infoVals[3].textContent = account.condition_info || '—';
-      
-      // Format and display date created
+
+      // Helper: show a row with a value, or hide it entirely if there's nothing to show
+      function setRow(rowId, value) {
+        var row = document.getElementById(rowId);
+        if (!row) return;
+        if (value) {
+          row.style.display = 'flex';
+          row.querySelector('.admin-vi-val').textContent = value;
+        } else {
+          row.style.display = 'none';
+        }
+      }
+
+      // Always-relevant fields
+      setRow('admin-vi-row-email', account.admin_email);
+      setRow('admin-vi-row-phone', account.phone_number);
+      setRow('admin-vi-row-role', account.role);
+
+      // Role-specific fields: only the ones that were actually filled in appear
+      setRow('admin-vi-row-section', account.role === 'teacher' ? account.grade_level : '');
+      setRow('admin-vi-row-condition', account.role === 'student' ? account.condition_info : '');
+      setRow('admin-vi-row-parent', account.role === 'student' ? account.parent_name : '');
+
+      if (account.role === 'student' && account.assigned_teacher_id) {
+        var teacher = accountList.find(function (acc) { return String(acc.id) === String(account.assigned_teacher_id); });
+        setRow('admin-vi-row-teacher', teacher ? teacher.full_name : '');
+      } else {
+        setRow('admin-vi-row-teacher', '');
+      }
+
+      // Date created
       if (account.created_at) {
         var dateObj = new Date(account.created_at);
         var formattedDate = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-        infoVals[4].textContent = formattedDate;
+        setRow('admin-vi-row-created', formattedDate);
       } else {
-        infoVals[4].textContent = '—';
+        setRow('admin-vi-row-created', '');
       }
-      
-      infoVals[5].textContent = '—';
-      var statusBadge = infoVals[6].querySelector('.admin-badge');
+
+      // Last active - no data source yet, hide row until tracked
+      setRow('admin-vi-row-lastactive', '');
+
+      // Status always shown as a badge
+      document.getElementById('admin-vi-row-status').style.display = 'flex';
+      var statusBadge = document.querySelector('#admin-vi-row-status .admin-badge');
       statusBadge.textContent = account.status;
       statusBadge.className = 'admin-badge ' + (account.status === 'active' ? 'admin-badge--green' : 'admin-badge--gray');
 
@@ -687,20 +778,19 @@
         document.getElementById('admin-edit-cond-select').value = '';
       }
 
-      // Set status
-      var statusBtns = modal.querySelectorAll('.admin-status-btn');
-      statusBtns.forEach(function(btn) { btn.classList.remove('admin-status-active', 'admin-status-inactive'); });
-      if (account.status === 'active') {
-        statusBtns[0].classList.add('admin-status-active');
-      } else {
-        statusBtns[1].classList.add('admin-status-inactive');
-      }
+      // Show/hide Section (teacher) vs Parent Name + Assigned Teacher (student)
+      var sectionWrap = document.getElementById('admin-edit-section-wrap');
+      var parentWrap = document.getElementById('admin-edit-parent-wrap');
+      var teacherWrap = document.getElementById('admin-edit-teacher-wrap');
+      sectionWrap.style.display = account.role === 'teacher' ? 'block' : 'none';
+      parentWrap.style.display = account.role === 'student' ? 'block' : 'none';
+      teacherWrap.style.display = account.role === 'student' ? 'block' : 'none';
 
-      // Set date created
-      if (account.created_at) {
-        var dateObj = new Date(account.created_at);
-        var formattedDate = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-        document.getElementById('admin-edit-date-created').value = formattedDate;
+      document.getElementById('admin-edit-section-select').value = account.role === 'teacher' ? (account.grade_level || '') : '';
+      document.getElementById('admin-edit-parent-name').value = account.role === 'student' ? (account.parent_name || '') : '';
+      if (account.role === 'student') {
+        populateTeacherSelect('edit');
+        document.getElementById('admin-edit-teacher-select').value = account.assigned_teacher_id || '';
       }
 
       // Set hidden inputs
@@ -752,12 +842,6 @@
       var editForm = document.getElementById('admin_manage_user_form_1');
       var formData = new FormData(editForm);
 
-      // Debug: Log what we're sending
-      console.log('Form Data being sent:');
-      for (var [key, value] of formData.entries()) {
-        console.log(key + ": " + value);
-      }
-
       // Close modal immediately
       hideModal('admin-modal-edit');
       
@@ -772,9 +856,7 @@
         loadAccounts();
         updateStats();
       })
-      .catch(function(error) {
-        console.log('Error:', error);
-      });
+      .catch(function(error) {});
     }
 
     function saveAddAccount() {
@@ -797,8 +879,6 @@
           // Reload data after successful addition
           loadAccounts();
           updateStats();
-          // Show success message (optional)
-          console.log('Account added successfully');
         } else {
           // Show error message and reopen modal
           alert('Error: ' + result.message);
@@ -806,7 +886,6 @@
         }
       })
       .catch(function(error) {
-        console.log('Error adding account:', error);
         // Reopen modal to show error
         showModal('admin-modal-add');
         alert('Failed to add account. Please try again.');
@@ -939,7 +1018,6 @@
         }
       })
       .catch(function(error) {
-        console.log('Error resetting password:', error);
         alert('Failed to reset password. Please try again.');
         showModal('admin-modal-reset');
       });
@@ -950,6 +1028,18 @@
       modal.querySelectorAll('.admin-role-card').forEach(c => c.classList.remove('admin-active-teacher', 'admin-active-student'));
       el.classList.add(role === 'teacher' ? 'admin-active-teacher' : 'admin-active-student');
       document.getElementById('admin-' + prefix + '-condition-wrap').style.display = role === 'student' ? 'block' : 'none';
+
+      // Section field: teacher only. Parent name + assigned teacher: student only.
+      var sectionWrap = document.getElementById('admin-' + prefix + '-section-wrap');
+      var parentWrap = document.getElementById('admin-' + prefix + '-parent-wrap');
+      var teacherWrap = document.getElementById('admin-' + prefix + '-teacher-wrap');
+      if (sectionWrap) sectionWrap.style.display = role === 'teacher' ? 'block' : 'none';
+      if (parentWrap) parentWrap.style.display = role === 'student' ? 'block' : 'none';
+      if (teacherWrap) teacherWrap.style.display = role === 'student' ? 'block' : 'none';
+      if (role === 'student') {
+        populateTeacherSelect(prefix);
+      }
+
       var roleInput = document.getElementById('admin-' + prefix + '-role-input');
       if (roleInput) {
         roleInput.value = role;
@@ -971,23 +1061,40 @@
           condInput.value = '';
           document.getElementById('admin-add-cond-select').value = '';
         }
+
+        if (role !== 'teacher') {
+          var sectionSelect = document.getElementById('admin-add-section-select');
+          if (sectionSelect) sectionSelect.value = '';
+        }
+      }
+    }
+
+    // Fills the "Assigned Teacher" dropdown (add/edit) with teacher accounts that
+    // admin has already created. Shows a warning note if none exist yet.
+    function populateTeacherSelect(prefix) {
+      var select = document.getElementById('admin-' + prefix + '-teacher-select');
+      var note = document.getElementById('admin-' + prefix + '-teacher-note');
+      if (!select) return;
+
+      var currentValue = select.value;
+      var teachers = accountList.filter(function (acc) { return acc.role === 'teacher'; });
+
+      select.innerHTML = '<option value="">Select teacher...</option>' +
+        teachers.map(function (t) {
+          return '<option value="' + t.id + '">' + t.full_name + (t.grade_level ? ' — ' + t.grade_level : '') + '</option>';
+        }).join('');
+
+      if (note) note.style.display = teachers.length ? 'none' : 'block';
+      select.disabled = teachers.length === 0;
+
+      if (currentValue && teachers.some(function (t) { return String(t.id) === String(currentValue); })) {
+        select.value = currentValue;
       }
     }
 
     function pickCond(el) {
       el.closest('.admin-condition-btns').querySelectorAll('.admin-cond-btn').forEach(b => b.classList.remove('cond-active'));
       el.classList.add('cond-active');
-    }
-
-    function pickStatus(el, type) {
-      el.closest('.admin-status-btns').querySelectorAll('.admin-status-btn').forEach(b => b.classList.remove('admin-status-active', 'admin-status-inactive'));
-      el.classList.add(type === 'active' ? 'admin-status-active' : 'admin-status-inactive');
-      
-      // Update hidden input for edit modal
-      var editStatusInput = document.getElementById('admin-edit-status-input');
-      if (editStatusInput) {
-        editStatusInput.value = type;
-      }
     }
 
     function toggleDD(id) {
@@ -1041,6 +1148,15 @@
       });
       loadAccounts();
       updateStats();
+
+      // Click on the dimmed backdrop (outside the modal box) closes the modal.
+      document.querySelectorAll('.admin-modal-overlay').forEach(function (overlay) {
+        overlay.addEventListener('click', function (e) {
+          if (e.target === overlay) {
+            hideModal(overlay.id);
+          }
+        });
+      });
     });
   </script>
 </body>

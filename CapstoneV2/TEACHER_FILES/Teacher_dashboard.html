@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <link rel="icon" type="image/png" href="../TEACHER_ASSETS/logo.png" />
+    <link rel="icon" type="image/png" href="../ASSETS/logo.png" />
     <title>Teacher Dashboard – SPED ALM</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
         rel="stylesheet" />
@@ -18,7 +18,7 @@
         <!-- SIDEBAR -->
         <aside class="teacher-sidebar">
             <div class="teacher-sidebar-logo">
-                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../TEACHER_ASSETS/logo.png" />
+                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../ASSETS/logo.png" />
                 <div class="teacher-sidebar-logo-text">
                     <span class="teacher-sidebar-title">SPED ALM</span>
                     <span class="teacher-sidebar-sub">Teacher Portal</span>
@@ -49,7 +49,7 @@
             </nav>
             <div class="teacher-sidebar-footer">
                 <div class="teacher-profile">
-                    <div class="teacher-avatar" id="teacher-avatar-letter">T</div>
+                    <div class="teacher-avatar" id="teacher-avatar-letter">M</div>
                     <div class="teacher-info">
                         <span class="teacher-name" id="teacher-name-sidebar">Teacher</span>
                         <span class="teacher-role">SPED Teacher</span>
@@ -67,13 +67,10 @@
             <header class="teacher-topbar">
                 <div>
                     <h1 class="teacher-greeting" id="teacher-greeting">Good morning, Teacher 👋</h1>
-                    <p class="teacher-greeting-sub" id="teacher-greeting-sub">Loading...</p>
+                    <p class="teacher-greeting-sub" id="teacher-greeting-sub"></p>
                 </div>
                 <div class="teacher-topbar-right">
-                    <div class="teacher-search-box">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input name="search" placeholder="Search..." type="text" />
-                    </div>
+                    
                     <a class="teacher-notif-btn" href="Teacher_notif.html">
                         <i class="fa-regular fa-bell"></i>
                         <span class="teacher-notif-badge"></span>
@@ -84,13 +81,15 @@
             <section class="teacher-welcome-banner">
                 <div class="teacher-welcome-left">
                     <div class="teacher-welcome-avatar">
-                        <img alt="Teacher Avatar" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" />
+                        <div class="teacher-welcome-avatar-inner" id="welcome-avatar-wrap">
+                            <span id="welcome-avatar-initial">M</span>
+                        </div>
                         <span class="teacher-online-dot"></span>
                     </div>
                     <div class="teacher-welcome-text">
-                        <h2>Welcome, <span id="dashboard-teacher-name">Teacher</span>!</h2>
-                        <p id="dashboard-current-date">Loading...</p>
-                    </div>
+               <h2><span id="dashboard-teacher-name"><strong>[Full Name Here]</strong></span></h2>
+                    <p>Special Education Teacher</p>
+                </div>
                 </div>
                 <div class="teacher-welcome-stat">
                     <i class="fa-solid fa-users teacher-stat-icon"></i>
@@ -196,22 +195,61 @@
             return parseInt(sessionStorage.getItem('teacher_id') || '1');
         }
 
+        // Apply stored profile picture to welcome banner and sidebar avatar
+        function applyProfilePic() {
+            var pic = sessionStorage.getItem('teacher_profile_pic');
+            var wrap = document.getElementById('welcome-avatar-wrap');
+            var sidebarAvatar = document.getElementById('teacher-avatar-letter');
+
+            if (pic) {
+                if (wrap) {
+                    wrap.innerHTML = '<img src="' + pic + '" alt="Profile" class="welcome-avatar-img" />';
+                }
+                if (sidebarAvatar) {
+                    sidebarAvatar.innerHTML = '<img src="' + pic + '" alt="Profile" class="sidebar-avatar-img" />';
+                    sidebarAvatar.style.background = 'transparent';
+                    sidebarAvatar.style.padding = '0';
+                    sidebarAvatar.style.overflow = 'hidden';
+                }
+            } else {
+                var name = sessionStorage.getItem('teacher_name') || 'Teacher';
+                var initial = name.trim().charAt(0).toUpperCase();
+                var initialEl = document.getElementById('welcome-avatar-initial');
+                if (initialEl) initialEl.textContent = initial;
+                if (sidebarAvatar) sidebarAvatar.textContent = initial;
+            }
+        }
+
+        // Set defaults from sessionStorage before backend responds
+        function initDefaults() {
+            var name = sessionStorage.getItem('teacher_name') || 'Teacher';
+            var initial = name.trim().charAt(0).toUpperCase();
+            var now = new Date();
+            var opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            var dateStr = now.toLocaleDateString('en-US', opts);
+            var hour = now.getHours();
+            var tod = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
+
+            document.getElementById('teacher-greeting').textContent = 'Good ' + tod + ', ' + name + ' 👋';
+            document.getElementById('teacher-greeting-sub').textContent = dateStr;
+            document.getElementById('dashboard-teacher-name').textContent = name;
+            document.getElementById('dashboard-current-date').textContent = dateStr;
+            document.getElementById('teacher-name-sidebar').textContent = name;
+            document.getElementById('teacher-avatar-letter').textContent = initial;
+
+            applyProfilePic();
+        }
+
         // Load dashboard data on page load
         document.addEventListener('DOMContentLoaded', function() {
+            initDefaults();
             loadTeacherProfile();
             loadDashboardStats();
-            updateCurrentDate();
         });
 
         // Load teacher profile from database
         function loadTeacherProfile() {
             const teacherId = getCurrentTeacherId();
-            console.log("loadTeacherProfile called with teacherId:", teacherId);
-            console.log("sessionStorage values:", {
-                teacher_id: sessionStorage.getItem('teacher_id'),
-                teacher_name: sessionStorage.getItem('teacher_name'),
-                admin_id: sessionStorage.getItem('admin_id')
-            });
             
             const formData = new FormData();
             formData.append('teacher_id', teacherId);
@@ -251,17 +289,11 @@
                     
                     // Update welcome banner with new teacher name
                     document.getElementById('dashboard-teacher-name').textContent = teacher.name || 'Teacher';
+
+                    applyProfilePic();
                 }
             })
             .catch(error => console.error('Error loading teacher profile:', error));
-        }
-
-        // Update current date
-        function updateCurrentDate() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const dateStr = now.toLocaleDateString('en-US', options);
-            document.getElementById('dashboard-current-date').textContent = dateStr;
         }
 
         // Load dashboard statistics from database

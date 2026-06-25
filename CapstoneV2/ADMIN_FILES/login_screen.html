@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <link rel="icon" type="image/png" href="../ADMIN_ASSETS/logo.png" />
+  <link rel="icon" type="image/png" href="../ASSETS/logo.png" />
   <title>SPED ALM - Login</title>
   <link href="../ADMIN_LOGIN_CSS/login_screen.css" rel="stylesheet" />
   <link href="../ADMIN_LOGIN_CSS/animations.css" rel="stylesheet" />
@@ -15,7 +15,7 @@
   <div class="admin-left-panel">
     <div class="admin-logo anim-fade-down anim-d1">
       <div class="admin-logo-icon">
-        <img alt="SPED ALM Logo" class="admin-logo-img" src="../ADMIN_ASSETS/logo.png" />
+        <img alt="SPED ALM Logo" class="admin-logo-img" src="../ASSETS/logo.png" />
       </div>
       <div class="admin-logo-text">
         <span class="admin-logo-title">SPED ALM</span>
@@ -215,10 +215,7 @@
             });
           })
           .then(function(result) {
-            console.log("Login response:", result);
             var data = result.text.trim();
-            console.log("Raw data:", data);
-            console.log("Data length:", data.length);
 
             try {
               var jsonData = JSON.parse(data);

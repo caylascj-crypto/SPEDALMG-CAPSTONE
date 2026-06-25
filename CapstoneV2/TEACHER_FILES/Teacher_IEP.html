@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <link rel="icon" type="image/png" href="../TEACHER_ASSETS/logo.png" />
+    <link rel="icon" type="image/png" href="../ASSETS/logo.png" />
     <title>IEP Materials – SPED ALM</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
         rel="stylesheet" />
@@ -18,7 +18,7 @@
         <!-- SIDEBAR -->
         <aside class="teacher-sidebar">
             <div class="teacher-sidebar-logo">
-                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../TEACHER_ASSETS/logo.png" />
+                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../ASSETS/logo.png" />
                 <div class="teacher-sidebar-logo-text">
                     <span class="teacher-sidebar-title">SPED ALM</span>
                     <span class="teacher-sidebar-sub">Teacher Portal</span>
@@ -49,7 +49,7 @@
             </nav>
             <div class="teacher-sidebar-footer">
                 <div class="teacher-profile">
-                    <div class="teacher-avatar" id="teacher-avatar-letter">T</div>
+                    <div class="teacher-avatar" id="teacher-avatar-letter">M</div>
                     <div class="teacher-info">
                         <span class="teacher-name" id="teacher-name-sidebar">Teacher</span>
                         <span class="teacher-role">SPED Teacher</span>
@@ -182,7 +182,7 @@
         }
 
         function loadLearners() {
-            fetch('TEACHER_BACKEND/teacher_list_learners.php')
+            fetch('TEACHER_BACKEND/teacher_list_learners.php?teacher_id=' + TEACHER_ID)
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     var sel = document.getElementById('teacher-learnerProfile');
@@ -196,6 +196,10 @@
                         sel.appendChild(opt);
                     });
                 }).catch(function(){});
+        }
+
+        function openTemplate(path) {
+            window.location.href = path;
         }
 
         function setCondition() {

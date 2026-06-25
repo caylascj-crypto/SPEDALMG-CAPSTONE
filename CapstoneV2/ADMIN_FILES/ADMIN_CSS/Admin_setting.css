@@ -1,6 +1,6 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html, body { height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; background: #f5f0e8; }
+html, body { height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; background:#eaf0fc; }
 body { display: flex; }
 
 /* ===== SIDEBAR — Teacher-matched style ===== */

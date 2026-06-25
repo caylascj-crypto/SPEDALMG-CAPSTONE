@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../ADMIN_FILES/ADMIN_BACKEND/db.php';
+require_once __DIR__ . '/db.php';
 
 header('Content-Type: application/json');
 
@@ -17,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $teacher_id = isset($_POST['teacher_id']) ? intval($_POST['teacher_id']) : 0;
 $activity_title = isset($_POST['activity_title']) ? trim($_POST['activity_title']) : '';
 $activity_description = isset($_POST['activity_description']) ? trim($_POST['activity_description']) : '';
+$activity_type = isset($_POST['activity_type']) ? trim($_POST['activity_type']) : '';
 $subject = isset($_POST['subject']) ? trim($_POST['subject']) : '';
 $grade_level = isset($_POST['grade_level']) ? trim($_POST['grade_level']) : '';
 $difficulty = isset($_POST['difficulty']) ? trim($_POST['difficulty']) : '';
@@ -35,8 +37,8 @@ if (!$teacher_conn) {
 }
 
 // Insert activity into teacher database
-$sql = "INSERT INTO teacher_activities (teacher_id, activity_title, activity_description, subject, grade_level, difficulty, status) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)";
+$sql = "INSERT INTO teacher_activities (teacher_id, activity_title, activity_description, activity_type, subject, grade_level, difficulty, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = $teacher_conn->prepare($sql);
 
 if (!$stmt) {
@@ -44,17 +46,20 @@ if (!$stmt) {
     exit;
 }
 
-$stmt->bind_param("issssss", $teacher_id, $activity_title, $activity_description, $subject, $grade_level, $difficulty, $status);
+$stmt->bind_param("isssssss", $teacher_id, $activity_title, $activity_description, $activity_type, $subject, $grade_level, $difficulty, $status);
 
 if ($stmt->execute()) {
     $activity_id = $stmt->insert_id;
     
     // Get teacher name from admin database
-    $teacher_query = $conn->query("SELECT first_name, last_name FROM admin_accounts WHERE id = $teacher_id");
     $teacher_name = 'Unknown Teacher';
-    if ($teacher_query && $row = $teacher_query->fetch_assoc()) {
-        $teacher_name = $row['first_name'] . ' ' . $row['last_name'];
+    $tq = $conn->prepare("SELECT first_name, last_name FROM admin_accounts WHERE id = ?");
+    $tq->bind_param("i", $teacher_id);
+    $tq->execute();
+    if ($trow = $tq->get_result()->fetch_assoc()) {
+        $teacher_name = trim($trow['first_name'] . ' ' . $trow['last_name']);
     }
+    $tq->close();
     
     // Log activity to admin_activities table
     $logSql = "INSERT INTO admin_activities (activity_type, user_type, user_name, user_email, action_detail) 

@@ -5,10 +5,12 @@
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>SPED ALM - My Materials</title>
-  <link rel="icon" type="image/png" href="../ADMIN_ASSETS/logo.png" />
   <link href="../STUDENT_CSS/Student_mymaterials.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap"
+    rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
 </head>
 
@@ -16,7 +18,7 @@
   <!-- SIDEBAR -->
   <aside class="student-sidebar">
     <div class="student-sidebar-logo">
-      <img alt="SPED ALM Logo" class="student-sidebar-logo-img" src="../STUDENT_ASSETS/logo.png" onerror="this.src='../ADMIN_ASSETS/logo.png'" />
+      <img alt="SPED ALM Logo" class="student-sidebar-logo-img" src="../ASSETS/logo.png" />
       <div class="student-sidebar-logo-text">
         <span class="student-sidebar-title">SPED ALM</span>
         <span class="student-sidebar-sub">Student Portal</span>
@@ -43,13 +45,13 @@
     </nav>
     <div class="student-sidebar-footer">
       <div class="student-sidebar-user">
-        <div class="student-user-avatar" id="sidebar-avatar">?</div>
+        <div class="student-user-avatar" id="sidebarInitials">JS</div>
         <div class="student-user-info">
-          <span class="student-user-name" id="sidebar-name">Loading...</span>
-          <span class="student-user-role" id="sidebar-role">—</span>
+          <span class="student-user-name" id="sidebarName">Juan Santos</span>
+          <span class="student-user-role" id="sidebarRole">Grade 4 — ASD</span>
         </div>
       </div>
-      <a class="student-signout-btn" href="#" id="signout-btn">
+      <a class="student-signout-btn" href="../ADMIN_FILES/login_screen.html" onclick="sessionStorage.clear();">
         <i class="fa-solid fa-right-from-bracket"></i>
         <span>Sign Out</span>
       </a>
@@ -57,7 +59,7 @@
   </aside>
 
   <!-- MAIN -->
-  <student-main class="student-main">
+  <main class="student-main">
     <!-- PAGE HEADER -->
     <header class="student-page-header">
       <div class="student-page-headline">
@@ -71,7 +73,7 @@
         <button class="student-fullview-btn" id="fullviewBtn" type="button">⛶ Full view</button>
         <a class="student-notif-btn" href="Student_notif.html">
           <i class="fa-regular fa-bell"></i>
-          <span class="student-notif-badge" id="notif-badge" style="display:none"></span>
+          <span class="student-notif-badge" id="notifBadge" style="display:none"></span>
         </a>
       </div>
     </header>
@@ -80,13 +82,12 @@
     <div class="student-filter-row">
       <div class="student-search-box">
         <span>🔍</span>
-        <input id="search-input" name="search_activities" placeholder="Search activities..." type="text" />
+        <input id="searchInput" name="search_activities" placeholder="Search activities..." type="text" />
       </div>
       <div class="student-filter-tabs">
-        <button class="student-ftab student-active" onclick="filterMaterials('all', this)" type="button">All</button>
-        <button class="student-ftab" onclick="filterMaterials('completed', this)" type="button">Completed</button>
-        <button class="student-ftab" onclick="filterMaterials('in_progress', this)" type="button">In Progress</button>
-        <button class="student-ftab" onclick="filterMaterials('new', this)" type="button">New</button>
+        <button class="student-ftab student-active" data-filter="all" type="button">All</button>
+        <button class="student-ftab" data-filter="completed" type="button">Completed</button>
+        <button class="student-ftab" data-filter="new" type="button">New</button>
       </div>
     </div>
 
@@ -95,160 +96,190 @@
       <div class="student-stat-card student-stat-card--blue">
         <span class="student-stat-icon">📘</span>
         <div>
-          <div class="student-stat-number student-stat-number--blue" id="stat-total">—</div>
+          <div class="student-stat-number student-stat-number--blue" id="statTotal">0</div>
           <div class="student-stat-label">Total Materials</div>
         </div>
       </div>
       <div class="student-stat-card student-stat-card--green">
         <span class="student-stat-icon">✅</span>
         <div>
-          <div class="student-stat-number student-stat-number--green" id="stat-completed">—</div>
+          <div class="student-stat-number student-stat-number--green" id="statCompleted">0</div>
           <div class="student-stat-label">Completed</div>
         </div>
       </div>
       <div class="student-stat-card student-stat-card--orange">
         <span class="student-stat-icon">🚀</span>
         <div>
-          <div class="student-stat-number student-stat-number--orange" id="stat-new">—</div>
+          <div class="student-stat-number student-stat-number--orange" id="statNew">0</div>
           <div class="student-stat-label">New / Pending</div>
         </div>
       </div>
     </div>
 
-    <!-- MATERIALS LIST -->
-    <div class="student-grading-section">
-      <div class="student-grading-header">
-        <span class="student-grading-icon">📖</span>
-        <span class="student-grading-title">All Materials</span>
-        <div class="student-grading-divider"></div>
-        <span class="student-grading-count" id="grading-count">— items</span>
-      </div>
-      <div class="student-material-list" id="material-list">
-        <div class="student-mat-empty">📭 Loading materials...</div>
-      </div>
-    </div>
-  </student-main>
+    <!-- GRADING SECTIONS (rendered by JS) -->
+    <div id="gradingSections"></div>
+
+  </main>
 
   <script>
-    const BACKEND = 'STUDENT_BACKEND/';
-    let allMaterials = [];
+    var TYPE_COLOR = { 'Matching': 'purple', 'Sorting': 'blue', 'Sequencing': 'green' };
+    var COLOR_CYCLE = ['orange', 'blue', 'purple', 'green', 'amber', 'pink'];
 
-    function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-    function getInitials(name) { return (name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().substring(0,2); }
-
-    document.getElementById('signout-btn').addEventListener('click', function(e) {
-      e.preventDefault();
-      sessionStorage.clear();
-      window.location.href = '../ADMIN_FILES/login_screen.html';
-    });
-
-    const COLORS = ['student-mat--orange','student-mat--blue','student-mat--purple','student-mat--green','student-mat--amber','student-mat--pink'];
-
-    function renderMaterials(items) {
-      const list = document.getElementById('material-list');
-      if (!items.length) {
-        list.innerHTML = '<div class="student-mat-empty">📭 No materials found.</div>';
-        return;
-      }
-      list.innerHTML = items.map((m, i) => {
-        const badge = m.progress_status === 'completed'
-          ? '<span class="student-mat-badge student-mat-badge--done">DONE</span>'
-          : m.progress_status === 'in_progress'
-          ? '<span class="student-mat-badge student-mat-badge--progress">IN PROGRESS</span>'
-          : '<span class="student-mat-badge student-mat-badge--new">NEW</span>';
-        const pct = m.score ? Math.min(100, m.score) : 0;
-        return `<div class="student-material-card ${COLORS[i % COLORS.length]}" data-status="${m.progress_status}">
-          ${badge}
-          <span class="student-mat-star">&#9734;</span>
-          <div class="student-mat-card-thumb">📖</div>
-          <div class="student-mat-card-title">${esc(m.activity_title)}</div>
-          <div class="student-mat-card-tag">${esc(m.subject || m.grade_level || '')}</div>
-          <div class="student-mat-progress">
-            <div class="student-mat-progress-bar"><div class="student-mat-progress-fill" style="width:${pct}%"></div></div>
-            <span class="student-mat-progress-pct">${pct}%</span>
-          </div>
-          <button class="student-mat-card-btn" type="button">▶ Start</button>
-        </div>`;
-      }).join('') + `<div class="student-cheer">
-        <span class="student-cheer-panda">🐼</span>
-        <div class="student-cheer-bubble"><strong>Great job!</strong><span>Keep learning and have fun! 💗</span></div>
-        <p class="student-cheer-text">Small steps every day lead to big progress!</p>
-        <span class="student-cheer-rainbow">🌈</span>
-      </div>`;
+    function esc(s) {
+      return String(s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    function filterMaterials(status, btn) {
-      document.querySelectorAll('.student-ftab').forEach(b => b.classList.remove('student-active'));
-      if (btn) btn.classList.add('student-active');
-      const search = document.getElementById('search-input').value.toLowerCase();
-      let filtered = allMaterials;
-      if (status !== 'all') filtered = filtered.filter(m => m.progress_status === status);
-      if (search) filtered = filtered.filter(m => (m.activity_title||'').toLowerCase().includes(search));
-      renderMaterials(filtered);
+    function getBadge(deadline) {
+      if (!deadline) return { text: 'NEW', cls: 'student-mat-badge--new' };
+      var d = new Date(deadline + 'T23:59:59');
+      var now = new Date();
+      if (d < now) return { text: 'CLOSED', cls: 'student-mat-badge--closed' };
+      var diff = Math.ceil((d - now) / (1000 * 60 * 60 * 24));
+      if (diff <= 1) return { text: 'DUE TODAY', cls: 'student-mat-badge--due' };
+      return { text: 'NEW', cls: 'student-mat-badge--new' };
     }
 
-    document.getElementById('search-input').addEventListener('input', function() {
-      const activeTab = document.querySelector('.student-ftab.student-active');
-      const status = activeTab ? activeTab.textContent.toLowerCase().replace(' ','_').replace('all','all') : 'all';
-      filterMaterials(status === 'all' ? 'all' : status, null);
+    function getTypeEmoji(type) {
+      if (type === 'Matching') return '🔗';
+      if (type === 'Sorting') return '🧩';
+      if (type === 'Sequencing') return '📋';
+      return '📄';
+    }
+
+    function renderCard(act, idx, prog) {
+      var color = TYPE_COLOR[act.type] || COLOR_CYCLE[idx % COLOR_CYCLE.length];
+      var progRec = prog.find(function(r){ return r.pubId === act.id; });
+      var completed = !!progRec;
+      var badge = completed
+        ? { text: 'COMPLETED', cls: 'student-mat-badge--completed' }
+        : getBadge(act.deadline);
+      var pct = completed ? progRec.percent : 0;
+      var thumb = act.thumbnail
+        ? '<img src="' + esc(act.thumbnail) + '" alt="thumbnail" style="width:80px;height:80px;object-fit:cover;border-radius:12px;" />'
+        : '<span style="font-size:48px;">' + getTypeEmoji(act.type) + '</span>';
+      var dueText = act.deadline
+        ? '<div class="student-mat-deadline">📅 Due: ' +
+          new Date(act.deadline + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) +
+          '</div>'
+        : '';
+      var btnLabel = completed ? '🔁 Review' : '&#9654; Start';
+      var btnStyle = completed ? 'background:#7c3aed;box-shadow:0 3px 0 #5b21b6;' : '';
+      return [
+        '<div class="student-material-card student-mat--' + color + '" data-id="' + esc(act.id) + '" data-status="' + (completed ? 'completed' : 'new') + '">',
+        '<span class="student-mat-badge ' + badge.cls + '">' + badge.text + '</span>',
+        '<span class="student-mat-star">&#9734;</span>',
+        '<div class="student-mat-card-thumb">' + thumb + '</div>',
+        '<div class="student-mat-card-title">' + esc(act.title) + '</div>',
+        '<div class="student-mat-card-tag">' + esc(act.type) + '</div>',
+        dueText,
+        '<div class="student-mat-progress">',
+        '<div class="student-mat-progress-bar"><div class="student-mat-progress-fill" style="width:' + pct + '%;background:' + (completed ? '#16a34a' : '') + '"></div></div>',
+        '<span class="student-mat-progress-pct">' + pct + '%</span>',
+        '</div>',
+        '<button class="student-mat-card-btn" type="button" style="' + btnStyle + '" onclick="startActivity(\'' + esc(act.id) + '\',\'' + esc(act.type) + '\')">' + btnLabel + '</button>',
+        '</div>'
+      ].join('');
+    }
+
+    function renderGradingSection(grading, items, prog) {
+      var num = { First: '1st', Second: '2nd', Third: '3rd' };
+      var countText = items.length === 0 ? '— items' : items.length + (items.length === 1 ? ' item' : ' items');
+      var listId = 'list-' + grading.toLowerCase();
+      var cards = items.length === 0
+        ? '<div class="student-mat-empty">📭 No materials yet for this grading period.</div>'
+        : items.map(function (a, i) { return renderCard(a, i, prog); }).join('') +
+          '<div class="student-cheer"><span class="student-cheer-panda">🐼</span>' +
+          '<div class="student-cheer-bubble"><strong>Great job!</strong><span>Keep learning and have fun! 💗</span></div>' +
+          '<p class="student-cheer-text">Small steps every day lead to big progress!</p>' +
+          '<span class="student-cheer-rainbow">🌈</span></div>';
+      return [
+        '<div class="student-grading-section">',
+        '<div class="student-grading-header">',
+        '<span class="student-grading-icon">📖</span>',
+        '<span class="student-grading-title">' + num[grading] + ' Grading</span>',
+        '<div class="student-grading-divider"></div>',
+        '<span class="student-grading-count" id="count-' + grading.toLowerCase() + '">' + countText + '</span>',
+        '</div>',
+        '<div class="student-material-list" id="' + listId + '">' + cards + '</div>',
+        '</div>'
+      ].join('');
+    }
+
+    function loadMaterials() {
+      var all = [];
+      try { all = JSON.parse(localStorage.getItem('published_activities') || '[]'); } catch (e) {}
+      var prog = [];
+      try { prog = JSON.parse(localStorage.getItem('student_progress') || '[]'); } catch (e) {}
+
+      var completedCount = all.filter(function(a){ return prog.some(function(r){ return r.pubId === a.id; }); }).length;
+      document.getElementById('statTotal').textContent = all.length;
+      document.getElementById('statNew').textContent = all.length - completedCount;
+      document.getElementById('statCompleted').textContent = completedCount;
+
+      var sections = ['First', 'Second', 'Third'].map(function (g) {
+        var items = all.filter(function (a) { return a.grading === g; });
+        return renderGradingSection(g, items, prog);
+      }).join('');
+      document.getElementById('gradingSections').innerHTML = sections;
+
+      // update notif badge
+      var notifs = [];
+      try { notifs = JSON.parse(localStorage.getItem('student_notifications') || '[]'); } catch (e) {}
+      var unread = notifs.filter(function (n) { return !n.isRead; }).length;
+      var badge = document.getElementById('notifBadge');
+      if (unread > 0) { badge.textContent = unread > 9 ? '9+' : unread; badge.style.display = 'flex'; }
+      else { badge.style.display = 'none'; }
+
+      // sync profile from settings
+      var sp = {};
+      try { sp = JSON.parse(localStorage.getItem('student_profile') || '{}'); } catch (e) {}
+      var spFirst = (sp.firstName || 'Juan').trim();
+      var spLast  = (sp.lastName  || 'Santos').trim();
+      document.getElementById('sidebarName').textContent = [spFirst, spLast].filter(Boolean).join(' ');
+      document.getElementById('sidebarRole').textContent = sp.grade || 'Grade 4';
+      var matAv = document.getElementById('sidebarInitials');
+      if (matAv) matAv.innerHTML = sp.photo
+        ? '<img src="' + sp.photo + '" style="width:100%;height:100%;object-fit:cover;display:block;" />'
+        : ((spFirst[0]||'J') + (spLast[0]||'S')).toUpperCase();
+    }
+
+    // Filter tabs
+    document.querySelectorAll('.student-ftab').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.student-ftab').forEach(function (b) { b.classList.remove('student-active'); });
+        btn.classList.add('student-active');
+      });
     });
 
-    const fvBtn = document.getElementById('fullviewBtn');
-    fvBtn.addEventListener('click', () => {
+    // Full-view toggle
+    var fvBtn = document.getElementById('fullviewBtn');
+    fvBtn.addEventListener('click', function () {
       document.body.classList.toggle('student-fullview');
-      const on = document.body.classList.contains('student-fullview');
+      var on = document.body.classList.contains('student-fullview');
       fvBtn.textContent = on ? '✕ Exit full view' : '⛶ Full view';
     });
 
-    async function loadPage() {
-      const studentName = sessionStorage.getItem('student_name') || '';
-      const studentRecordId = sessionStorage.getItem('student_record_id');
-      const teacherId = sessionStorage.getItem('teacher_id');
-      const adminId = sessionStorage.getItem('student_id');
-
-      if (!adminId) { window.location.href = '../ADMIN_FILES/login_screen.html'; return; }
-
-      document.getElementById('sidebar-avatar').textContent = getInitials(studentName);
-      document.getElementById('sidebar-name').textContent = studentName || 'Student';
-      const condition = sessionStorage.getItem('student_condition') || '';
-      const grade = sessionStorage.getItem('student_grade') || '';
-      document.getElementById('sidebar-role').textContent = [grade, condition].filter(Boolean).join(' — ');
-
-      if (!studentRecordId || !teacherId) {
-        document.getElementById('material-list').innerHTML = '<div class="student-mat-empty">📭 No student record linked yet.</div>';
-        return;
-      }
-
-      try {
-        const res = await fetch(BACKEND + 'student_get_materials.php?student_record_id=' + studentRecordId + '&teacher_id=' + teacherId);
-        const data = await res.json();
-        if (data.success) {
-          allMaterials = data.materials || [];
-          document.getElementById('stat-total').textContent = data.total;
-          document.getElementById('stat-completed').textContent = data.completed;
-          document.getElementById('stat-new').textContent = data.new + data.in_progress;
-          document.getElementById('grading-count').textContent = data.total + ' items';
-          renderMaterials(allMaterials);
-        } else {
-          document.getElementById('material-list').innerHTML = '<div class="student-mat-empty">📭 Failed to load materials.</div>';
-        }
-      } catch (e) {
-        document.getElementById('material-list').innerHTML = '<div class="student-mat-empty">📭 Error loading materials.</div>';
-      }
-
-      // Notification badge
-      try {
-        const notifRes = await fetch(BACKEND + 'student_get_notifications.php?student_record_id=' + studentRecordId + '&teacher_id=' + teacherId);
-        const notif = await notifRes.json();
-        if (notif.success && notif.unread > 0) {
-          const badge = document.getElementById('notif-badge');
-          badge.textContent = notif.unread;
-          badge.style.display = '';
-        }
-      } catch (e) {}
+    var TPL_MAP = {
+      'Matching':   '../TEACHER_FILES/TEMPLATES/Matching_Type_Template.html',
+      'Sorting':    '../TEACHER_FILES/TEMPLATES/Sorting_Type_Template.html',
+      'Sequencing': '../TEACHER_FILES/TEMPLATES/Sequencing_Type_Template.html'
+    };
+    function startActivity(pubId, type) {
+      var tpl = TPL_MAP[type];
+      if (!tpl) { alert('Activity type not supported yet.'); return; }
+      sessionStorage.setItem('stu_return_url', window.location.href);
+      window.location.href = tpl + '?student_mode=1&pub_id=' + encodeURIComponent(pubId);
     }
 
-    loadPage();
+    // Reload when teacher publishes while student tab is visible
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) loadMaterials();
+    });
+
+    loadMaterials();
   </script>
 </body>
+
 </html>

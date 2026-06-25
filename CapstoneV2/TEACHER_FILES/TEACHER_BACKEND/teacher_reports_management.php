@@ -238,33 +238,36 @@ function listReports($conn, $teacher_id) {
 
 function getOverview($conn, $teacher_id) {
     // Learner count
-    $r = $conn->query("SELECT COUNT(*) as c FROM students WHERE teacher_id=$teacher_id AND status='active'");
-    $total_learners = $r ? $r->fetch_assoc()['c'] : 0;
+    $s = $conn->prepare("SELECT COUNT(*) as c FROM students WHERE teacher_id=? AND status='active'");
+    $s->bind_param("i", $teacher_id); $s->execute();
+    $total_learners = (int)($s->get_result()->fetch_assoc()['c'] ?? 0); $s->close();
 
     // Activity count
-    $r = $conn->query("SELECT COUNT(*) as c FROM teacher_activities WHERE teacher_id=$teacher_id");
-    $total_activities = $r ? $r->fetch_assoc()['c'] : 0;
+    $s = $conn->prepare("SELECT COUNT(*) as c FROM teacher_activities WHERE teacher_id=?");
+    $s->bind_param("i", $teacher_id); $s->execute();
+    $total_activities = (int)($s->get_result()->fetch_assoc()['c'] ?? 0); $s->close();
 
     // Overall average score
-    $r = $conn->query("SELECT ROUND(AVG(score),0) as avg FROM learner_progress WHERE teacher_id=$teacher_id");
-    $avg_progress = $r ? ($r->fetch_assoc()['avg'] ?? 0) : 0;
+    $s = $conn->prepare("SELECT ROUND(AVG(score),0) as avg FROM learner_progress WHERE teacher_id=?");
+    $s->bind_param("i", $teacher_id); $s->execute();
+    $avg_progress = (int)($s->get_result()->fetch_assoc()['avg'] ?? 0); $s->close();
 
     // Skills overview: average score per subject category
     $skills = ['Cognitive' => 0, 'Communication' => 0, 'Fine Motor' => 0, 'Life Skills' => 0];
-    $r = $conn->query("SELECT COALESCE(ta.subject,'Other') as subj, ROUND(AVG(lp.score),0) as avg
-                       FROM learner_progress lp
-                       LEFT JOIN teacher_activities ta ON lp.activity_id = ta.id
-                       WHERE lp.teacher_id=$teacher_id
-                       GROUP BY ta.subject");
+    $s = $conn->prepare("SELECT COALESCE(ta.subject,'Other') as subj, ROUND(AVG(lp.score),0) as avg
+                         FROM learner_progress lp
+                         LEFT JOIN teacher_activities ta ON lp.activity_id = ta.id
+                         WHERE lp.teacher_id=?
+                         GROUP BY ta.subject");
+    $s->bind_param("i", $teacher_id); $s->execute();
+    $r = $s->get_result(); $s->close();
     $skillMap = ['cognitive'=>'Cognitive','communication'=>'Communication','motor'=>'Fine Motor','life'=>'Life Skills','self'=>'Life Skills'];
-    if ($r) {
-        while ($row = $r->fetch_assoc()) {
-            $subj = strtolower($row['subj']);
-            foreach ($skillMap as $key => $label) {
-                if (strpos($subj, $key) !== false) {
-                    $skills[$label] = intval($row['avg']);
-                    break;
-                }
+    while ($row = $r->fetch_assoc()) {
+        $subj = strtolower($row['subj']);
+        foreach ($skillMap as $key => $label) {
+            if (strpos($subj, $key) !== false) {
+                $skills[$label] = intval($row['avg']);
+                break;
             }
         }
     }

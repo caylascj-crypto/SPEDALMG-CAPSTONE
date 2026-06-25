@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en">
 
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <link rel="icon" type="image/png" href="../ADMIN_ASSETS/logo.png" />
+  <link rel="icon" type="image/png" href="../ASSETS/logo.png" />
   <title>SPED ALM - Activity Library</title>
   <link href="ADMIN_CSS/animations.css" rel="stylesheet" />
   <link href="ADMIN_CSS/Admin_activity_library.css" rel="stylesheet" />
@@ -19,7 +19,7 @@
   <!-- SIDEBAR -->
   <aside class="admin-sidebar">
     <div class="admin-sidebar-logo">
-      <img alt="SPED ALM Logo" class="admin-sidebar-logo-img" src="../ADMIN_ASSETS/logo.png" />
+      <img alt="SPED ALM Logo" class="admin-sidebar-logo-img" src="../ASSETS/logo.png" />
       <div class="admin-sidebar-logo-text">
         <span class="admin-sidebar-title">SPED ALM</span>
         <span class="admin-sidebar-sub">Admin Portal</span>
@@ -52,317 +52,578 @@
           <span class="admin-user-role">School Administrat...</span>
         </div>
       </div>
-      <a class="admin-signout-btn" href="#" onclick="sessionStorage.clear();window.location.href='login_screen.html';return false;">
+      <a class="admin-signout-btn" href="#"
+        onclick="sessionStorage.clear();window.location.href='login_screen.html';return false;">
         <i class="fa-solid fa-right-from-bracket"></i>
         <span>Sign Out</span>
       </a>
     </div>
   </aside>
+
   <!-- MAIN -->
   <main class="admin-main page-enter">
+
     <!-- TOP BAR -->
     <header class="admin-topbar">
       <div class="admin-topbar-left">
         <h1 class="admin-page-title">Activity Library</h1>
-        <p class="admin-page-sub">Manage all SPED learning materials — templates and generated activities.</p>
+        <p class="admin-page-sub">Monitor and manage all teacher-created learning activities.</p>
       </div>
       <div class="admin-topbar-right">
-        <div class="admin-search-bar">
-          <span class="admin-search-icon">🔍</span>
-          <input name="search" placeholder="Search..." type="text" />
-        </div>
-        <a class="admin-notif-btn" href="Admin_notif.html">
+        <button class="al-tpl-view-btn" type="button" onclick="document.getElementById('al-tpl-modal').style.display='flex'">
+          <i class="fa-solid fa-layer-group"></i>
+          <span>View Templates</span>
+          <span class="al-tpl-view-badge">3</span>
+        </button>
+        <a class="admin-notif-btn" href="Admin_notif.html" title="Notifications" aria-label="Notifications">
           <i class="fa-regular fa-bell"></i>
           <span class="admin-notif-badge"></span>
         </a>
       </div>
     </header>
-    <!-- FILTER BAR -->
-    <div class="admin-filter-bar">
-      <div class="admin-filter-search">
-        <span>🔍</span>
-        <input name="search_activities" placeholder="Search activities..." type="text" />
-      </div>
-      <!-- All Categories -->
-      <div class="admin-dropdown">
-        <button class="admin-filter-btn" onclick="toggleDropdown('admin-dd-category')" type="button">All Categories
-          <span class="admin-filter-icon">⇕</span></button>
-        <div class="admin-dropdown-menu" id="admin-dd-category">
-          <div class="admin-dropdown-item active"
-            onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">All Categories</div>
-          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">
-            Social Skills</div>
-          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">
-            Cognitive</div>
-          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">
-            Emotional Reg.</div>
-          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">
-            Self-Help</div>
-          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">
-            Academics</div>
-          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">
-            Communication</div>
-          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-category', 'admin-category-btn')">Fine
-            Motor</div>
+
+    <!-- ── STATS ROW ── -->
+    <div class="al-stats-row">
+      <div class="al-stat-card">
+        <div class="al-stat-icon-wrap al-si-blue">
+          <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <div class="al-stat-body">
+          <span class="al-stat-label">Total Templates</span>
+          <span class="al-stat-num">3</span>
+          <span class="al-stat-sub">Template types available</span>
         </div>
       </div>
-      <!-- All Types -->
-      <div class="admin-dropdown">
-        <button class="admin-filter-btn" id="admin-category-btn" onclick="toggleDropdown('admin-dd-type')"
-          type="button">All Types
-          <span class="admin-filter-icon">⇕</span></button>
-        <div class="admin-dropdown-menu" id="admin-dd-type">
-          <div class="admin-dropdown-item active" onclick="selectFilter(this, 'admin-dd-type', 'admin-type-btn')">All
-            Types</div>
-          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-type', 'admin-type-btn')">Template
-          </div>
-          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-type', 'admin-type-btn')">Generated
-          </div>
+      <div class="al-stat-card">
+        <div class="al-stat-icon-wrap al-si-purple">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </div>
+        <div class="al-stat-body">
+          <span class="al-stat-label">Draft Activities</span>
+          <span class="al-stat-num" id="stat-drafts">0</span>
+          <span class="al-stat-sub">Created by teachers</span>
         </div>
       </div>
-      <!-- All Status -->
-      <div class="admin-dropdown">
-        <button class="admin-filter-btn" id="admin-type-btn" onclick="toggleDropdown('admin-dd-status')"
-          type="button">All Status
-          <span class="admin-filter-icon">⇕</span></button>
-        <div class="admin-dropdown-menu" id="admin-dd-status">
-          <div class="admin-dropdown-item active" onclick="selectFilter(this, 'admin-dd-status', 'admin-status-btn')">
-            All Status</div>
-          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-status', 'admin-status-btn')">Published
-          </div>
-          <div class="admin-dropdown-item" onclick="selectFilter(this, 'admin-dd-status', 'admin-status-btn')">Draft
-          </div>
+      <div class="al-stat-card">
+        <div class="al-stat-icon-wrap al-si-green">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div class="al-stat-body">
+          <span class="al-stat-label">Published Activities</span>
+          <span class="al-stat-num" id="stat-published">0</span>
+          <span class="al-stat-sub">Ready for learners</span>
         </div>
       </div>
-      <button class="admin-search-btn" id="admin-status-btn" type="button">🔍 Search</button>
-    </div>
-    <!-- TABLE -->
-    <div class="admin-table-wrap">
-      <table class="admin-activity-table">
-        <thead>
-          <tr>
-            <th>ACTIVITY TITLE</th>
-            <th>CATEGORY</th>
-            <th>TYPE</th>
-            <th>TARGET FOCUS</th>
-            <th>CREATED BY</th>
-            <th>STATUS</th>
-            <th>ACTIONS</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- One placeholder row for UI demo -->
-          <tr class="admin-placeholder-row">
-            <td>
-              <div class="admin-activity-title-cell">
-                <span class="admin-activity-book-icon">📘</span>
-                <span class="admin-placeholder-bar admin-w-160"></span>
-              </div>
-            </td>
-            <td><span class="admin-placeholder-bar admin-w-80"></span></td>
-            <td><span class="admin-badge admin-badge--gray">—</span></td>
-            <td><span class="admin-badge admin-badge--gray">—</span></td>
-            <td>
-              <div class="admin-created-cell">
-                <span class="admin-avatar-placeholder"></span>
-                <span class="admin-placeholder-bar admin-w-80"></span>
-              </div>
-            </td>
-            <td><span class="admin-badge admin-badge--gray">—</span></td>
-            <td>
-              <button class="admin-view-btn" onclick="document.getElementById('admin-view-modal').style.display='flex'"
-                type="button">
-                👁 View
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <!-- Empty state below the one row -->
-      <div class="admin-table-empty">
-        <div class="admin-empty-icon">📋</div>
-        <p class="admin-empty-title">No activities yet</p>
-        <p class="admin-empty-desc">Activities will appear here once they are created or generated.</p>
-      </div>
-      <!-- Pagination -->
-      <div class="admin-pagination-bar">
-        <span class="admin-pagination-info">Showing <strong>0</strong> of <strong>0</strong> entries</span>
-        <div class="admin-pagination-controls">
-          <button class="admin-page-btn" disabled="" type="button">‹</button>
-          <button class="admin-page-btn active" type="button">1</button>
-          <button class="admin-page-btn" disabled="" type="button">Next ›</button>
+      <div class="al-stat-card">
+        <div class="al-stat-icon-wrap al-si-amber">
+          <i class="fa-solid fa-user-group"></i>
+        </div>
+        <div class="al-stat-body">
+          <span class="al-stat-label">Active Teachers</span>
+          <span class="al-stat-num" id="stat-teachers">0</span>
+          <span class="al-stat-sub">Using the system</span>
         </div>
       </div>
     </div>
+
+    <!-- ── TEACHER ACTIVITIES ── -->
+    <div class="al-card al-acts-card">
+
+      <!-- Card header row -->
+      <div class="al-acts-topbar">
+        <div class="al-acts-title-group">
+          <h2 class="al-card-title">Teacher Activities</h2>
+          <p class="al-card-sub">Monitor and review activities created by teachers.</p>
+        </div>
+        <div class="al-acts-controls">
+          <div class="al-search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="al-search-input" placeholder="Search by title, type, or teacher..." type="text" oninput="applyFilter()" />
+          </div>
+          <button class="al-filter-btn" type="button">
+            <i class="fa-solid fa-sliders"></i> Filters
+          </button>
+        </div>
+      </div>
+
+      <!-- TABS -->
+      <div class="al-tabs">
+        <button class="al-tab active" id="al-tab-all" onclick="switchTab('all')" type="button">
+          All <span class="al-tc" id="al-count-all">0</span>
+        </button>
+        <button class="al-tab" id="al-tab-draft" onclick="switchTab('draft')" type="button">
+          Drafts <span class="al-tc al-tc-amber" id="al-count-draft">0</span>
+        </button>
+        <button class="al-tab" id="al-tab-published" onclick="switchTab('published')" type="button">
+          Published <span class="al-tc al-tc-green" id="al-count-published">0</span>
+        </button>
+      </div>
+
+      <!-- TABLE SCROLL WRAPPER -->
+      <div class="al-table-scroll">
+        <table class="al-table">
+          <thead>
+            <tr>
+              <th>Activity Title</th>
+              <th>Template Type</th>
+              <th>Teacher</th>
+              <th>Status</th>
+              <th>Date Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="al-tbody"></tbody>
+        </table>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="al-table-footer">
+        <span class="al-footer-info" id="al-footer-info">Showing <strong>0</strong> of <strong>0</strong> activities</span>
+        <div class="al-pagination" id="al-pagination"></div>
+      </div>
+    </div>
+
   </main>
-  <!-- VIEW MODAL -->
+
+  <!-- ══ TEMPLATES MODAL ══ -->
+  <div class="admin-modal-overlay" id="al-tpl-modal">
+    <div class="al-tpl-modal-box">
+      <div class="al-tpl-modal-header">
+        <div class="al-tpl-modal-title-group">
+          <span class="al-tpl-modal-icon"><i class="fa-solid fa-layer-group"></i></span>
+          <div>
+            <h3 class="al-tpl-modal-title">Available Templates</h3>
+            <p class="al-tpl-modal-sub">3 template types teachers can use to build activities.</p>
+          </div>
+        </div>
+        <button class="admin-modal-close" onclick="document.getElementById('al-tpl-modal').style.display='none'" type="button" title="Close" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="al-tpl-modal-body">
+
+        <!-- Picture Matching -->
+        <div class="al-tpl-row al-tplr-blue">
+          <div class="al-tplr-icon"><i class="fa-solid fa-puzzle-piece"></i></div>
+          <div class="al-tplr-content">
+            <div class="al-tplr-top">
+              <span class="al-tplr-name">Picture Matching</span>
+              <span class="al-tplr-type-badge al-tb-blue">Matching</span>
+            </div>
+            <p class="al-tplr-desc">Match images to words or categories. Builds vocabulary recognition and visual association skills for SPED learners.</p>
+            <div class="al-tplr-stats">
+              <span class="al-tplr-stat"><i class="fa-solid fa-pen-to-square"></i> <strong id="tu-matching">0</strong> teachers used</span>
+              <span class="al-tplr-dot">·</span>
+              <span class="al-tplr-stat al-tplr-stat-amber"><i class="fa-solid fa-file-pen"></i> <strong id="td-matching">0</strong> drafts</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sorting -->
+        <div class="al-tpl-row al-tplr-purple">
+          <div class="al-tplr-icon"><i class="fa-solid fa-table-columns"></i></div>
+          <div class="al-tplr-content">
+            <div class="al-tplr-top">
+              <span class="al-tplr-name">Sorting / Categorization</span>
+              <span class="al-tplr-type-badge al-tb-green">Sorting</span>
+            </div>
+            <p class="al-tplr-desc">Sort items into groups or bins. Develops classification skills and improves critical thinking for learners with special needs.</p>
+            <div class="al-tplr-stats">
+              <span class="al-tplr-stat"><i class="fa-solid fa-pen-to-square"></i> <strong id="tu-sorting">0</strong> teachers used</span>
+              <span class="al-tplr-dot">·</span>
+              <span class="al-tplr-stat al-tplr-stat-amber"><i class="fa-solid fa-file-pen"></i> <strong id="td-sorting">0</strong> drafts</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sequencing -->
+        <div class="al-tpl-row al-tplr-teal">
+          <div class="al-tplr-icon"><i class="fa-solid fa-arrow-down-1-9"></i></div>
+          <div class="al-tplr-content">
+            <div class="al-tplr-top">
+              <span class="al-tplr-name">Sequencing</span>
+              <span class="al-tplr-type-badge al-tb-teal">Sequencing</span>
+            </div>
+            <p class="al-tplr-desc">Arrange steps or images in correct order. Develops logical thinking, routines, and sequential memory for SPED learners.</p>
+            <div class="al-tplr-stats">
+              <span class="al-tplr-stat"><i class="fa-solid fa-pen-to-square"></i> <strong id="tu-sequencing">0</strong> teachers used</span>
+              <span class="al-tplr-dot">·</span>
+              <span class="al-tplr-stat al-tplr-stat-amber"><i class="fa-solid fa-file-pen"></i> <strong id="td-sequencing">0</strong> drafts</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="al-tpl-modal-footer">
+        <button class="admin-close-btn" onclick="document.getElementById('al-tpl-modal').style.display='none'" type="button">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ACTIVITY VIEW MODAL ══ -->
   <div class="admin-modal-overlay" id="admin-view-modal">
     <div class="admin-modal-box">
       <div class="admin-modal-header">
-        <h3 class="admin-modal-title">Activity Preview</h3>
-        <button class="admin-modal-close" onclick="document.getElementById('admin-view-modal').style.display='none'"
-          type="button">✕</button>
+        <h3 class="admin-modal-title" id="al-modal-title">Activity Details</h3>
+        <button class="admin-modal-close"
+          onclick="document.getElementById('admin-view-modal').style.display='none'"
+          type="button" title="Close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <div class="admin-modal-body">
+      <div class="admin-modal-body" id="al-modal-body">
         <div class="admin-modal-empty-state">
           <div class="admin-modal-empty-icon">📋</div>
-          <p class="admin-modal-empty-title">No content yet</p>
-          <p class="admin-modal-empty-desc">Activity details will appear here once the backend is connected.</p>
+          <p class="admin-modal-empty-title">Select an activity to preview.</p>
         </div>
       </div>
       <div class="admin-modal-footer">
-        <button class="admin-close-btn" onclick="document.getElementById('admin-view-modal').style.display='none'"
+        <button class="admin-close-btn"
+          onclick="document.getElementById('admin-view-modal').style.display='none'"
           type="button">Close</button>
       </div>
     </div>
   </div>
+
   <script>
     var activitiesList = [];
+    var currentTab = 'all';
+    var PAGE_SIZE = 10;
+    var currentPage = 1;
 
-    function toggleDropdown(id) {
-      var dropdown = document.getElementById(id);
-      if (dropdown.style.display === 'block') {
-        dropdown.style.display = 'none';
-      } else {
-        // Close other dropdowns
-        document.querySelectorAll('.admin-dropdown-menu').forEach(function(menu) {
-          menu.style.display = 'none';
+    /* ── Helpers ── */
+    function esc(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function formatDate(str) {
+      if (!str) return { date: '—', time: '' };
+      try {
+        var d = new Date(str);
+        return {
+          date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          time: d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+        };
+      } catch(e) { return { date: str, time: '' }; }
+    }
+
+    function initials(name) {
+      if (!name || name === '—') return '—';
+      return name.trim().split(/\s+/).map(function(w){ return w[0]; }).join('').toUpperCase().slice(0,2);
+    }
+
+    /* ── Read teacher localStorage drafts ── */
+    function getLocalDrafts() {
+      try { return JSON.parse(localStorage.getItem('teacher_drafts') || '[]'); }
+      catch(e) { return []; }
+    }
+    function getLocalPublished() {
+      try { return JSON.parse(localStorage.getItem('published_activities') || '[]'); }
+      catch(e) { return []; }
+    }
+
+    /* ── Load activities ── */
+    function loadActivities() {
+      var localDrafts = getLocalDrafts().map(function(d, i) {
+        return {
+          id:          d.id || ('draft-' + i),
+          title:       d.title       || 'Untitled Draft',
+          desc:        d.type ? d.type + ' activity' : '',
+          type:        d.type        || '—',
+          teacherName: d.teacherName || '—',
+          teacherRole: 'SPED Teacher',
+          focus:       d.learner     || '—',
+          category:    d.condition   || '—',
+          status:      'Draft',
+          savedAt:     d.savedAt     || '',
+          _isLocal:    true
+        };
+      });
+
+      var localPublished = getLocalPublished().map(function(p, i) {
+        return {
+          id:          p.id || ('pub-' + i),
+          title:       p.title       || 'Untitled Activity',
+          desc:        p.type ? p.type + ' · ' + (p.grading || '') + ' Grading' : '',
+          type:        p.type        || '—',
+          teacherName: p.teacherName || '—',
+          teacherRole: 'SPED Teacher',
+          focus:       p.learner     || '—',
+          category:    p.condition   || '—',
+          status:      'Published',
+          savedAt:     p.publishedAt || '',
+          _isLocal:    true
+        };
+      });
+
+      fetch('ADMIN_BACKEND/admin_list_activities.php')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var backend = (data || []).map(function(a) {
+            return {
+              id:          a.id,
+              title:       a.title      || 'Untitled',
+              desc:        a.description || '',
+              type:        a.type        || '—',
+              teacherName: a.creator     || '—',
+              teacherRole: a.role        || 'SPED Teacher',
+              focus:       a.focus       || '—',
+              category:    a.category    || '—',
+              status:      a.status === 'draft' ? 'Draft' : 'Published',
+              savedAt:     a.created_at  || '',
+              _isLocal:    false
+            };
+          });
+          activitiesList = localDrafts.concat(localPublished).concat(backend);
+          afterLoad();
+        })
+        .catch(function() {
+          activitiesList = localDrafts.concat(localPublished);
+          afterLoad();
         });
-        dropdown.style.display = 'block';
-      }
     }
 
-    function selectFilter(el, dropdownId, buttonId) {
-      var dropdown = document.getElementById(dropdownId);
-      var button = buttonId ? document.getElementById(buttonId) : dropdown.previousElementSibling;
-      
-      // Remove active class from all items
-      dropdown.querySelectorAll('.admin-dropdown-item').forEach(function(item) {
-        item.classList.remove('active');
+    function afterLoad() {
+      updateStats();
+      updateTabCounts();
+      updateTemplateCards();
+      currentPage = 1;
+      applyFilter();
+    }
+
+    /* ── Update stats row ── */
+    function updateStats() {
+      var drafts    = activitiesList.filter(function(a){ return a.status === 'Draft'; }).length;
+      var published = activitiesList.filter(function(a){ return a.status === 'Published'; }).length;
+      var teachers  = new Set(activitiesList.map(function(a){ return a.teacherName; }).filter(function(n){ return n && n !== '—'; })).size;
+      document.getElementById('stat-drafts').textContent    = drafts;
+      document.getElementById('stat-published').textContent = published;
+      document.getElementById('stat-teachers').textContent  = teachers;
+    }
+
+    /* ── Update template cards ── */
+    function updateTemplateCards() {
+      ['Matching', 'Sorting', 'Sequencing'].forEach(function(type) {
+        var key    = type.toLowerCase();
+        var all    = activitiesList.filter(function(a){ return a.type === type; });
+        var drafts = all.filter(function(a){ return a.status === 'Draft'; }).length;
+        var tNames = new Set(all.map(function(a){ return a.teacherName; }).filter(function(n){ return n && n !== '—'; }));
+        var tuEl = document.getElementById('tu-' + key);
+        var tdEl = document.getElementById('td-' + key);
+        if (tuEl) tuEl.textContent = tNames.size || '0';
+        if (tdEl) tdEl.textContent = drafts + (drafts === 1 ? ' Draft' : ' Drafts');
       });
-      
-      // Add active class to clicked item
-      el.classList.add('active');
-      
-      // Update button text
-      if (button) {
-        button.innerHTML = el.textContent + ' <span class="admin-filter-icon">⇕</span>';
-      }
-      
-      // Close dropdown
-      dropdown.style.display = 'none';
-      
-      // Trigger search/filter
-      searchActivities();
     }
 
-    function searchActivities() {
-      var searchInput = document.querySelector('input[name="search_activities"]');
-      var searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
-      
-      // Filter activities based on search and selected filters
-      var filtered = activitiesList.filter(function(activity) {
-        var matchesSearch = !searchTerm || 
-          activity.title.toLowerCase().includes(searchTerm) ||
-          activity.category.toLowerCase().includes(searchTerm) ||
-          activity.creator.toLowerCase().includes(searchTerm);
-        
-        return matchesSearch;
+    /* ── Tab switching ── */
+    function switchTab(tab) {
+      currentTab = tab;
+      currentPage = 1;
+      document.querySelectorAll('.al-tab').forEach(function(b){ b.classList.remove('active'); });
+      document.getElementById('al-tab-' + tab).classList.add('active');
+      applyFilter();
+    }
+
+    function updateTabCounts() {
+      var d = activitiesList.filter(function(a){ return a.status === 'Draft'; }).length;
+      var p = activitiesList.filter(function(a){ return a.status === 'Published'; }).length;
+      document.getElementById('al-count-all').textContent       = activitiesList.length;
+      document.getElementById('al-count-draft').textContent     = d;
+      document.getElementById('al-count-published').textContent = p;
+    }
+
+    /* ── Filter + paginate ── */
+    function applyFilter() {
+      var q = (document.getElementById('al-search-input').value || '').toLowerCase();
+
+      var filtered = activitiesList.filter(function(a) {
+        var matchTab = currentTab === 'all' ||
+          (currentTab === 'draft'     && a.status === 'Draft') ||
+          (currentTab === 'published' && a.status === 'Published');
+        var matchQ = !q ||
+          a.title.toLowerCase().includes(q) ||
+          a.type.toLowerCase().includes(q)  ||
+          a.teacherName.toLowerCase().includes(q);
+        return matchTab && matchQ;
       });
-      
-      // Render filtered results
-      renderActivitiesTable(filtered);
+
+      renderTable(filtered);
     }
 
-    function renderActivitiesTable(activities) {
-      var tbody = document.querySelector('.admin-activity-table tbody');
-      
-      if (!activities || activities.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7"><div class="admin-table-empty" style="display: block; margin: 40px 0;"><div class="admin-empty-icon">📋</div><p class="admin-empty-title">No activities found</p></div></td></tr>';
+    /* ── Render table ── */
+    var TYPE_BADGE = {
+      'Matching':   'al-tb-blue',
+      'Sorting':    'al-tb-green',
+      'Sequencing': 'al-tb-teal'
+    };
+
+    function renderTable(activities) {
+      var tbody  = document.getElementById('al-tbody');
+      var footer = document.getElementById('al-footer-info');
+      var total  = activities.length;
+
+      if (total === 0) {
+        var msg = currentTab === 'draft' ? 'No drafts saved yet by teachers.'
+          : currentTab === 'published'   ? 'No published activities yet.'
+          : 'No activities found. Teachers need to save or publish activities first.';
+        tbody.innerHTML =
+          '<tr><td colspan="6" class="al-empty-td">'
+          + '<div class="al-empty"><i class="fa-solid fa-inbox al-empty-ico"></i>'
+          + '<p class="al-empty-title">No activities found</p>'
+          + '<p class="al-empty-desc">' + msg + '</p>'
+          + '</div></td></tr>';
+        if (footer) footer.innerHTML = 'Showing <strong>0</strong> of <strong>0</strong> activities';
+        renderPagination(0, 0);
         return;
       }
-      
-      tbody.innerHTML = activities.map(function(activity) {
-        var statusClass = activity.status === 'Published' ? 'admin-badge--green' : 'admin-badge--gray';
-        var typeClass = activity.type === 'Template' ? 'admin-badge--blue' : 'admin-badge--purple';
-        
+
+      /* Paginate */
+      var totalPages = Math.ceil(total / PAGE_SIZE);
+      if (currentPage > totalPages) currentPage = totalPages;
+      var start = (currentPage - 1) * PAGE_SIZE;
+      var page  = activities.slice(start, start + PAGE_SIZE);
+
+      tbody.innerHTML = page.map(function(a) {
+        var dt      = formatDate(a.savedAt);
+        var typeCls = TYPE_BADGE[a.type] || 'al-tb-gray';
+        var isDraft = a.status === 'Draft';
+        var ini     = initials(a.teacherName);
+
         return '<tr>'
-          + '<td><div class="admin-activity-title-cell"><span class="admin-activity-book-icon">📘</span>' + activity.title + '</div></td>'
-          + '<td>' + activity.category + '</td>'
-          + '<td><span class="admin-badge ' + typeClass + '">' + activity.type + '</span></td>'
-          + '<td><span class="admin-badge">' + activity.focus + '</span></td>'
-          + '<td><div class="admin-created-cell">' + activity.creator + '</div></td>'
-          + '<td><span class="admin-badge ' + statusClass + '">' + activity.status + '</span></td>'
-          + '<td><button class="admin-view-btn" onclick="viewActivity(' + activity.id + ')" type="button">👁 View</button></td>'
+          + '<td>'
+          +   '<div class="al-td-title">'
+          +     '<span class="al-row-file-icon ' + (isDraft ? 'al-rfi-amber' : 'al-rfi-blue') + '"><i class="fa-solid fa-file-lines"></i></span>'
+          +     '<span class="al-title-wrap">'
+          +       '<span class="al-title-main">' + esc(a.title) + '</span>'
+          +       (a.desc ? '<span class="al-title-sub">' + esc(a.desc) + '</span>' : '')
+          +     '</span>'
+          +   '</div>'
+          + '</td>'
+          + '<td><span class="al-type-badge ' + typeCls + '">' + esc(a.type) + '</span></td>'
+          + '<td>'
+          +   '<div class="al-td-teacher">'
+          +     '<span class="al-teacher-av">' + esc(ini) + '</span>'
+          +     '<span class="al-teacher-wrap">'
+          +       '<span class="al-teacher-name">' + esc(a.teacherName) + '</span>'
+          +       '<span class="al-teacher-role">' + esc(a.teacherRole) + '</span>'
+          +     '</span>'
+          +   '</div>'
+          + '</td>'
+          + '<td>'
+          +   (isDraft
+          ?    '<span class="al-status al-status-draft"><span class="al-dot al-dot-amber"></span>Draft</span>'
+          :    '<span class="al-status al-status-pub"><span class="al-dot al-dot-green"></span>Published</span>')
+          + '</td>'
+          + '<td>'
+          +   '<div class="al-td-date">'
+          +     '<span class="al-date-main">' + dt.date + '</span>'
+          +     (dt.time ? '<span class="al-date-time">' + dt.time + '</span>' : '')
+          +   '</div>'
+          + '</td>'
+          + '<td>'
+          +   '<div class="al-td-actions">'
+          +     '<button class="al-view-btn" onclick="viewActivity(\'' + esc(a.id) + '\')" type="button"><i class="fa-regular fa-eye"></i> View</button>'
+          +     '<button class="al-dots-btn" type="button"><i class="fa-solid fa-ellipsis-vertical"></i></button>'
+          +   '</div>'
+          + '</td>'
           + '</tr>';
       }).join('');
-    }
 
-    function viewActivity(id) {
-      var activity = activitiesList.find(function(a) { return a.id == id; });
-      if (activity) {
-        var modal = document.getElementById('admin-view-modal');
-        modal.querySelector('.admin-modal-title').textContent = activity.title;
-        modal.querySelector('.admin-modal-empty-state').innerHTML = 
-          '<p><strong>Category:</strong> ' + activity.category + '</p>' +
-          '<p><strong>Type:</strong> ' + activity.type + '</p>' +
-          '<p><strong>Status:</strong> ' + activity.status + '</p>' +
-          '<p><strong>Created by:</strong> ' + activity.creator + '</p>';
-        modal.style.display = 'flex';
+      if (footer) {
+        footer.innerHTML = 'Showing <strong>' + (start + 1) + ' to ' + Math.min(start + PAGE_SIZE, total) + '</strong> of <strong>' + total + '</strong> activities';
       }
+      renderPagination(totalPages, currentPage);
     }
 
-    function loadActivities() {
-      fetch('ADMIN_BACKEND/admin_list_activities.php')
-        .then(function(response) { return response.json(); })
-        .then(function(data) {
-          activitiesList = data;
-          renderActivitiesTable(activitiesList);
-        })
-        .catch(function(error) {
-          console.log('Error loading activities:', error);
-          activitiesList = [];
-          renderActivitiesTable([]);
-        });
-    }
+    /* ── Pagination ── */
+    function renderPagination(totalPages, page) {
+      var el = document.getElementById('al-pagination');
+      if (!el || totalPages <= 1) { if(el) el.innerHTML = ''; return; }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      // Add event listener to search input
-      var searchInput = document.querySelector('input[name="search_activities"]');
-      if (searchInput) {
-        searchInput.addEventListener('input', searchActivities);
+      var pages = [];
+      if (totalPages <= 5) {
+        for (var i = 1; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages = [1, 2, 3];
+        if (page > 4) pages.push('…');
+        if (page > 3 && page < totalPages - 2) pages.push(page);
+        if (page < totalPages - 2) pages.push('…');
+        pages.push(totalPages);
+        pages = pages.filter(function(v, i, a) { return a.indexOf(v) === i; });
       }
 
-      // Close dropdowns when clicking outside
-      document.addEventListener('click', function(e) {
-        if (!e.target.closest('.admin-dropdown')) {
-          document.querySelectorAll('.admin-dropdown-menu').forEach(function(menu) {
-            menu.style.display = 'none';
-          });
+      var html = '<button class="al-pg-btn" onclick="goPage(' + (page - 1) + ')" ' + (page === 1 ? 'disabled' : '') + '><i class="fa-solid fa-chevron-left"></i></button>';
+      pages.forEach(function(p) {
+        if (p === '…') {
+          html += '<span class="al-pg-ellipsis">…</span>';
+        } else {
+          html += '<button class="al-pg-btn ' + (p === page ? 'al-pg-active' : '') + '" onclick="goPage(' + p + ')">' + p + '</button>';
         }
       });
+      html += '<button class="al-pg-btn" onclick="goPage(' + (page + 1) + ')" ' + (page === totalPages ? 'disabled' : '') + '><i class="fa-solid fa-chevron-right"></i></button>';
+      el.innerHTML = html;
+    }
 
-      /* Ripple effect on buttons only */
-      document.querySelectorAll(".admin-btn-signin, .admin-modal-got-it, .admin-signout-btn").forEach(function (btn) {
-        btn.addEventListener("click", function (e) {
+    function goPage(p) {
+      currentPage = p;
+      applyFilter();
+    }
+
+    /* ── View modal ── */
+    function viewActivity(id) {
+      var a = activitiesList.find(function(x){ return x.id == id; });
+      if (!a) return;
+      var dt      = formatDate(a.savedAt);
+      var typeCls = TYPE_BADGE[a.type] || 'al-tb-gray';
+      var isDraft = a.status === 'Draft';
+      var ini     = initials(a.teacherName);
+
+      document.getElementById('al-modal-title').textContent = a.title;
+      document.getElementById('al-modal-body').innerHTML =
+        '<div class="al-modal-teacher-row">'
+        + '<span class="al-teacher-av al-av-lg">' + esc(ini) + '</span>'
+        + '<div><strong style="font-size:15px;">' + esc(a.teacherName) + '</strong><br><span style="font-size:12px;color:#999;">' + esc(a.teacherRole) + '</span></div>'
+        + '</div>'
+        + '<div class="al-modal-rows">'
+        + mRow('Template Type', '<span class="al-type-badge ' + typeCls + '">' + esc(a.type) + '</span>')
+        + mRow('Learner',       esc(a.focus))
+        + mRow('Condition',     esc(a.category))
+        + mRow('Date Saved',    dt.date + (dt.time ? ' · ' + dt.time : ''))
+        + mRow('Status',        isDraft
+            ? '<span class="al-status al-status-draft"><span class="al-dot al-dot-amber"></span>Draft</span>'
+            : '<span class="al-status al-status-pub"><span class="al-dot al-dot-green"></span>Published</span>')
+        + '</div>';
+
+      document.getElementById('admin-view-modal').style.display = 'flex';
+    }
+
+    function mRow(label, value) {
+      return '<div class="al-mrow"><span class="al-mrow-label">' + label + '</span><span class="al-mrow-val">' + value + '</span></div>';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('al-search-input').addEventListener('input', applyFilter);
+
+      document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) loadActivities();
+      });
+
+      document.querySelectorAll('.admin-signout-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
           var rect = this.getBoundingClientRect();
           var size = Math.max(rect.width, rect.height);
-          var span = document.createElement("span");
-          span.className = "ripple-span";
-          span.style.width = span.style.height = size + "px";
-          span.style.left = (e.clientX - rect.left - size / 2) + "px";
-          span.style.top = (e.clientY - rect.top - size / 2) + "px";
-          this.style.position = "relative";
-          this.style.overflow = "hidden";
+          var span = document.createElement('span');
+          span.className = 'ripple-span';
+          span.style.cssText = 'width:' + size + 'px;height:' + size + 'px;'
+            + 'left:' + (e.clientX - rect.left - size/2) + 'px;'
+            + 'top:'  + (e.clientY - rect.top  - size/2) + 'px;';
+          this.style.position = 'relative';
+          this.style.overflow = 'hidden';
           this.appendChild(span);
-          setTimeout(function () { span.remove(); }, 520);
-          if (this.classList.contains('admin-signout-btn')) {
-            window.location.href = this.getAttribute('href') || 'login_screen.html';
-          }
+          setTimeout(function(){ span.remove(); }, 520);
         });
       });
 
-      // Load activities on page load
       loadActivities();
     });
   </script>

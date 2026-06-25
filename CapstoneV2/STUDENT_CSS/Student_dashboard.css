@@ -55,7 +55,7 @@ body {
   width: 230px; flex: none; padding: 22px 16px;
   display: flex; flex-direction: column;
   border-radius: 0 30px 30px 0;
-  background: linear-gradient(180deg, #2f6fed, #1b4fb8);
+  background: linear-gradient(180deg, #1E3A8A, #1b4fb8);
   box-shadow: 10px 0 28px rgba(27, 79, 184, .25);
   /* stays pinned while the main content scrolls */
   position: sticky;
@@ -65,8 +65,8 @@ body {
 }
 .student-sidebar-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid rgba(255, 255, 255, .2); }
 .student-sidebar-logo-img {
-  width: 46px; height: 46px; border-radius: 16px;
-  background: transparent; object-fit: contain;
+  width: 46px; height: 46px; padding: 4px; border-radius: 16px;
+  background: #fff; object-fit: contain; box-shadow: 0 5px 0 #cdd9ef;
 }
 .student-sidebar-logo-text { display: flex; flex-direction: column; line-height: 1.15; }
 .student-sidebar-title { font-family: var(--font-head); font-weight: 800; font-size: 18px; color: #fff; }
@@ -94,6 +94,7 @@ body {
   display: flex; align-items: center; justify-content: center;
   background: var(--gold); color: #5c3d00;
   font-family: var(--font-head); font-weight: 800; box-shadow: 0 5px 0 var(--gold-dark);
+  overflow: hidden;
 }
 .student-user-info { display: flex; flex-direction: column; line-height: 1.2; }
 .student-user-name { color: #fff; font-weight: 700; font-size: 14px; }
@@ -464,7 +465,55 @@ body {
 
 .student-act-panel {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 0;
 }
+
+/* Activity row card (shown in dashboard panels) */
+.student-act-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #f8faff;
+  border: 1.5px solid #e8eef8;
+  transition: box-shadow .15s;
+}
+.student-act-row:hover { box-shadow: 0 3px 12px rgba(30,58,138,.10); }
+.student-act-row--purple { border-left: 4px solid #7c3aed; }
+.student-act-row--blue   { border-left: 4px solid #2563eb; }
+.student-act-row--green  { border-left: 4px solid #16a34a; }
+.student-act-row--orange { border-left: 4px solid #ea580c; }
+.student-act-row--amber  { border-left: 4px solid #d97706; }
+.student-act-row--pink   { border-left: 4px solid #db2777; }
+.student-act-row-thumb {
+  width: 46px; height: 46px; flex-shrink: 0;
+  border-radius: 10px; background: #eef2ff;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.student-act-row-info { flex: 1; min-width: 0; }
+.student-act-row-title {
+  font-weight: 700; font-size: 14px; color: #1e3a8a;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.student-act-row-sub { font-size: 12px; color: #64748b; font-weight: 500; margin-top: 2px; }
+.student-act-row-badge {
+  flex-shrink: 0; padding: 3px 9px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: .02em;
+}
+.act-badge-new    { background: #fbbf24; color: #5c3d00; }
+.act-badge-due    { background: #ef4444; color: #fff; }
+.act-badge-closed { background: #9ca3af; color: #fff; }
+.student-act-row-btn {
+  flex-shrink: 0; padding: 7px 14px; border-radius: 10px;
+  background: #22c55e; color: #fff; font-weight: 700; font-size: 13px;
+  border: none; cursor: pointer; box-shadow: 0 3px 0 #16a34a;
+  transition: transform .1s, box-shadow .1s;
+}
+.student-act-row-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #16a34a; }
 
 .student-act-empty {
   width: 100%;

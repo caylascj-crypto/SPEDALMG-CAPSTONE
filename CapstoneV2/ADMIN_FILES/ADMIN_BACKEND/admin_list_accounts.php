@@ -27,9 +27,8 @@ $result = $conn->query("SELECT id, admin_email, first_name, last_name,
     COALESCE(phone_number, '') as phone_number,
     role, condition_info,
     CASE
-        WHEN role = 'teacher' AND last_login IS NOT NULL THEN 'active'
-        WHEN role = 'teacher' AND last_login IS NULL THEN 'inactive'
-        WHEN role = 'student' THEN 'inactive'
+        WHEN role IN ('teacher','student') AND last_login IS NOT NULL THEN 'active'
+        WHEN role IN ('teacher','student') AND last_login IS NULL THEN 'inactive'
         ELSE status
     END AS status,
     last_login,

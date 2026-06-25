@@ -857,7 +857,53 @@
     $("mtgPubBtn").addEventListener("click", openPublishModal);
     $("mtgPublishCancelBtn").addEventListener("click", closePublishModal);
 
-    // Note: "Confirm Publish" is intentionally left without a function for now.
+    $("mtgPublishConfirmBtn").addEventListener("click", function () {
+      var teacherId = parseInt(sessionStorage.getItem('teacher_id') || '1');
+      var title = $("mtgTitleInput").value.trim() || 'Untitled Picture Matching';
+      var instructions = $("mtgInstrInput").value.trim();
+      var deadline = $("mtgDeadlineInput").value;
+      var learner = localStorage.getItem('selectedLearner') || '';
+      var condition = localStorage.getItem('selectedCondition') || '';
+
+      var description = [
+        learner   ? 'Learner: ' + learner       : '',
+        condition ? 'Condition: ' + condition    : '',
+        instructions                             ? instructions : ''
+      ].filter(Boolean).join(' | ');
+
+      var payload = new FormData();
+      payload.append('teacher_id',           teacherId);
+      payload.append('activity_title',        title);
+      payload.append('activity_description',  description);
+      payload.append('subject',               'Picture Matching');
+      payload.append('grade_level',           condition || 'General');
+      payload.append('difficulty',            'medium');
+      payload.append('status',                'published');
+      payload.append('learning_materials',    JSON.stringify(state.activities));
+      if (deadline) payload.append('deadline', deadline);
+
+      $("mtgPublishConfirmBtn").disabled = true;
+      $("mtgPublishConfirmBtn").textContent = 'Publishing…';
+
+      fetch('../TEACHER_BACKEND/teacher_create_activity.php', { method: 'POST', body: payload })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          if (d.success) {
+            alert('Activity published successfully!');
+            closePublishModal();
+            window.location.href = '../Teacher_activies.html';
+          } else {
+            alert('Publish failed: ' + (d.message || 'Unknown error'));
+            $("mtgPublishConfirmBtn").disabled = false;
+            $("mtgPublishConfirmBtn").textContent = '✅ Confirm Publish';
+          }
+        })
+        .catch(function () {
+          alert('Network error. Please try again.');
+          $("mtgPublishConfirmBtn").disabled = false;
+          $("mtgPublishConfirmBtn").textContent = '✅ Confirm Publish';
+        });
+    });
 
     /* ------------------------------------------------------------- *
      * 8. INIT

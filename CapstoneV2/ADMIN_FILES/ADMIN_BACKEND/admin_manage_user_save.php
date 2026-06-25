@@ -9,19 +9,10 @@ if (!$conn) {
     exit;
 }
 
-// Check and add phone_number column if it doesn't exist
-$checkPhone = $conn->query("SHOW COLUMNS FROM admin_accounts LIKE 'phone_number'");
-if ($checkPhone && $checkPhone->num_rows == 0) {
-    $addResult = $conn->query("ALTER TABLE admin_accounts ADD COLUMN phone_number VARCHAR(20) AFTER school_name");
-}
-
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
     exit;
 }
-
-// Log POST data for debugging
-file_put_contents(__DIR__ . '/debug_post.log', date('Y-m-d H:i:s') . " - POST Data: " . json_encode($_POST) . "\n", FILE_APPEND);
 
 $user_id = isset($_POST['user_id']) ? intval($_POST['user_id']) : 0;
 $full_name = isset($_POST['full_name']) ? trim($_POST['full_name']) : '';
@@ -71,16 +62,11 @@ if (!$stmt) {
 }
 
 if ($stmt->execute()) {
-    file_put_contents(__DIR__ . '/debug_post.log', date('Y-m-d H:i:s') . " - UPDATE SUCCESS for user $user_id. Rows affected: " . $stmt->affected_rows . "\n", FILE_APPEND);
-    
-    // If the user is a teacher, sync to teacher_accounts
     if ($user_role === 'teacher') {
         syncTeacherAccount($email_address, $first_name, $last_name);
     }
-    
     echo json_encode(['success' => true, 'message' => 'User updated successfully']);
 } else {
-    file_put_contents(__DIR__ . '/debug_post.log', date('Y-m-d H:i:s') . " - UPDATE FAILED for user $user_id. Error: " . $stmt->error . "\n", FILE_APPEND);
     echo json_encode(['success' => false, 'message' => 'Update failed']);
 }
 

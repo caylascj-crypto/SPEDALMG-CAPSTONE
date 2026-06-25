@@ -1,11 +1,39 @@
 <?php
 error_reporting(0);
-ini_set('display_errors', 0);
+ini_set('display_errors', '0');
+
 session_start();
 require_once __DIR__ . '/db.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-cache, no-store, must-revalidate');
+
+set_error_handler(function($severity, $message, $file, $line) {
+    http_response_code(500);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $message,
+        'severity' => $severity,
+        'file' => $file,
+        'line' => $line
+    ]);
+    exit;
+});
+
+register_shutdown_function(function() {
+    $err = error_get_last();
+    if ($err && in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+        http_response_code(500);
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Fatal error',
+            'details' => $err['message'],
+            'file' => $err['file'],
+            'line' => $err['line']
+        ]);
+    }
+});
+
 
 // Function to sync teacher account to teacher_accounts table
 function syncTeacherAccount($admin_id, $email, $first_name, $last_name) {
@@ -110,10 +138,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->execute();
     $result = $stmt->get_result();
 
+
     if ($result && $result->num_rows > 0) {
+
         $row = $result->fetch_assoc();
 
-        if ($password === $row['admin_password']) {
+        // Debug: tell frontend what it received (without exposing password)
+        // Note: admin_password is only compared server-side.
+        $expected_pw = $row['admin_password'];
+
+        if ($password === $expected_pw) {
             $_SESSION['admin_id'] = $row['id'];
             $_SESSION['admin_email'] = $email;
             $_SESSION['admin_name'] = trim($row['first_name'] . ' ' . $row['last_name']);

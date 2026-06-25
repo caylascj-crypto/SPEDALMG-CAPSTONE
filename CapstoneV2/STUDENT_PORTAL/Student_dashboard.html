@@ -1,14 +1,18 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>SPED ALM - Student Dashboard</title>
-  <link rel="icon" type="image/png" href="../ADMIN_ASSETS/logo.png" />
+
   <link href="../STUDENT_CSS/Student_dashboard.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Nunito:wght@400;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap"
+    rel="stylesheet" />
+  <!-- Fredoka = the rounded game font from the design -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;display=swap"
+    rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
 </head>
 
@@ -16,7 +20,7 @@
   <!-- SIDEBAR -->
   <aside class="student-sidebar">
     <div class="student-sidebar-logo">
-      <img alt="SPED ALM Logo" class="student-sidebar-logo-img" src="../STUDENT_ASSETS/logo.png" onerror="this.src='../ADMIN_ASSETS/logo.png'" />
+      <img alt="SPED ALM Logo" class="student-sidebar-logo-img" src="../ASSETS/logo.png" />
       <div class="student-sidebar-logo-text">
         <span class="student-sidebar-title">SPED ALM</span>
         <span class="student-sidebar-sub">Student Portal</span>
@@ -43,85 +47,92 @@
     </nav>
     <div class="student-sidebar-footer">
       <div class="student-sidebar-user">
-        <div class="student-user-avatar" id="sidebar-avatar">?</div>
+        <div class="student-user-avatar" id="dashSideAvatar">JS</div>
         <div class="student-user-info">
-          <span class="student-user-name" id="sidebar-name">Loading...</span>
-          <span class="student-user-role" id="sidebar-role">—</span>
+          <span class="student-user-name">Juan Santos</span>
+          <span class="student-user-role">Grade 4 — ASD</span>
         </div>
       </div>
-      <a class="student-signout-btn" href="#" id="signout-btn">
+      <a class="student-signout-btn" href="../ADMIN_FILES/login_screen.html" onclick="sessionStorage.clear();">
         <i class="fa-solid fa-right-from-bracket"></i>
         <span>Sign Out</span>
       </a>
     </div>
   </aside>
-
+  
   <!-- MAIN -->
-  <student-main class="student-main">
+  <main class="student-main">
     <!-- TOPBAR -->
     <header class="student-topbar">
       <div class="student-topbar-left">
         <span class="student-greeting-star">⭐</span>
         <div>
-          <h1 class="student-greeting" id="greeting-name">Hello!</h1>
-          <p class="student-greeting-sub" id="greeting-sub">—</p>
+          <h1 class="student-greeting">Hello, Juan!</h1>
+          <p class="student-greeting-sub">Monday, May 25, 2026 · Grade 4</p>
         </div>
       </div>
       <a class="student-notif-btn" href="Student_notif.html">
         <i class="fa-regular fa-bell"></i>
-        <span class="student-notif-badge" id="notif-badge" style="display:none"></span>
+        <span class="student-notif-badge"></span>
       </a>
     </header>
-
-    <!-- PROFILE CARDS -->
-    <section class="student-profile-cards">
-      <!-- Student Card -->
-      <div class="student-profile-card">
-        <div class="student-pcard-photo-wrap">
-          <svg class="student-pcard-photo-sample" viewBox="0 0 96 96" aria-hidden="true">
-            <circle cx="48" cy="48" r="48" fill="#d7e7fb"/>
-            <circle cx="48" cy="39" r="16" fill="#7fa9e8"/>
-            <path d="M22 84a26 26 0 0 1 52 0Z" fill="#7fa9e8"/>
-          </svg>
-        </div>
-        <div class="student-pcard-info">
-          <div class="student-pcard-label">STUDENT</div>
-          <div class="student-pcard-name" id="card-student-name">—</div>
-          <div class="student-pcard-sub" id="card-student-sub">—</div>
-          <span class="student-badge-active">● Active</span>
-        </div>
-      </div>
-      <!-- Teacher Card -->
-      <div class="student-profile-card">
-        <div class="student-pcard-photo-wrap">
-          <svg class="student-pcard-photo-sample" viewBox="0 0 96 96" aria-hidden="true">
-            <circle cx="48" cy="48" r="48" fill="#e7e2fb"/>
-            <circle cx="48" cy="39" r="16" fill="#a99cee"/>
-            <path d="M22 84a26 26 0 0 1 52 0Z" fill="#a99cee"/>
-          </svg>
-        </div>
-        <div class="student-pcard-info">
-          <div class="student-pcard-label">YOUR TEACHER</div>
-          <div class="student-pcard-name" id="card-teacher-name">—</div>
-          <div class="student-pcard-sub" id="card-teacher-sub">Special Education Teacher</div>
-          <span class="student-badge-active">● Active</span>
-        </div>
-      </div>
+   <!-- PROFILE CARDS -->
+<section class="student-profile-cards">
+  <!-- Student Card -->
+  <div class="student-profile-card">
+    <div class="student-pcard-photo-wrap">
+      <img class="student-pcard-photo" id="student-dashPhoto"
+           src="ASSETS/student_profile.png" alt="Student profile"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+      <!-- sample profile (lalabas kapag wala pang naka-upload na larawan) -->
+      <svg class="student-pcard-photo-sample" viewBox="0 0 96 96" aria-hidden="true">
+        <circle cx="48" cy="48" r="48" fill="#d7e7fb"/>
+        <circle cx="48" cy="39" r="16" fill="#7fa9e8"/>
+        <path d="M22 84a26 26 0 0 1 52 0Z" fill="#7fa9e8"/>
+      </svg>
+    </div>
+    <div class="student-pcard-info">
+      <div class="student-pcard-label">STUDENT</div>
+      <div class="student-pcard-name">Juan Santos</div>
+      <div class="student-pcard-sub">Non Graded Ipil-Ipil</div>
+      <span class="student-badge-active">● Active</span>
+    </div>
+  </div>
+  <!-- Teacher Card -->
+  <div class="student-profile-card">
+    <div class="student-pcard-photo-wrap">
+      <img class="student-pcard-photo" src="ASSETS/teacher_profile.png" alt="Teacher profile"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+      <svg class="student-pcard-photo-sample" viewBox="0 0 96 96" aria-hidden="true">
+        <circle cx="48" cy="48" r="48" fill="#e7e2fb"/>
+        <circle cx="48" cy="39" r="16" fill="#a99cee"/>
+        <path d="M22 84a26 26 0 0 1 52 0Z" fill="#a99cee"/>
+      </svg>
+    </div>
+    <div class="student-pcard-info">
+      <div class="student-pcard-label">YOUR TEACHER</div>
+      <div class="student-pcard-name" id="dash-teacher-name">—</div>
+      <div class="student-pcard-sub">Special Education Teacher</div>
+      <span class="student-badge-active">● Active</span>
+    </div>
+  </div>
+</section>
     </section>
-
     <!-- PROGRESS BANNER -->
     <section class="student-progress-banner">
       <div class="student-progress-left">
         <p class="student-progress-label">YOUR PROGRESS THIS WEEK</p>
-        <p class="student-progress-msg" id="progress-msg">Loading...</p>
+        <p class="student-progress-msg">No data yet</p>
         <div class="student-progress-bar-wrap">
           <div class="student-progress-bar">
-            <div class="student-progress-fill" id="progress-fill" style="width:0%"></div>
+            <div class="student-progress-fill" style="width:0%"></div>
           </div>
-          <span class="student-progress-text" id="progress-text">—/100</span>
+          <span class="student-progress-text">—/100</span>
         </div>
         <div class="student-progress-stars">
-          <span>⭐</span><span>⭐</span><span>⭐</span>
+          <span>⭐</span>
+          <span>⭐</span>
+          <span>⭐</span>
         </div>
       </div>
       <div class="student-progress-right">
@@ -132,182 +143,184 @@
       </div>
       <div class="student-banner-deco-circle"></div>
     </section>
-
     <!-- ACTIVITIES -->
     <section class="student-activities-card">
       <div class="student-activities-header">
         <div class="student-act-tabs">
-          <button class="student-act-tab student-active" onclick="switchTab(this, 'today')" type="button">Today's Activities</button>
+          <button class="student-act-tab student-active" onclick="switchTab(this, 'today')" type="button">Today's
+            Activities</button>
           <button class="student-act-tab" onclick="switchTab(this, 'materials')" type="button">All Materials</button>
         </div>
         <span class="student-act-done" id="student-act-done-count">0/0 done</span>
       </div>
       <!-- Today's Activities Panel -->
-      <div class="student-act-panel" id="student-panel-today">
-        <div class="student-act-empty">
-          <div class="student-act-empty-icon">📋</div>
-          <p class="student-act-empty-title">No activities yet</p>
-          <p class="student-act-empty-desc">Your teacher's assigned activities will appear here once available.</p>
-        </div>
-      </div>
+      <div class="student-act-panel" id="student-panel-today"></div>
       <!-- All Materials Panel -->
-      <div class="student-act-panel" id="student-panel-materials" style="display:none;">
-        <div class="student-act-empty">
-          <div class="student-act-empty-icon">📚</div>
-          <p class="student-act-empty-title">No materials yet</p>
-          <p class="student-act-empty-desc">Learning materials shared by your teacher will appear here.</p>
-        </div>
-      </div>
+      <div class="student-act-panel" id="student-panel-materials" style="display:none;"></div>
     </section>
-  </student-main>
+    <script>
+      var TYPE_COLOR = { 'Matching': 'purple', 'Sorting': 'blue', 'Sequencing': 'green' };
+      var COLOR_CYCLE = ['orange', 'blue', 'purple', 'green', 'amber', 'pink'];
 
-  <script>
-    const BACKEND = 'STUDENT_BACKEND/';
-
-    function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-    function getInitials(name) {
-      return (name || '?').split(' ').map(w => w[0]).join('').toUpperCase().substring(0, 2);
-    }
-
-    function relativeTime(dateStr) {
-      if (!dateStr) return '';
-      const diff = (Date.now() - new Date(dateStr)) / 1000;
-      if (diff < 60) return 'Just now';
-      if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
-      if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
-      return Math.floor(diff / 86400) + 'd ago';
-    }
-
-    function switchTab(btn, panel) {
-      document.querySelectorAll('.student-act-tab').forEach(t => t.classList.remove('student-active'));
-      btn.classList.add('student-active');
-      document.querySelectorAll('.student-act-panel').forEach(p => p.style.display = 'none');
-      document.getElementById('student-panel-' + panel).style.display = 'flex';
-    }
-
-    document.getElementById('signout-btn').addEventListener('click', function(e) {
-      e.preventDefault();
-      sessionStorage.clear();
-      window.location.href = '../ADMIN_FILES/login_screen.html';
-    });
-
-    async function loadDashboard() {
-      const adminId = sessionStorage.getItem('student_id');
-      const studentRecordId = sessionStorage.getItem('student_record_id');
-      const teacherId = sessionStorage.getItem('teacher_id');
-      const studentName = sessionStorage.getItem('student_name') || '';
-
-      if (!adminId) {
-        window.location.href = '../ADMIN_FILES/login_screen.html';
-        return;
+      function escD(s) {
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
       }
 
-      // Sidebar
-      const initials = getInitials(studentName);
-      document.getElementById('sidebar-avatar').textContent = initials;
-      document.getElementById('sidebar-name').textContent = studentName || 'Student';
+      function getBadgeD(deadline) {
+        if (!deadline) return { text: 'NEW', cls: 'act-badge-new' };
+        var d = new Date(deadline + 'T23:59:59'), now = new Date();
+        if (d < now) return { text: 'CLOSED', cls: 'act-badge-closed' };
+        if (Math.ceil((d - now) / 86400000) <= 1) return { text: 'DUE TODAY', cls: 'act-badge-due' };
+        return { text: 'NEW', cls: 'act-badge-new' };
+      }
 
-      const condition = sessionStorage.getItem('student_condition') || '';
-      const grade = sessionStorage.getItem('student_grade') || '';
-      document.getElementById('sidebar-role').textContent = [grade, condition].filter(Boolean).join(' — ');
+      function getEmojiD(type) {
+        return type === 'Matching' ? '🔗' : type === 'Sorting' ? '🧩' : '📋';
+      }
 
-      // Greeting
-      const firstName = studentName.split(' ')[0];
-      document.getElementById('greeting-name').textContent = 'Hello, ' + firstName + '!';
-      const now = new Date();
-      const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-      document.getElementById('greeting-sub').textContent =
-        days[now.getDay()] + ', ' + months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear() +
-        (grade ? ' · ' + grade : '');
+      function renderActRow(act, idx) {
+        var color = TYPE_COLOR[act.type] || COLOR_CYCLE[idx % COLOR_CYCLE.length];
+        var badge = getBadgeD(act.deadline);
+        var thumb = act.thumbnail
+          ? '<img src="' + escD(act.thumbnail) + '" alt="thumb" style="width:44px;height:44px;object-fit:cover;border-radius:10px;" />'
+          : '<span style="font-size:30px;line-height:1;">' + getEmojiD(act.type) + '</span>';
+        var due = act.deadline
+          ? ' · Due ' + new Date(act.deadline + 'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})
+          : '';
+        return '<div class="student-act-row student-act-row--' + color + '">' +
+          '<div class="student-act-row-thumb">' + thumb + '</div>' +
+          '<div class="student-act-row-info">' +
+            '<div class="student-act-row-title">' + escD(act.title) + '</div>' +
+            '<div class="student-act-row-sub">' + escD(act.type) + ' · ' + act.grading + ' Grading' + due + '</div>' +
+          '</div>' +
+          '<span class="student-act-row-badge ' + badge.cls + '">' + badge.text + '</span>' +
+          '<button class="student-act-row-btn" type="button" onclick="startActivity(\'' + escD(act.id) + '\',\'' + escD(act.type) + '\')">▶ Start</button>' +
+          '</div>';
+      }
 
-      // Profile cards
-      document.getElementById('card-student-name').textContent = studentName || '—';
-      document.getElementById('card-student-sub').textContent = [grade, condition].filter(Boolean).join(' — ') || '—';
+      function loadDashboard() {
+        var all = [];
+        try { all = JSON.parse(localStorage.getItem('published_activities') || '[]'); } catch(e){}
 
-      // Fetch profile for teacher info
-      try {
-        const profileRes = await fetch(BACKEND + 'student_get_profile.php?admin_account_id=' + adminId);
-        const profile = await profileRes.json();
-        if (profile.success) {
-          document.getElementById('card-teacher-name').textContent = profile.teacher_name || '—';
-          document.getElementById('card-teacher-sub').textContent = profile.teacher_specialization || 'Special Education Teacher';
-          // Update sessionStorage if we got more data
-          if (profile.student_record_id && !sessionStorage.getItem('student_record_id')) {
-            sessionStorage.setItem('student_record_id', profile.student_record_id);
+        var today = new Date(); today.setHours(0,0,0,0);
+        var recent = all.filter(function(a) {
+          if (!a.publishedAt) return false;
+          var pub = new Date(a.publishedAt); pub.setHours(0,0,0,0);
+          return (today - pub) <= 7 * 86400000;
+        });
+
+        var todayPanel = document.getElementById('student-panel-today');
+        var allPanel   = document.getElementById('student-panel-materials');
+
+        if (recent.length === 0) {
+          todayPanel.innerHTML = '<div class="student-act-empty"><div class="student-act-empty-icon">📋</div>' +
+            '<p class="student-act-empty-title">No activities yet</p>' +
+            '<p class="student-act-empty-desc">Your teacher\'s assigned activities will appear here once available.</p></div>';
+        } else {
+          todayPanel.innerHTML = recent.map(renderActRow).join('');
+        }
+
+        if (all.length === 0) {
+          allPanel.innerHTML = '<div class="student-act-empty"><div class="student-act-empty-icon">📚</div>' +
+            '<p class="student-act-empty-title">No materials yet</p>' +
+            '<p class="student-act-empty-desc">Learning materials shared by your teacher will appear here.</p></div>';
+        } else {
+          allPanel.innerHTML = all.map(renderActRow).join('');
+        }
+
+        var prog = [];
+        try { prog = JSON.parse(localStorage.getItem('student_progress') || '[]'); } catch(e) {}
+        var doneCount = all.filter(function(a){ return prog.some(function(r){ return r.pubId === a.id; }); }).length;
+        document.getElementById('student-act-done-count').textContent = doneCount + '/' + all.length + ' done';
+
+        // notification badge
+        var notifs = [];
+        try { notifs = JSON.parse(localStorage.getItem('student_notifications') || '[]'); } catch(e){}
+        var unread = notifs.filter(function(n){ return !n.isRead; }).length;
+        var badge = document.querySelector('.student-notif-badge');
+        if (badge) { badge.textContent = unread > 0 ? (unread > 9 ? '9+' : unread) : ''; }
+
+        // sync profile from settings
+        var sp = {};
+        try { sp = JSON.parse(localStorage.getItem('student_profile') || '{}'); } catch(e) {}
+        var spFirst = (sp.firstName || 'Juan').trim();
+        var spLast  = (sp.lastName  || 'Santos').trim();
+        var spFull  = [spFirst, spLast].filter(Boolean).join(' ');
+        var spInit  = ((spFirst[0]||'J') + (spLast[0]||'S')).toUpperCase();
+        var spGrade = sp.grade || 'Grade 4';
+
+        // sidebar
+        (function(el, photo, init) {
+          if (!el) return;
+          el.innerHTML = photo
+            ? '<img src="' + photo + '" style="width:100%;height:100%;object-fit:cover;display:block;" />'
+            : init;
+        })(document.getElementById('dashSideAvatar'), sp.photo, spInit);
+        document.querySelector('.student-sidebar .student-user-name').textContent = spFull;
+        document.querySelector('.student-sidebar .student-user-role').textContent = spGrade;
+
+        // greeting
+        var greetEl = document.querySelector('.student-greeting');
+        if (greetEl) greetEl.textContent = 'Hello, ' + (sp.nickname || spFirst) + '!';
+        var greetSubEl = document.querySelector('.student-greeting-sub');
+        if (greetSubEl) {
+          var datePart = greetSubEl.textContent.split('·')[0].trim();
+          greetSubEl.textContent = datePart + ' · ' + spGrade;
+        }
+
+        // student profile card — name, grade, photo (first .student-pcard-name = student card)
+        var pcardName = document.querySelector('.student-pcard-name');
+        if (pcardName) pcardName.textContent = spFull;
+
+        // teacher card — load real teacher name from backend
+        var _teacherId = sessionStorage.getItem('teacher_id');
+        if (_teacherId) {
+          var _fd = new FormData(); _fd.append('teacher_id', _teacherId);
+          fetch('../TEACHER_FILES/TEACHER_BACKEND/teacher_get_profile.php', { method:'POST', body:_fd })
+            .then(function(r){ return r.json(); })
+            .then(function(d){
+              if (d.success && d.teacher && d.teacher.name) {
+                var el = document.getElementById('dash-teacher-name');
+                if (el) el.textContent = d.teacher.name;
+              }
+            }).catch(function(){});
+        }
+        var pcardSub = document.querySelector('.student-pcard-sub');
+        if (pcardSub) pcardSub.textContent = spGrade;
+        if (sp.photo) {
+          var dashPhoto = document.getElementById('student-dashPhoto');
+          if (dashPhoto) {
+            dashPhoto.src = sp.photo;
+            dashPhoto.style.display = 'block';
+            var svgFallback = dashPhoto.nextElementSibling;
+            if (svgFallback) svgFallback.style.display = 'none';
           }
-          if (profile.teacher_id && !sessionStorage.getItem('teacher_id')) {
-            sessionStorage.setItem('teacher_id', profile.teacher_id);
-          }
         }
-      } catch (e) {}
+      }
 
-      if (!studentRecordId || !teacherId) return;
+      var _TPL = {
+        'Matching':   '../TEACHER_FILES/TEMPLATES/Matching_Type_Template.html',
+        'Sorting':    '../TEACHER_FILES/TEMPLATES/Sorting_Type_Template.html',
+        'Sequencing': '../TEACHER_FILES/TEMPLATES/Sequencing_Type_Template.html'
+      };
+      function startActivity(pubId, type) {
+        var tpl = _TPL[type];
+        if (!tpl) { alert('Activity type not supported yet.'); return; }
+        sessionStorage.setItem('stu_return_url', window.location.href);
+        window.location.href = tpl + '?student_mode=1&pub_id=' + encodeURIComponent(pubId);
+      }
 
-      // Progress
-      try {
-        const progRes = await fetch(BACKEND + 'student_get_progress.php?student_record_id=' + studentRecordId + '&teacher_id=' + teacherId);
-        const prog = await progRes.json();
-        if (prog.success) {
-          const score = prog.avg_score || 0;
-          document.getElementById('progress-msg').textContent = score > 0 ? 'Average score: ' + score + '/100' : 'No activities completed yet';
-          document.getElementById('progress-fill').style.width = score + '%';
-          document.getElementById('progress-text').textContent = score + '/100';
-        }
-      } catch (e) {}
+      function switchTab(btn, panel) {
+        document.querySelectorAll('.student-act-tab').forEach(function(t){ t.classList.remove('student-active'); });
+        btn.classList.add('student-active');
+        document.querySelectorAll('.student-act-panel').forEach(function(p){ p.style.display = 'none'; });
+        document.getElementById('student-panel-' + panel).style.display = 'flex';
+      }
 
-      // Materials
-      try {
-        const matRes = await fetch(BACKEND + 'student_get_materials.php?student_record_id=' + studentRecordId + '&teacher_id=' + teacherId);
-        const mat = await matRes.json();
-        if (mat.success && mat.materials && mat.materials.length > 0) {
-          document.getElementById('student-act-done-count').textContent = mat.completed + '/' + mat.total + ' done';
-          const todayPanel = document.getElementById('student-panel-today');
-          const allPanel = document.getElementById('student-panel-materials');
-
-          const newMats = mat.materials.filter(m => m.progress_status === 'new').slice(0, 5);
-          const renderCards = (items, container) => {
-            if (!items.length) return;
-            container.innerHTML = '';
-            const colors = ['student-mat--orange','student-mat--blue','student-mat--purple','student-mat--green','student-mat--amber','student-mat--pink'];
-            items.forEach((m, i) => {
-              const badge = m.progress_status === 'completed' ? '<span class="student-mat-badge student-mat-badge--done">DONE</span>'
-                : m.progress_status === 'in_progress' ? '<span class="student-mat-badge student-mat-badge--progress">IN PROGRESS</span>'
-                : '<span class="student-mat-badge student-mat-badge--new">NEW</span>';
-              const pct = m.score ? Math.min(100, m.score) : 0;
-              container.innerHTML += `<div class="student-material-card ${colors[i % colors.length]}">
-                ${badge}
-                <span class="student-mat-star">&#9734;</span>
-                <div class="student-mat-card-thumb">📖</div>
-                <div class="student-mat-card-title">${esc(m.activity_title)}</div>
-                <div class="student-mat-card-tag">${esc(m.subject || '')}</div>
-                <div class="student-mat-progress">
-                  <div class="student-mat-progress-bar"><div class="student-mat-progress-fill" style="width:${pct}%"></div></div>
-                  <span class="student-mat-progress-pct">${pct}%</span>
-                </div>
-                <button class="student-mat-card-btn" type="button">▶ Start</button>
-              </div>`;
-            });
-          };
-          if (newMats.length) renderCards(newMats, todayPanel);
-          renderCards(mat.materials, allPanel);
-        }
-      } catch (e) {}
-
-      // Notification badge
-      try {
-        const notifRes = await fetch(BACKEND + 'student_get_notifications.php?student_record_id=' + studentRecordId + '&teacher_id=' + teacherId);
-        const notif = await notifRes.json();
-        if (notif.success && notif.unread > 0) {
-          const badge = document.getElementById('notif-badge');
-          badge.textContent = notif.unread;
-          badge.style.display = '';
-        }
-      } catch (e) {}
-    }
-
-    loadDashboard();
-  </script>
+      document.addEventListener('visibilitychange', function(){ if (!document.hidden) loadDashboard(); });
+      loadDashboard();
+    </script>
+  </main>
 </body>
+
 </html>

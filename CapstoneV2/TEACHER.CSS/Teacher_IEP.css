@@ -427,6 +427,61 @@ body {
 .teacher-topic-list li:hover { background: #FEF3C7; }
 
 /* =====================
+   TEMPLATE CARDS
+===================== */
+.teacher-template-card {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.teacher-template-card .illus-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.teacher-template-card .illus-fallback i {
+    font-size: 56px;
+    opacity: .22;
+}
+
+.teacher-template-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    flex: 1;
+}
+
+.btn-use-template {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 11px 0;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    color: #fff;
+    letter-spacing: .3px;
+}
+
+.btn-use-blue   { background: var(--accent); box-shadow: 0 4px 12px rgba(37,99,235,.25); }
+.btn-use-blue:hover  { background: #1D4ED8; transform: translateY(-1px); }
+
+.btn-use-pink   { background: var(--pink);  box-shadow: 0 4px 12px rgba(236,72,153,.25); }
+.btn-use-pink:hover  { background: #DB2777; transform: translateY(-1px); }
+
+.btn-use-orange { background: var(--orange); box-shadow: 0 4px 12px rgba(245,158,11,.25); }
+.btn-use-orange:hover { background: #D97706; transform: translateY(-1px); }
+
+/* =====================
    ACTION BUTTONS
 ===================== */
 .teacher-action-row {

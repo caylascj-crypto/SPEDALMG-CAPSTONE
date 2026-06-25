@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/db.php';
+session_start();
 
 $conn = getDatabaseConnection();
 if (!$conn) {
@@ -54,8 +55,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
         
         // Log the activity
-        $conn->query("INSERT INTO admin_activities (activity_type, user_type, user_name, user_email, action_detail) 
-                     VALUES ('Add User', 'admin', '{$_SESSION['admin_name']}', '{$_SESSION['admin_email']}', 'Added {$role}: {$fullName}')");
+        $logStmt = $conn->prepare("INSERT INTO admin_activities (activity_type, user_type, user_name, user_email, action_detail) VALUES (?,?,?,?,?)");
+        if ($logStmt) {
+            $logType = 'Add User'; $logUType = 'admin';
+            $logName  = isset($_SESSION['admin_name'])  ? $_SESSION['admin_name']  : '';
+            $logEmail = isset($_SESSION['admin_email']) ? $_SESSION['admin_email'] : '';
+            $logDetail = "Added {$role}: {$fullName}";
+            $logStmt->bind_param("sssss", $logType, $logUType, $logName, $logEmail, $logDetail);
+            $logStmt->execute(); $logStmt->close();
+        }
         
         echo json_encode(['success' => true, 'message' => 'Account added successfully']);
     } else {

@@ -121,3 +121,93 @@ tbody tr:hover { background: #FAFBFF; }
 /* ── BACK BUTTON ── */
 .btn-back-iep { display: inline-flex; align-items: center; gap: 8px; background: var(--white); border: 1.5px solid #E2E8F0; color: var(--text); text-decoration: none; padding: 12px 22px; border-radius: 12px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; transition: var(--transition); box-shadow: var(--shadow-sm); cursor: pointer; }
 .btn-back-iep:hover { background: #F1F5F9; border-color: #CBD5E1; }
+
+/* ── TABS ── */
+.activities-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 30px;
+    border: 1.5px solid #E2E8F0;
+    background: var(--white);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+}
+
+.tab-btn:hover { background: #F1F5F9; color: var(--text); }
+
+.tab-btn.active {
+    background: #1E3A8A;
+    color: #fff;
+    border-color: #1E3A8A;
+}
+
+.tab-count {
+    background: rgba(255,255,255,.22);
+    color: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    min-width: 22px;
+    text-align: center;
+}
+
+.tab-btn:not(.active) .tab-count        { background: #F1F5F9; color: var(--muted); }
+.tab-btn:not(.active) .tab-count-draft  { background: #FEF3C7; color: #B45309; }
+.tab-btn:not(.active) .tab-count-published { background: #DCFCE7; color: #15803D; }
+
+/* ── STATUS BADGES ── */
+.teacher-tag-draft {
+    background: #FEF3C7;
+    color: #B45309;
+    gap: 5px;
+}
+
+.teacher-tag-published {
+    background: #DCFCE7;
+    color: #15803D;
+    gap: 5px;
+}
+
+/* ── DELETE BUTTON ── */
+.btn-delete {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #FEF2F2;
+    border: 1.5px solid #FECACA;
+    color: #DC2626;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-delete:hover { background: #FEE2E2; border-color: #FCA5A5; }
+
+/* ── EMPTY ROW ── */
+.empty-row {
+    text-align: center;
+    padding: 36px 20px !important;
+    color: var(--muted);
+    font-size: 13.5px;
+}
+
+/* ── DATE CELL ── */
+.date-cell { color: var(--muted); font-size: 12.5px; white-space: nowrap; }

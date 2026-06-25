@@ -16,7 +16,7 @@
   --coral: #ff8a5b;
 
   --ink: #243a5e;  --ink-soft: #5d7299;  --card: #ffffff;
-  --r-lg: 24px;  --r-md: 16px;
+  --r-lg: 26px;  --r-md: 18px;  --r-sm: 14px;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,20 +31,24 @@ body {
 
 
 /* ============================================================
-   SIDEBAR — identical to dashboard
+   SIDEBAR  — EXACT same as Student_dashboard.css
    ============================================================ */
 .student-sidebar {
   width: 230px; flex: none; padding: 22px 16px;
   display: flex; flex-direction: column;
   border-radius: 0 30px 30px 0;
-  background: linear-gradient(180deg, #2f6fed, #1b4fb8);
+  background: linear-gradient(180deg,  #1E3A8A, #1b4fb8);
   box-shadow: 10px 0 28px rgba(27, 79, 184, .25);
-  position: sticky; top: 0; align-self: flex-start; height: 100vh;
+  /* stays pinned while the main content scrolls */
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  height: 100vh;
 }
 .student-sidebar-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid rgba(255, 255, 255, .2); }
 .student-sidebar-logo-img {
-  width: 46px; height: 46px; border-radius: 16px;
-  background: transparent; object-fit: contain;
+  width: 46px; height: 46px; padding: 4px; border-radius: 16px;
+  background: #fff; object-fit: contain; box-shadow: 0 5px 0 #cdd9ef;
 }
 .student-sidebar-logo-text { display: flex; flex-direction: column; line-height: 1.15; }
 .student-sidebar-title { font-family: var(--font-head); font-weight: 800; font-size: 18px; color: #fff; }
@@ -72,6 +76,7 @@ body {
   display: flex; align-items: center; justify-content: center;
   background: var(--gold); color: #5c3d00;
   font-family: var(--font-head); font-weight: 800; box-shadow: 0 5px 0 var(--gold-dark);
+  overflow: hidden;
 }
 .student-user-info { display: flex; flex-direction: column; line-height: 1.2; }
 .student-user-name { color: #fff; font-weight: 700; font-size: 14px; }
@@ -83,12 +88,10 @@ body {
   transition: background .12s ease;
 }
 .student-signout-btn:hover { background: rgba(255, 255, 255, .1); }
-
-
 /* ============================================================
    MAIN
    ============================================================ */
-.student-main { display: block; flex: 1; padding: 26px 32px; }
+.student-main { display: block; flex: 1; padding: 28px 34px; }
 
 /* ---- Page header ---- */
 .student-page-header {
@@ -128,11 +131,11 @@ body {
   box-shadow: 0 10px 0 rgba(36, 58, 94, .08), 0 18px 30px rgba(36, 58, 94, .12);
 }
 .student-ov-avatar {
-  width: 70px; height: 70px; flex: none; border-radius: 22px;
+  width: 96px; height: 96px; flex: none; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   background: var(--blue); color: #fff;
-  font-family: var(--font-head); font-weight: 800; font-size: 22px;
-  box-shadow: 0 6px 0 var(--blue-dark);
+  font-family: var(--font-head); font-weight: 800; font-size: 28px;
+  box-shadow: 0 6px 0 var(--blue-dark); overflow: hidden;
 }
 .student-ov-info { flex: 1; min-width: 160px; }
 .student-ov-name { font-family: var(--font-head); font-weight: 700; font-size: 22px; color: var(--ink); }

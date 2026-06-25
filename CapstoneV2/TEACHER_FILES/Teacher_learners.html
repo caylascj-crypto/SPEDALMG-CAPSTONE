@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <link rel="icon" type="image/png" href="../TEACHER_ASSETS/logo.png" />
+    <link rel="icon" type="image/png" href="../ASSETS/logo.png" />
     <title>My Learners – SPED ALM</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap"
         rel="stylesheet" />
@@ -18,7 +18,7 @@
         <!-- SIDEBAR -->
         <aside class="teacher-sidebar">
             <div class="teacher-sidebar-logo">
-                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../TEACHER_ASSETS/logo.png" />
+                <img alt="SPED ALM Logo" class="teacher-sidebar-logo-img" src="../ASSETS/logo.png" />
                 <div>
                     <span class="teacher-sidebar-title">SPED ALM</span>
                     <span class="teacher-sidebar-sub">Teacher Portal</span>
@@ -49,7 +49,7 @@
             </nav>
             <div class="teacher-sidebar-footer">
                 <div class="teacher-profile">
-                    <div class="teacher-avatar" id="teacher-avatar-letter">T</div>
+                    <div class="teacher-avatar" id="teacher-avatar-letter">M</div>
                     <div>
                         <span class="teacher-name" id="teacher-name-sidebar">Teacher</span>
                         <span class="teacher-role">SPED Teacher</span>
@@ -86,7 +86,7 @@
                 </div>
                 <div class="teacher-stat-card teacher-stat-green">
                     <span class="teacher-stat-title">Non Graded</span>
-                    <span class="teacher-stat-name" id="teacher-name">Loading...</span>
+                    <span class="teacher-stat-name" id="teacher-section">Maya</span>
                 </div>
             </div>
             <!-- TOOLBAR -->
@@ -227,18 +227,23 @@
 
         /* ── Stats ── */
         function loadStats() {
-            fetch('TEACHER_BACKEND/teacher_stats.php')
+            fetch('TEACHER_BACKEND/teacher_stats.php?teacher_id=' + TEACHER_ID)
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     document.getElementById('total-students').textContent = data.total_students || 0;
                     document.getElementById('active-learners').textContent = data.active_students || 0;
-                    document.getElementById('teacher-name').textContent = sessionStorage.getItem('teacher_name') || 'Teacher';
+                    if (data.section) {
+                        document.getElementById('teacher-section').textContent = data.section;
+                    }
+                    var name = sessionStorage.getItem('teacher_name') || 'Teacher';
+                    document.getElementById('teacher-name-sidebar').textContent = name;
+                    document.getElementById('teacher-avatar-letter').textContent = name.trim().charAt(0).toUpperCase();
                 }).catch(function(){});
         }
 
         /* ── Learners table ── */
         function loadLearners() {
-            fetch('TEACHER_BACKEND/teacher_list_learners.php')
+            fetch('TEACHER_BACKEND/teacher_list_learners.php?teacher_id=' + TEACHER_ID)
                 .then(function(r) { return r.json(); })
                 .then(function(data) { allStudents = data; renderTable(data); })
                 .catch(function(){});

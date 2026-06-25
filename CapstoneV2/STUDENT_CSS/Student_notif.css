@@ -38,10 +38,7 @@ body {
   position:sticky; top:0; align-self:flex-start; height:100vh;
 }
 .student-sidebar-logo { display:flex; align-items:center; gap:12px; margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.2); }
-.student-sidebar-logo-img {
-  width: 46px; height: 46px; border-radius: 16px;
-  background: transparent; object-fit: contain;
-}
+.student-sidebar-logo-img { width:46px; height:46px; padding:4px; border-radius:16px; background:#fff; object-fit:contain; box-shadow:0 5px 0 #cdd9ef; }
 .student-sidebar-logo-text { display:flex; flex-direction:column; line-height:1.15; }
 .student-sidebar-title { font-family:var(--font-head); font-weight:800; font-size:18px; color:#fff; }
 .student-sidebar-sub { font-size:12px; font-weight:600; color:#bdd4ff; }
